@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify your email - Voyantra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0D1526; --ink-2: #131F38; --ink-3: #1B2A45;
+    --paper: #F6F2E9; --gold: #E7A94C; --gold-soft: rgba(231,169,76,0.14);
+    --coral: #E2704F; --teal: #4FC3B0;
+    --line: rgba(246,242,233,0.14); --line-strong: rgba(246,242,233,0.28); --muted: rgba(246,242,233,0.6);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--ink); color: var(--paper); font-family: 'Inter', sans-serif;
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  }
+  .card {
+    background: var(--ink-2); border: 1px solid var(--line); border-radius: 20px;
+    padding: 40px; width: 100%; max-width: 400px; text-align: center;
+    box-shadow: 0 24px 50px rgba(0,0,0,0.35);
+  }
+  h1 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.7rem; margin-bottom: 10px; }
+  p.sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 28px; }
+  p.sub strong { color: var(--paper); }
+  input {
+    width: 100%; padding: 14px; border-radius: 10px; border: 1px solid var(--line-strong);
+    background: var(--ink-3); color: var(--paper); font-family: inherit; font-size: 1.4rem;
+    text-align: center; letter-spacing: 8px; margin-bottom: 18px;
+  }
+  input:focus { outline: none; border-color: var(--gold); }
+  button {
+    width: 100%; padding: 14px; border-radius: 10px; border: none; cursor: pointer;
+    background: var(--gold); color: var(--ink); font-weight: 700; font-size: 0.94rem;
+  }
+  .field-err { font-size: 0.82rem; color: var(--coral); margin-bottom: 14px; display: none; }
+  .field-err.show { display: block; }
+  .spinner {
+    width: 15px; height: 15px; border-radius: 50%; display: none;
+    border: 2px solid rgba(13,21,38,0.3); border-top-color: var(--ink);
+    animation: spin 0.7s linear infinite; margin: 0 auto;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1 data-i18n="otp_title">Check your email</h1>
+  <p class="sub">We sent a 6-digit code to <strong id="emailDisplay"></strong></p>
+
+  <form id="otpForm" action="VerifyOtpServlet" method="POST">
+    <input type="hidden" name="email" id="emailHidden">
+    <input type="text" name="otp" id="otpInput" maxlength="6" placeholder="000000" inputmode="numeric">
+    <div class="field-err" id="otpErr">Please enter the 6-digit code</div>
+    <button type="submit"><span class="spinner" id="otpSpinner"></span><span id="otpBtnText" data-i18n="otp_verify_btn">Verify</span></button>
+  </form>
+</div>
+<script src="js/i18n.js?v=3"></script>
+<script src="js/chatbot.js?v=3"></script>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const email = params.get('email') || '';
+  document.getElementById('emailDisplay').textContent = email;
+  document.getElementById('emailHidden').value = email;
+
+  document.getElementById('otpInput').addEventListener('input', function() {
+    this.value = this.value.replace(/\D/g, '').slice(0, 6);
+  });
+
+  document.getElementById('otpForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const otp = document.getElementById('otpInput').value;
+    const errEl = document.getElementById('otpErr');
+    if (otp.length !== 6) {
+      errEl.textContent = 'Please enter the 6-digit code';
+      errEl.classList.add('show');
+      return;
+    }
+    errEl.classList.remove('show');
+
+    const form = this;
+    const spinner = document.getElementById('otpSpinner');
+    const btnText = document.getElementById('otpBtnText');
+    const btn = form.querySelector('button');
+    btn.disabled = true; spinner.style.display = 'inline-block'; btnText.textContent = 'Verifying...';
+
+    fetch('VerifyOtpServlet', { method: 'POST', body: new URLSearchParams(new FormData(form)) })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          window.location.href = data.redirect;
+        } else {
+          errEl.textContent = '⚠ ' + data.message;
+          errEl.classList.add('show');
+          btn.disabled = false; spinner.style.display = 'none'; btnText.textContent = 'Verify';
+        }
+      })
+      .catch(() => {
+        errEl.textContent = '⚠ Could not reach the server. Please try again.';
+        errEl.classList.add('show');
+        btn.disabled = false; spinner.style.display = 'none'; btnText.textContent = 'Verify';
+      });
+  });
+</script>
+</body>
+</html>

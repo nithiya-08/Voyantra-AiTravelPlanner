@@ -1,0 +1,11 @@
+# Copy this file to config.local.properties and fill in your own real values.
+# config.local.properties is gitignored and never committed — this .example
+# file (with no real secrets) is what's safe to commit and share.
+
+GEMINI_API_KEY=
+OPENWEATHERMAP_API_KEY=
+UNSPLASH_ACCESS_KEY=
+YOUTUBE_API_KEY=
+GOOGLE_MAPS_EMBED_KEY=
+EMAIL_SENDER_ADDRESS=
+EMAIL_SENDER_APP_PASSWORD=

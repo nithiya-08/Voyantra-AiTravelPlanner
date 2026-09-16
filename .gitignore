@@ -1,0 +1,14 @@
+# Real secrets — never commit this
+config.local.properties
+
+# Build output
+/build/
+*.class
+
+# Eclipse project files (machine-specific)
+.settings/
+.classpath
+.project
+
+# Misc
+*.log
