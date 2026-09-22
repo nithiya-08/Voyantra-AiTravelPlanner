@@ -112,6 +112,7 @@
   <div class="header-right">
     <span class="greeting">Hi, <strong><%= userName %></strong></span>
     <a href="vendors.jsp" class="btn btn-ghost">Local vendors</a>
+    <a href="saved-vendors.jsp" class="btn btn-ghost">Saved</a>
     <% if (isVendor) { %>
     <a href="my-vendor-listings.jsp" class="btn btn-ghost">My listings</a>
     <% } else { %>

@@ -18,6 +18,8 @@
     }
     int vendorId = Integer.parseInt(vendorIdStr);
     boolean inquirySent = "1".equals(request.getParameter("inquirySent"));
+    boolean reportSent = "1".equals(request.getParameter("reportSent"));
+    boolean isFavorited = false;
 
     String businessName = null, category = null, description = null, city = null, state = null,
            address = null, phone = null, vendorEmail = null, priceRange = null, photoUrl = null, status = null;
@@ -64,7 +66,7 @@
                     reviewCount = ratingRs.getInt("cnt");
                 }
 
-                String reviewSql = "SELECT u.name, r.rating, r.comment, r.created_at, r.user_id "
+                String reviewSql = "SELECT r.review_id, u.name, r.rating, r.comment, r.created_at, r.user_id "
                                   + "FROM vendor_reviews r JOIN users u ON r.user_id = u.user_id "
                                   + "WHERE r.vendor_id = ? ORDER BY r.review_id DESC";
                 PreparedStatement reviewStmt = conn.prepareStatement(reviewSql);
@@ -75,13 +77,20 @@
                         reviewRs.getString("name"),
                         reviewRs.getInt("rating"),
                         reviewRs.getString("comment"),
-                        reviewRs.getTimestamp("created_at")
+                        reviewRs.getTimestamp("created_at"),
+                        reviewRs.getInt("review_id")
                     });
                     if (reviewRs.getInt("user_id") == userId) {
                         myRating = reviewRs.getInt("rating");
                         myComment = reviewRs.getString("comment");
                     }
                 }
+
+                String favSql = "SELECT favorite_id FROM vendor_favorites WHERE user_id = ? AND vendor_id = ?";
+                PreparedStatement favStmt = conn.prepareStatement(favSql);
+                favStmt.setInt(1, userId);
+                favStmt.setInt(2, vendorId);
+                isFavorited = favStmt.executeQuery().next();
             } else {
                 businessName = null;
             }
@@ -151,11 +160,20 @@
   }
 
   .review-row { background: var(--ink-2); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; margin-bottom: 10px; }
-  .review-row .top { display: flex; justify-content: space-between; margin-bottom: 6px; }
+  .review-row .top { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 6px; }
   .review-row .name { font-weight: 700; }
   .review-row .stars { color: var(--gold); }
   .review-row .comment { font-size: 0.9rem; color: var(--paper); }
   .empty-state { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; }
+  .action-links { display: flex; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
+  .action-links button, .action-links a {
+    background: none; border: none; color: var(--muted); font-size: 0.84rem; cursor: pointer; font-family: inherit;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .action-links button:hover, .action-links a:hover { color: var(--gold); }
+  .action-links .saved { color: var(--gold); }
+  .delete-review-btn { background: none; border: none; color: var(--muted); font-size: 0.76rem; cursor: pointer; }
+  .delete-review-btn:hover { color: var(--coral); }
 </style>
 </head>
 <body>
@@ -177,6 +195,9 @@
   <% if (inquirySent) { %>
     <div class="banner">Your inquiry was sent — the vendor will reach out to you directly.</div>
   <% } %>
+  <% if (reportSent) { %>
+    <div class="banner">Thanks — your report was sent to our team for review.</div>
+  <% } %>
 
   <% if (photoUrl != null && !photoUrl.trim().isEmpty()) { %>
     <img class="vendor-photo" src="<%= photoUrl %>" alt="<%= businessName %>">
@@ -196,6 +217,27 @@
       No reviews yet
     <% } %>
   </div>
+
+  <% if (!isOwner) { %>
+  <div class="action-links">
+    <form action="ToggleVendorFavoriteServlet" method="POST" style="margin:0;">
+      <input type="hidden" name="vendorId" value="<%= vendorId %>">
+      <input type="hidden" name="returnTo" value="details">
+      <button type="submit" class="<%= isFavorited ? "saved" : "" %>"><%= isFavorited ? "★ Saved" : "☆ Save for later" %></button>
+    </form>
+    <button type="button" onclick="document.getElementById('reportForm').style.display='block'; this.style.display='none';">&#9888; Report this vendor</button>
+  </div>
+  <div class="form-card" id="reportForm" style="display:none;">
+    <form action="VendorReportServlet" method="POST">
+      <input type="hidden" name="vendorId" value="<%= vendorId %>">
+      <div class="field">
+        <label for="reason">Why are you reporting this listing?</label>
+        <textarea id="reason" name="reason" placeholder="Tell us what's wrong..." required></textarea>
+      </div>
+      <button type="submit" class="submit">Submit report</button>
+    </form>
+  </div>
+  <% } %>
 
   <% if (description != null && !description.trim().isEmpty()) { %>
     <div class="description"><%= description %></div>
@@ -267,6 +309,13 @@
       </div>
       <% if (r[2] != null && !((String) r[2]).trim().isEmpty()) { %>
         <div class="comment"><%= r[2] %></div>
+      <% } %>
+      <% if (isAdmin) { %>
+      <form action="AdminDeleteReviewServlet" method="POST" style="margin-top:8px;">
+        <input type="hidden" name="reviewId" value="<%= (int) r[4] %>">
+        <input type="hidden" name="vendorId" value="<%= vendorId %>">
+        <button type="submit" class="delete-review-btn" onclick="return confirm('Delete this review?');">Delete review (admin)</button>
+      </form>
       <% } %>
     </div>
   <% } } %>

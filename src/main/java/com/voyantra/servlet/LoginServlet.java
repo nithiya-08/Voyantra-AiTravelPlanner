@@ -56,7 +56,7 @@ public class LoginServlet extends HttpServlet {
                 return;
             }
 
-            String sql = "SELECT user_id, name, password, is_verified, is_admin, is_vendor FROM users WHERE email = ?";
+            String sql = "SELECT user_id, name, password, is_verified, is_admin, is_vendor, is_blocked FROM users WHERE email = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
@@ -71,6 +71,11 @@ public class LoginServlet extends HttpServlet {
 
             if (!storedHash.equals(enteredHash)) {
                 fail(out, "Invalid email or password.");
+                return;
+            }
+
+            if (rs.getBoolean("is_blocked")) {
+                fail(out, "Your account has been blocked. Contact support.");
                 return;
             }
 

@@ -29,7 +29,7 @@
             if (ownerRs.next()) {
                 businessName = ownerRs.getString("business_name");
 
-                String sql = "SELECT u.name, u.email, i.message, i.contact_phone, i.travel_dates, i.created_at "
+                String sql = "SELECT i.inquiry_id, u.name, u.email, i.message, i.contact_phone, i.travel_dates, i.created_at, i.status "
                            + "FROM vendor_inquiries i JOIN users u ON i.user_id = u.user_id "
                            + "WHERE i.vendor_id = ? ORDER BY i.inquiry_id DESC";
                 PreparedStatement stmt = conn.prepareStatement(sql);
@@ -37,12 +37,14 @@
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
                     inquiries.add(new Object[] {
+                        rs.getInt("inquiry_id"),
                         rs.getString("name"),
                         rs.getString("email"),
                         rs.getString("message"),
                         rs.getString("contact_phone"),
                         rs.getString("travel_dates"),
-                        rs.getTimestamp("created_at")
+                        rs.getTimestamp("created_at"),
+                        rs.getString("status")
                     });
                 }
             }
@@ -117,18 +119,31 @@
 
   <% if (inquiries.isEmpty()) { %>
     <div class="empty-state">No inquiries yet.</div>
-  <% } else { for (Object[] inq : inquiries) { %>
+  <% } else { for (Object[] inq : inquiries) {
+      int inquiryId = (int) inq[0];
+      String inqStatus = (String) inq[7];
+  %>
     <div class="inquiry-row">
       <div class="top">
-        <span class="name"><%= inq[0] %></span>
-        <span class="meta"><%= inq[5] %></span>
+        <span class="name"><%= inq[1] %></span>
+        <span class="meta"><%= inq[6] %></span>
       </div>
-      <div class="msg"><%= inq[2] %></div>
-      <% if (inq[4] != null && !((String) inq[4]).trim().isEmpty()) { %>
-        <div class="meta">Travel dates: <%= inq[4] %></div>
+      <div class="msg"><%= inq[3] %></div>
+      <% if (inq[5] != null && !((String) inq[5]).trim().isEmpty()) { %>
+        <div class="meta">Travel dates: <%= inq[5] %></div>
       <% } %>
       <div class="contact">
-        <%= inq[1] %><% if (inq[3] != null && !((String) inq[3]).trim().isEmpty()) { %> &middot; <%= inq[3] %><% } %>
+        <%= inq[2] %><% if (inq[4] != null && !((String) inq[4]).trim().isEmpty()) { %> &middot; <%= inq[4] %><% } %>
+      </div>
+      <div style="margin-top:10px; display:flex; align-items:center; gap:10px;">
+        <span class="meta" style="color:<%= "RESPONDED".equals(inqStatus) ? "var(--teal)" : "var(--gold)" %>;"><%= inqStatus %></span>
+        <% if (!"RESPONDED".equals(inqStatus)) { %>
+        <form action="MarkInquiryRespondedServlet" method="POST" style="margin:0;">
+          <input type="hidden" name="inquiryId" value="<%= inquiryId %>">
+          <input type="hidden" name="vendorId" value="<%= vendorId %>">
+          <button type="submit" style="background:none; border:1px solid var(--line-strong); border-radius:8px; padding:6px 12px; color:var(--paper); font-size:0.78rem; cursor:pointer;">Mark responded</button>
+        </form>
+        <% } %>
       </div>
     </div>
   <% } } %>

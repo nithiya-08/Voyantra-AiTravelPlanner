@@ -13,8 +13,11 @@
     ArrayList<Object[]> listings = new ArrayList<>();
     try (Connection conn = DBConnection.getConnection()) {
         if (conn != null) {
-            String sql = "SELECT vendor_id, business_name, category, city, status, rejection_reason "
-                       + "FROM vendors WHERE user_id = ? ORDER BY vendor_id DESC";
+            String sql = "SELECT v.vendor_id, v.business_name, v.category, v.city, v.status, v.rejection_reason, "
+                       + "(SELECT COUNT(*) FROM vendor_inquiries i WHERE i.vendor_id = v.vendor_id) AS inquiry_count, "
+                       + "(SELECT AVG(rating) FROM vendor_reviews r WHERE r.vendor_id = v.vendor_id) AS avg_rating, "
+                       + "(SELECT COUNT(*) FROM vendor_reviews r WHERE r.vendor_id = v.vendor_id) AS review_count "
+                       + "FROM vendors v WHERE v.user_id = ? ORDER BY v.vendor_id DESC";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, userId);
             ResultSet rs = stmt.executeQuery();
@@ -25,7 +28,10 @@
                     rs.getString("category"),
                     rs.getString("city"),
                     rs.getString("status"),
-                    rs.getString("rejection_reason")
+                    rs.getString("rejection_reason"),
+                    rs.getInt("inquiry_count"),
+                    rs.getObject("avg_rating"),
+                    rs.getInt("review_count")
                 });
             }
         }
@@ -157,7 +163,10 @@
           String city = (String) v[3];
           String status = (String) v[4];
           String rejectionReason = (String) v[5];
-          String statusClass = "APPROVED".equals(status) ? "status-approved" : ("REJECTED".equals(status) ? "status-rejected" : "");
+          int inquiryCount = (int) v[6];
+          Object avgRatingObj = v[7];
+          int reviewCount = (int) v[8];
+          String statusClass = "APPROVED".equals(status) ? "status-approved" : ("REJECTED".equals(status) || "SUSPENDED".equals(status) ? "status-rejected" : "");
       %>
           <div class="trip-card">
               <h3><%= businessName %></h3>
@@ -165,6 +174,11 @@
                   <span class="trip-tag"><%= category %></span>
                   <span class="trip-tag"><%= city %></span>
                   <span class="trip-tag <%= statusClass %>"><%= status %></span>
+              </div>
+              <div class="trip-interests">
+                  <%= inquiryCount %> inquir<%= inquiryCount == 1 ? "y" : "ies" %>
+                  &middot;
+                  <% if (avgRatingObj != null) { %>&#9733; <%= String.format("%.1f", (Double) avgRatingObj) %> (<%= reviewCount %> reviews)<% } else { %>no reviews yet<% } %>
               </div>
               <% if ("REJECTED".equals(status) && rejectionReason != null && !rejectionReason.trim().isEmpty()) { %>
               <div class="reject-reason">Reason: <%= rejectionReason %></div>

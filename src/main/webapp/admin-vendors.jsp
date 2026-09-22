@@ -16,6 +16,7 @@
 
     ArrayList<Object[]> pending = new ArrayList<>();
     ArrayList<Object[]> reviewed = new ArrayList<>();
+    ArrayList<Object[]> openReports = new ArrayList<>();
 
     try (Connection conn = DBConnection.getConnection()) {
         if (conn != null) {
@@ -36,6 +37,23 @@
                     rs.getString("email")
                 };
                 if ("PENDING".equals(row[4])) pending.add(row); else reviewed.add(row);
+            }
+
+            String reportSql = "SELECT r.report_id, r.vendor_id, r.reason, r.created_at, v.business_name, u.name "
+                              + "FROM vendor_reports r JOIN vendors v ON r.vendor_id = v.vendor_id "
+                              + "JOIN users u ON r.user_id = u.user_id "
+                              + "WHERE r.status = 'OPEN' ORDER BY r.report_id DESC";
+            PreparedStatement reportStmt = conn.prepareStatement(reportSql);
+            ResultSet reportRs = reportStmt.executeQuery();
+            while (reportRs.next()) {
+                openReports.add(new Object[] {
+                    reportRs.getInt("report_id"),
+                    reportRs.getInt("vendor_id"),
+                    reportRs.getString("reason"),
+                    reportRs.getTimestamp("created_at"),
+                    reportRs.getString("business_name"),
+                    reportRs.getString("name")
+                });
             }
         }
     } catch (Exception e) {
@@ -142,6 +160,7 @@
   <% if (reviewed.isEmpty()) { %>
     <p class="empty-state">No listings reviewed yet.</p>
   <% } else { for (Object[] v : reviewed) {
+      int vendorId2 = (int) v[0];
       String status = (String) v[4];
       String statusClass = "APPROVED".equals(status) ? "status-approved" : "status-rejected";
   %>
@@ -158,6 +177,35 @@
       <% if ("REJECTED".equals(status) && v[5] != null && !((String) v[5]).trim().isEmpty()) { %>
         <div class="meta" style="margin-top:8px;">Reason: <%= v[5] %></div>
       <% } %>
+      <% if ("APPROVED".equals(status) || "SUSPENDED".equals(status)) { %>
+      <form action="AdminVendorSuspendServlet" method="POST" style="margin-top:10px;">
+        <input type="hidden" name="vendorId" value="<%= vendorId2 %>">
+        <input type="hidden" name="action" value="<%= "APPROVED".equals(status) ? "SUSPEND" : "REINSTATE" %>">
+        <button type="submit" class="<%= "APPROVED".equals(status) ? "reject" : "approve" %>"><%= "APPROVED".equals(status) ? "Suspend" : "Reinstate" %></button>
+      </form>
+      <% } %>
+    </div>
+  <% } } %>
+
+  <div class="section-title">Open reports (<%= openReports.size() %>)</div>
+  <% if (openReports.isEmpty()) { %>
+    <p class="empty-state">No open reports.</p>
+  <% } else { for (Object[] rep : openReports) {
+      int reportId = (int) rep[0];
+      int reportVendorId = (int) rep[1];
+  %>
+    <div class="vendor-row">
+      <div class="top">
+        <span class="name"><%= rep[4] %></span>
+        <span class="meta">reported by <%= rep[5] %> &middot; <%= rep[3] %></span>
+      </div>
+      <div class="meta" style="margin-top:6px;"><%= rep[2] %></div>
+      <form class="approve-form" action="AdminVendorReportServlet" method="POST">
+        <input type="hidden" name="reportId" value="<%= reportId %>">
+        <input type="hidden" name="vendorId" value="<%= reportVendorId %>">
+        <button type="submit" name="action" value="DISMISS" class="approve">Dismiss</button>
+        <button type="submit" name="action" value="SUSPEND" class="reject">Suspend vendor</button>
+      </form>
     </div>
   <% } } %>
 </main>

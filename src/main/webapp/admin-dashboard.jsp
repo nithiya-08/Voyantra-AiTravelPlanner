@@ -14,7 +14,7 @@
         return;
     }
 
-    int totalUsers = 0, verifiedUsers = 0, totalTrips = 0, totalItineraryDays = 0, pendingVendors = 0;
+    int totalUsers = 0, verifiedUsers = 0, totalTrips = 0, totalItineraryDays = 0, pendingVendors = 0, openReports = 0, blockedUsers = 0;
     double avgBudget = 0;
     double avgDays = 0;
     ArrayList<Object[]> topDestinations = new ArrayList<>();
@@ -40,6 +40,12 @@
 
                 ResultSet r4b = st.executeQuery("SELECT COUNT(*) c FROM vendors WHERE status = 'PENDING'");
                 if (r4b.next()) pendingVendors = r4b.getInt("c");
+
+                ResultSet r4c = st.executeQuery("SELECT COUNT(*) c FROM vendor_reports WHERE status = 'OPEN'");
+                if (r4c.next()) openReports = r4c.getInt("c");
+
+                ResultSet r4d = st.executeQuery("SELECT COUNT(*) c FROM users WHERE is_blocked = TRUE");
+                if (r4d.next()) blockedUsers = r4d.getInt("c");
 
                 ResultSet r5 = st.executeQuery(
                     "SELECT destination, COUNT(*) cnt FROM trips GROUP BY destination ORDER BY cnt DESC LIMIT 5");
@@ -106,7 +112,7 @@
 
 <main>
   <h1>Admin dashboard</h1>
-  <p class="sub">Usage across all Voyantra users. <a href="admin-vendors.jsp" style="color:var(--gold);">Review vendor approvals &rarr;</a></p>
+  <p class="sub">Usage across all Voyantra users. <a href="admin-vendors.jsp" style="color:var(--gold);">Review vendor approvals &rarr;</a> &nbsp; <a href="admin-users.jsp" style="color:var(--gold);">Manage users &rarr;</a></p>
 
   <div class="stat-grid">
     <div class="stat"><div class="num"><%= totalUsers %></div><div class="lbl">Total users</div></div>
@@ -116,6 +122,8 @@
     <div class="stat"><div class="num">Rs. <%= Math.round(avgBudget) %></div><div class="lbl">Average budget</div></div>
     <div class="stat"><div class="num"><%= Math.round(avgDays * 10.0) / 10.0 %></div><div class="lbl">Average trip length (days)</div></div>
     <div class="stat"><div class="num"><%= pendingVendors %></div><div class="lbl">Pending vendor approvals</div></div>
+    <div class="stat"><div class="num"><%= openReports %></div><div class="lbl">Open vendor reports</div></div>
+    <div class="stat"><div class="num"><%= blockedUsers %></div><div class="lbl">Blocked users</div></div>
   </div>
 
   <div class="section-title">Top destinations</div>
