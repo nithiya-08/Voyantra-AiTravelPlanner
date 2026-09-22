@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Random;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,11 +18,15 @@ import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
 
-import com.voyantra.ai.EmailService;
 import com.voyantra.db.DBConnection;
 
-@WebServlet("/LoginServlet")
-public class LoginServlet extends HttpServlet {
+/**
+ * Same credential check as LoginServlet, but only ever succeeds for an
+ * account with is_admin = 1 — used by admin-login.html so a regular
+ * tourist/vendor account can never end up in the admin area from there.
+ */
+@WebServlet("/AdminLoginServlet")
+public class AdminLoginServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
@@ -56,7 +59,7 @@ public class LoginServlet extends HttpServlet {
                 return;
             }
 
-            String sql = "SELECT user_id, name, password, is_verified, is_admin, is_vendor, is_blocked FROM users WHERE email = ?";
+            String sql = "SELECT user_id, name, password, is_admin, is_blocked FROM users WHERE email = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
@@ -79,54 +82,23 @@ public class LoginServlet extends HttpServlet {
                 return;
             }
 
-            boolean isVerified = rs.getBoolean("is_verified");
-            if (!isVerified) {
-                String otp = generateOtp();
-                String updateSql = "UPDATE users SET otp_code = ? WHERE email = ?";
-                PreparedStatement updateStmt = conn.prepareStatement(updateSql);
-                updateStmt.setString(1, otp);
-                updateStmt.setString(2, email);
-                updateStmt.executeUpdate();
-
-                try {
-                    EmailService.sendOtpEmail(email, otp);
-                } catch (Exception mailError) {
-                    mailError.printStackTrace();
-                    fail(out, "Could not send verification email: " + mailError.getMessage());
-                    return;
-                }
-
-                JSONObject json = new JSONObject();
-                json.put("success", true);
-                json.put("redirect", "verify-otp.html?email=" + java.net.URLEncoder.encode(email, "UTF-8"));
-                out.print(json.toString());
+            if (!rs.getBoolean("is_admin")) {
+                fail(out, "This login is for administrators only.");
                 return;
             }
 
             int userId = rs.getInt("user_id");
             String userName = rs.getString("name");
-            boolean isAdmin = rs.getBoolean("is_admin");
-            boolean isVendor = rs.getBoolean("is_vendor");
 
             HttpSession session = request.getSession();
             session.setAttribute("userId", userId);
             session.setAttribute("userName", userName);
-            session.setAttribute("isAdmin", isAdmin);
-            session.setAttribute("isVendor", isVendor);
-
-            String loginContext = request.getParameter("context");
-            String redirectTo;
-            if (isAdmin) {
-                redirectTo = "admin-dashboard.jsp";
-            } else if ("vendor".equals(loginContext)) {
-                redirectTo = isVendor ? "my-vendor-listings.jsp" : "vendor-form.jsp";
-            } else {
-                redirectTo = "dashboard.jsp";
-            }
+            session.setAttribute("isAdmin", true);
+            session.setAttribute("isVendor", false);
 
             JSONObject json = new JSONObject();
             json.put("success", true);
-            json.put("redirect", redirectTo);
+            json.put("redirect", "admin-dashboard.jsp");
             out.print(json.toString());
 
         } catch (SQLException e) {
@@ -155,11 +127,5 @@ public class LoginServlet extends HttpServlet {
             e.printStackTrace();
             return password;
         }
-    }
-
-    private String generateOtp() {
-        Random random = new Random();
-        int otp = 100000 + random.nextInt(900000);
-        return String.valueOf(otp);
     }
 }
