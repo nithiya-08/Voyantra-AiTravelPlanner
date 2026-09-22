@@ -112,7 +112,7 @@
 
 <main>
   <h1>Admin dashboard</h1>
-  <p class="sub">Usage across all Voyantra users. <a href="admin-vendors.jsp" style="color:var(--gold);">Review vendor approvals &rarr;</a> &nbsp; <a href="admin-users.jsp" style="color:var(--gold);">Manage users &rarr;</a></p>
+  <p class="sub">Usage across all Voyantra users. <a href="admin-vendors.jsp" style="color:var(--gold);">Review vendor approvals &rarr;</a> &nbsp; <a href="admin-users.jsp" style="color:var(--gold);">Manage users &rarr;</a> &nbsp; <a href="admin-inquiries.jsp" style="color:var(--gold);">All inquiries &rarr;</a></p>
 
   <div class="stat-grid">
     <div class="stat"><div class="num"><%= totalUsers %></div><div class="lbl">Total users</div></div>

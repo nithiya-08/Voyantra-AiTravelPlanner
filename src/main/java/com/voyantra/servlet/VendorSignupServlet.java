@@ -46,6 +46,7 @@ public class VendorSignupServlet extends HttpServlet {
         String email = request.getParameter("email");
         String priceRange = request.getParameter("priceRange");
         String photoUrl = request.getParameter("photoUrl");
+        String websiteUrl = request.getParameter("websiteUrl");
 
         if (businessName == null || businessName.trim().isEmpty() ||
             category == null || !VALID_CATEGORIES.contains(category) ||
@@ -58,7 +59,7 @@ public class VendorSignupServlet extends HttpServlet {
         try (Connection conn = DBConnection.getConnection()) {
             if (conn != null) {
                 String insertSql = "INSERT INTO vendors (user_id, business_name, category, description, city, "
-                    + "state, address, phone, email, price_range, photo_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    + "state, address, phone, email, price_range, photo_url, website_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 PreparedStatement stmt = conn.prepareStatement(insertSql);
                 stmt.setInt(1, userId);
                 stmt.setString(2, businessName);
@@ -71,6 +72,7 @@ public class VendorSignupServlet extends HttpServlet {
                 stmt.setString(9, email);
                 stmt.setString(10, priceRange);
                 stmt.setString(11, photoUrl);
+                stmt.setString(12, websiteUrl);
                 stmt.executeUpdate();
 
                 String updateSql = "UPDATE users SET is_vendor = 1 WHERE user_id = ?";

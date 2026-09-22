@@ -21,7 +21,7 @@
     try (Connection conn = DBConnection.getConnection()) {
         if (conn != null) {
             String sql = "SELECT v.vendor_id, v.business_name, v.category, v.city, v.status, "
-                       + "v.rejection_reason, u.name, u.email FROM vendors v "
+                       + "v.rejection_reason, u.name, u.email, v.is_verified FROM vendors v "
                        + "JOIN users u ON v.user_id = u.user_id ORDER BY v.vendor_id DESC";
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
@@ -34,7 +34,8 @@
                     rs.getString("status"),
                     rs.getString("rejection_reason"),
                     rs.getString("name"),
-                    rs.getString("email")
+                    rs.getString("email"),
+                    rs.getBoolean("is_verified")
                 };
                 if ("PENDING".equals(row[4])) pending.add(row); else reviewed.add(row);
             }
@@ -162,11 +163,12 @@
   <% } else { for (Object[] v : reviewed) {
       int vendorId2 = (int) v[0];
       String status = (String) v[4];
+      boolean rowVerified = (boolean) v[8];
       String statusClass = "APPROVED".equals(status) ? "status-approved" : "status-rejected";
   %>
     <div class="vendor-row">
       <div class="top">
-        <span class="name"><%= v[1] %></span>
+        <span class="name"><%= v[1] %><% if (rowVerified) { %> <span style="color:var(--teal); font-size:0.78rem;">&#10003; Verified</span><% } %></span>
         <span class="meta"><%= v[6] %> &middot; <%= v[7] %></span>
       </div>
       <div>
@@ -178,11 +180,20 @@
         <div class="meta" style="margin-top:8px;">Reason: <%= v[5] %></div>
       <% } %>
       <% if ("APPROVED".equals(status) || "SUSPENDED".equals(status)) { %>
-      <form action="AdminVendorSuspendServlet" method="POST" style="margin-top:10px;">
-        <input type="hidden" name="vendorId" value="<%= vendorId2 %>">
-        <input type="hidden" name="action" value="<%= "APPROVED".equals(status) ? "SUSPEND" : "REINSTATE" %>">
-        <button type="submit" class="<%= "APPROVED".equals(status) ? "reject" : "approve" %>"><%= "APPROVED".equals(status) ? "Suspend" : "Reinstate" %></button>
-      </form>
+      <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+        <form action="AdminVendorSuspendServlet" method="POST" style="margin:0;">
+          <input type="hidden" name="vendorId" value="<%= vendorId2 %>">
+          <input type="hidden" name="action" value="<%= "APPROVED".equals(status) ? "SUSPEND" : "REINSTATE" %>">
+          <button type="submit" class="<%= "APPROVED".equals(status) ? "reject" : "approve" %>"><%= "APPROVED".equals(status) ? "Suspend" : "Reinstate" %></button>
+        </form>
+        <% if ("APPROVED".equals(status)) { %>
+        <form action="AdminVendorVerifyServlet" method="POST" style="margin:0;">
+          <input type="hidden" name="vendorId" value="<%= vendorId2 %>">
+          <input type="hidden" name="action" value="<%= rowVerified ? "UNVERIFY" : "VERIFY" %>">
+          <button type="submit" class="approve"><%= rowVerified ? "Remove verification" : "Mark as Verified" %></button>
+        </form>
+        <% } %>
+      </div>
       <% } %>
     </div>
   <% } } %>

@@ -53,6 +53,7 @@ public class VendorEditServlet extends HttpServlet {
         String email = request.getParameter("email");
         String priceRange = request.getParameter("priceRange");
         String photoUrl = request.getParameter("photoUrl");
+        String websiteUrl = request.getParameter("websiteUrl");
 
         if (businessName == null || businessName.trim().isEmpty() ||
             category == null || !VALID_CATEGORIES.contains(category) ||
@@ -65,7 +66,7 @@ public class VendorEditServlet extends HttpServlet {
         try (Connection conn = DBConnection.getConnection()) {
             if (conn != null) {
                 String sql = "UPDATE vendors SET business_name = ?, category = ?, description = ?, city = ?, "
-                    + "state = ?, address = ?, phone = ?, email = ?, price_range = ?, photo_url = ? "
+                    + "state = ?, address = ?, phone = ?, email = ?, price_range = ?, photo_url = ?, website_url = ? "
                     + "WHERE vendor_id = ? AND user_id = ?";
                 PreparedStatement stmt = conn.prepareStatement(sql);
                 stmt.setString(1, businessName);
@@ -78,8 +79,9 @@ public class VendorEditServlet extends HttpServlet {
                 stmt.setString(8, email);
                 stmt.setString(9, priceRange);
                 stmt.setString(10, photoUrl);
-                stmt.setInt(11, vendorId);
-                stmt.setInt(12, userId);
+                stmt.setString(11, websiteUrl);
+                stmt.setInt(12, vendorId);
+                stmt.setInt(13, userId);
                 stmt.executeUpdate();
             }
         } catch (Exception e) {

@@ -13,8 +13,8 @@ import javax.servlet.http.HttpSession;
 
 import com.voyantra.db.DBConnection;
 
-@WebServlet("/MarkInquiryRespondedServlet")
-public class MarkInquiryRespondedServlet extends HttpServlet {
+@WebServlet("/AdminVendorVerifyServlet")
+public class AdminVendorVerifyServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
@@ -26,36 +26,33 @@ public class MarkInquiryRespondedServlet extends HttpServlet {
             response.sendRedirect("login.html");
             return;
         }
-        int userId = (int) session.getAttribute("userId");
-
-        String inquiryIdStr = request.getParameter("inquiryId");
-        String vendorIdStr = request.getParameter("vendorId");
-        String action = request.getParameter("action");
-        if (inquiryIdStr == null || vendorIdStr == null ||
-            !("ACCEPT".equals(action) || "DECLINE".equals(action))) {
-            response.sendRedirect("my-vendor-listings.jsp");
+        Boolean isAdminAttr = (Boolean) session.getAttribute("isAdmin");
+        if (isAdminAttr == null || !isAdminAttr) {
+            response.sendRedirect("dashboard.jsp");
             return;
         }
-        int inquiryId = Integer.parseInt(inquiryIdStr);
+
+        String vendorIdStr = request.getParameter("vendorId");
+        String action = request.getParameter("action");
+        if (vendorIdStr == null || action == null ||
+            !("VERIFY".equals(action) || "UNVERIFY".equals(action))) {
+            response.sendRedirect("admin-vendors.jsp");
+            return;
+        }
         int vendorId = Integer.parseInt(vendorIdStr);
-        String newStatus = "ACCEPT".equals(action) ? "ACCEPTED" : "DECLINED";
 
         try (Connection conn = DBConnection.getConnection()) {
             if (conn != null) {
-                String sql = "UPDATE vendor_inquiries i JOIN vendors v ON i.vendor_id = v.vendor_id "
-                    + "SET i.status = ? "
-                    + "WHERE i.inquiry_id = ? AND i.vendor_id = ? AND v.user_id = ?";
+                String sql = "UPDATE vendors SET is_verified = ? WHERE vendor_id = ?";
                 PreparedStatement stmt = conn.prepareStatement(sql);
-                stmt.setString(1, newStatus);
-                stmt.setInt(2, inquiryId);
-                stmt.setInt(3, vendorId);
-                stmt.setInt(4, userId);
+                stmt.setBoolean(1, "VERIFY".equals(action));
+                stmt.setInt(2, vendorId);
                 stmt.executeUpdate();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        response.sendRedirect("vendor-inquiries.jsp?vendorId=" + vendorId);
+        response.sendRedirect("admin-vendors.jsp");
     }
 }

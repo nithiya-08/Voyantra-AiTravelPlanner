@@ -22,6 +22,7 @@
     String vendorEmail = "";
     String priceRange = "";
     String photoUrl = "";
+    String websiteUrl = "";
 
     if (editMode) {
         vendorId = Integer.parseInt(vendorIdStr);
@@ -29,7 +30,7 @@
         try (Connection conn = DBConnection.getConnection()) {
             if (conn != null) {
                 String sql = "SELECT business_name, category, description, city, state, address, phone, email, "
-                           + "price_range, photo_url FROM vendors WHERE vendor_id = ? AND user_id = ?";
+                           + "price_range, photo_url, website_url FROM vendors WHERE vendor_id = ? AND user_id = ?";
                 PreparedStatement stmt = conn.prepareStatement(sql);
                 stmt.setInt(1, vendorId);
                 stmt.setInt(2, userId);
@@ -45,6 +46,7 @@
                     vendorEmail = rs.getString("email");
                     priceRange = rs.getString("price_range");
                     photoUrl = rs.getString("photo_url");
+                    websiteUrl = rs.getString("website_url");
                     found = true;
                 }
             }
@@ -63,6 +65,7 @@
     if (vendorEmail == null) vendorEmail = "";
     if (priceRange == null) priceRange = "";
     if (photoUrl == null) photoUrl = "";
+    if (websiteUrl == null) websiteUrl = "";
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -212,6 +215,11 @@
       <div class="field">
         <label for="photoUrl">Photo URL <span style="font-weight:400; color:var(--muted); font-size:0.8rem;">(optional)</span></label>
         <input type="url" id="photoUrl" name="photoUrl" value="<%= photoUrl %>" placeholder="https://...">
+      </div>
+
+      <div class="field">
+        <label for="websiteUrl">Website or social media link <span style="font-weight:400; color:var(--muted); font-size:0.8rem;">(optional, but builds trust — travellers can check you're real)</span></label>
+        <input type="url" id="websiteUrl" name="websiteUrl" value="<%= websiteUrl %>" placeholder="https://...">
       </div>
 
       <button type="submit" class="submit"><%= editMode ? "Save changes" : "Submit for approval" %></button>

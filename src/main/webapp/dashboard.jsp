@@ -15,6 +15,30 @@
         response.sendRedirect("login.html");
         return;
     }
+
+    int newInquiryCount = 0;
+    int adminAlertCount = 0;
+    try (Connection notifConn = DBConnection.getConnection()) {
+        if (notifConn != null) {
+            if (isVendor) {
+                PreparedStatement stmt = notifConn.prepareStatement(
+                    "SELECT COUNT(*) c FROM vendor_inquiries i JOIN vendors v ON i.vendor_id = v.vendor_id "
+                    + "WHERE v.user_id = ? AND i.status = 'NEW'");
+                stmt.setInt(1, userId);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) newInquiryCount = rs.getInt("c");
+            }
+            if (isAdmin) {
+                Statement st = notifConn.createStatement();
+                ResultSet r1 = st.executeQuery("SELECT COUNT(*) c FROM vendors WHERE status = 'PENDING'");
+                if (r1.next()) adminAlertCount += r1.getInt("c");
+                ResultSet r2 = st.executeQuery("SELECT COUNT(*) c FROM vendor_reports WHERE status = 'OPEN'");
+                if (r2.next()) adminAlertCount += r2.getInt("c");
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -55,6 +79,7 @@
   .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(231,169,76,0.3); }
   .btn-ghost { border: 1px solid var(--line-strong); color: var(--paper); }
   .btn-ghost:hover { border-color: var(--paper); }
+  .nav-badge { background: var(--coral); color: var(--paper); font-size: 0.7rem; font-weight: 700; padding: 1px 6px; border-radius: 999px; margin-left: 2px; }
 
   main { max-width: 1000px; margin: 0 auto; padding: 6vh 6vw 10vh; }
   .page-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 34px; flex-wrap: wrap; gap: 16px; }
@@ -113,14 +138,16 @@
     <span class="greeting">Hi, <strong><%= userName %></strong></span>
     <a href="vendors.jsp" class="btn btn-ghost">Local vendors</a>
     <a href="saved-vendors.jsp" class="btn btn-ghost">Saved</a>
+    <a href="my-inquiries.jsp" class="btn btn-ghost">My inquiries</a>
     <% if (isVendor) { %>
-    <a href="my-vendor-listings.jsp" class="btn btn-ghost">My listings</a>
+    <a href="my-vendor-listings.jsp" class="btn btn-ghost">My listings<% if (newInquiryCount > 0) { %> <span class="nav-badge"><%= newInquiryCount %></span><% } %></a>
     <% } else { %>
     <a href="vendor-form.jsp" class="btn btn-ghost">Become a vendor</a>
     <% } %>
     <% if (isAdmin) { %>
-    <a href="admin-dashboard.jsp" class="btn btn-ghost" data-i18n="nav_admin">Admin</a>
+    <a href="admin-dashboard.jsp" class="btn btn-ghost" data-i18n="nav_admin">Admin<% if (adminAlertCount > 0) { %> <span class="nav-badge"><%= adminAlertCount %></span><% } %></a>
     <% } %>
+    <a href="profile.jsp" class="btn btn-ghost">Profile</a>
     <a href="LogoutServlet" class="btn btn-ghost" data-i18n="nav_logout">Log out</a>
   </div>
 </header>

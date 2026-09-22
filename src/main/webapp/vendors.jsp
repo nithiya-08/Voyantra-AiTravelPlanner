@@ -21,7 +21,8 @@
             StringBuilder sql = new StringBuilder(
                 "SELECT v.vendor_id, v.business_name, v.category, v.city, v.price_range, v.photo_url, "
                 + "(SELECT AVG(rating) FROM vendor_reviews r WHERE r.vendor_id = v.vendor_id) AS avg_rating, "
-                + "(SELECT COUNT(*) FROM vendor_reviews r WHERE r.vendor_id = v.vendor_id) AS review_count "
+                + "(SELECT COUNT(*) FROM vendor_reviews r WHERE r.vendor_id = v.vendor_id) AS review_count, "
+                + "v.is_verified "
                 + "FROM vendors v WHERE v.status = 'APPROVED'");
             if (!category.isEmpty()) sql.append(" AND v.category = ?");
             if (!city.isEmpty()) sql.append(" AND v.city LIKE ?");
@@ -41,7 +42,8 @@
                     rs.getString("price_range"),
                     rs.getString("photo_url"),
                     rs.getObject("avg_rating"),
-                    rs.getInt("review_count")
+                    rs.getInt("review_count"),
+                    rs.getBoolean("is_verified")
                 });
             }
         }
@@ -143,6 +145,7 @@
   <div class="header-right">
     <span class="greeting">Hi, <strong><%= userName %></strong></span>
     <a href="saved-vendors.jsp" class="btn btn-ghost">Saved</a>
+    <a href="my-inquiries.jsp" class="btn btn-ghost">My inquiries</a>
     <a href="dashboard.jsp" class="btn btn-ghost">My trips</a>
     <a href="LogoutServlet" class="btn btn-ghost">Log out</a>
   </div>
@@ -181,13 +184,14 @@
         String photoUrl = (String) v[5];
         Object avgRatingObj = v[6];
         int reviewCount = (int) v[7];
+        boolean vVerified = (boolean) v[8];
     %>
         <div class="vendor-card">
             <% if (photoUrl != null && !photoUrl.trim().isEmpty()) { %>
               <img class="vendor-photo" src="<%= photoUrl %>" alt="<%= businessName %>">
             <% } %>
             <div class="vendor-body">
-                <h3><%= businessName %></h3>
+                <h3><%= businessName %><% if (vVerified) { %> <span style="color:var(--teal); font-size:0.76rem; font-weight:700;">&#10003; Verified</span><% } %></h3>
                 <div class="trip-meta">
                     <span class="trip-tag"><%= vCategory %></span>
                     <span class="trip-tag"><%= vCity %></span>

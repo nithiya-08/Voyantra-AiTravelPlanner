@@ -135,13 +135,14 @@
       <div class="contact">
         <%= inq[2] %><% if (inq[4] != null && !((String) inq[4]).trim().isEmpty()) { %> &middot; <%= inq[4] %><% } %>
       </div>
-      <div style="margin-top:10px; display:flex; align-items:center; gap:10px;">
-        <span class="meta" style="color:<%= "RESPONDED".equals(inqStatus) ? "var(--teal)" : "var(--gold)" %>;"><%= inqStatus %></span>
-        <% if (!"RESPONDED".equals(inqStatus)) { %>
+      <div style="margin-top:10px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+        <span class="meta" style="color:<%= "ACCEPTED".equals(inqStatus) ? "var(--teal)" : ("DECLINED".equals(inqStatus) ? "var(--coral)" : "var(--gold)") %>;"><%= inqStatus %></span>
+        <% if ("NEW".equals(inqStatus)) { %>
         <form action="MarkInquiryRespondedServlet" method="POST" style="margin:0;">
           <input type="hidden" name="inquiryId" value="<%= inquiryId %>">
           <input type="hidden" name="vendorId" value="<%= vendorId %>">
-          <button type="submit" style="background:none; border:1px solid var(--line-strong); border-radius:8px; padding:6px 12px; color:var(--paper); font-size:0.78rem; cursor:pointer;">Mark responded</button>
+          <button type="submit" name="action" value="ACCEPT" style="background:none; border:1px solid var(--teal); border-radius:8px; padding:6px 12px; color:var(--teal); font-size:0.78rem; cursor:pointer;">Accept</button>
+          <button type="submit" name="action" value="DECLINE" style="background:none; border:1px solid var(--coral); border-radius:8px; padding:6px 12px; color:var(--coral); font-size:0.78rem; cursor:pointer;">Decline</button>
         </form>
         <% } %>
       </div>

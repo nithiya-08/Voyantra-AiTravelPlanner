@@ -22,8 +22,12 @@
     boolean isFavorited = false;
 
     String businessName = null, category = null, description = null, city = null, state = null,
-           address = null, phone = null, vendorEmail = null, priceRange = null, photoUrl = null, status = null;
+           address = null, phone = null, vendorEmail = null, priceRange = null, photoUrl = null, status = null,
+           websiteUrl = null;
     int ownerUserId = 0;
+    boolean isVerified = false;
+    int inquiryCount = 0;
+    java.sql.Timestamp createdAt = null;
     Double avgRating = null;
     int reviewCount = 0;
     ArrayList<Object[]> reviews = new ArrayList<>();
@@ -33,7 +37,8 @@
     try (Connection conn = DBConnection.getConnection()) {
         if (conn != null) {
             String sql = "SELECT user_id, business_name, category, description, city, state, address, phone, "
-                       + "email, price_range, photo_url, status FROM vendors WHERE vendor_id = ?";
+                       + "email, price_range, photo_url, status, website_url, is_verified, created_at "
+                       + "FROM vendors WHERE vendor_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, vendorId);
             ResultSet rs = stmt.executeQuery();
@@ -50,6 +55,9 @@
                 priceRange = rs.getString("price_range");
                 photoUrl = rs.getString("photo_url");
                 status = rs.getString("status");
+                websiteUrl = rs.getString("website_url");
+                isVerified = rs.getBoolean("is_verified");
+                createdAt = rs.getTimestamp("created_at");
             }
 
             boolean visible = businessName != null &&
@@ -65,6 +73,12 @@
                     if (avgObj != null) avgRating = ratingRs.getDouble("avg_rating");
                     reviewCount = ratingRs.getInt("cnt");
                 }
+
+                String inquiryCountSql = "SELECT COUNT(*) c FROM vendor_inquiries WHERE vendor_id = ?";
+                PreparedStatement inquiryCountStmt = conn.prepareStatement(inquiryCountSql);
+                inquiryCountStmt.setInt(1, vendorId);
+                ResultSet inquiryCountRs = inquiryCountStmt.executeQuery();
+                if (inquiryCountRs.next()) inquiryCount = inquiryCountRs.getInt("c");
 
                 String reviewSql = "SELECT r.review_id, u.name, r.rating, r.comment, r.created_at, r.user_id "
                                   + "FROM vendor_reviews r JOIN users u ON r.user_id = u.user_id "
@@ -138,6 +152,14 @@
   .trip-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
   .trip-tag { font-size: 0.76rem; font-weight: 600; padding: 5px 11px; border-radius: 999px; background: var(--gold-soft); color: var(--gold); }
   .trip-tag.status-pending { background: rgba(231,169,76,0.14); color: var(--gold); }
+  .badge-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .badge { font-size: 0.76rem; font-weight: 700; padding: 5px 11px; border-radius: 999px; }
+  .badge-verified { background: rgba(79,195,176,0.16); color: var(--teal); }
+  .badge-top { background: rgba(231,169,76,0.16); color: var(--gold); }
+  .badge-popular { background: rgba(226,112,79,0.16); color: var(--coral); }
+  .badge-new { background: rgba(246,242,233,0.1); color: var(--muted); }
+  .website-link { display: inline-flex; align-items: center; gap: 6px; font-size: 0.86rem; color: var(--teal); margin-top: 6px; }
+  .website-link:hover { text-decoration: underline; }
   .rating-line { font-size: 0.92rem; color: var(--muted); margin-bottom: 20px; }
   .rating-line strong { color: var(--gold); }
   .description { font-size: 0.96rem; line-height: 1.6; margin-bottom: 28px; color: var(--paper); }
@@ -204,6 +226,19 @@
   <% } %>
 
   <h1><%= businessName %></h1>
+  <%
+      boolean isTopRated = avgRating != null && avgRating >= 4.5 && reviewCount >= 3;
+      boolean isPopular = inquiryCount >= 5;
+      boolean isNew = createdAt != null && (System.currentTimeMillis() - createdAt.getTime()) < (14L * 24 * 60 * 60 * 1000);
+  %>
+  <% if (isVerified || isTopRated || isPopular || isNew) { %>
+  <div class="badge-row">
+    <% if (isVerified) { %><span class="badge badge-verified">&#10003; Verified by Voyantra</span><% } %>
+    <% if (isTopRated) { %><span class="badge badge-top">&#9733; Top Rated</span><% } %>
+    <% if (isPopular) { %><span class="badge badge-popular">&#128293; Popular</span><% } %>
+    <% if (isNew) { %><span class="badge badge-new">&#10024; New</span><% } %>
+  </div>
+  <% } %>
   <div class="trip-meta">
     <span class="trip-tag"><%= category %></span>
     <span class="trip-tag"><%= city %><%= (state != null && !state.trim().isEmpty()) ? ", " + state : "" %></span>
@@ -247,6 +282,9 @@
     <% if (address != null && !address.trim().isEmpty()) { %><div>&#128205; <%= address %></div><% } %>
     <div>&#128222; <%= phone %></div>
     <% if (vendorEmail != null && !vendorEmail.trim().isEmpty()) { %><div>&#9993; <%= vendorEmail %></div><% } %>
+    <% if (websiteUrl != null && !websiteUrl.trim().isEmpty()) { %>
+      <a class="website-link" href="<%= websiteUrl %>" target="_blank" rel="noopener noreferrer">&#128279; Visit their website / social page &#8599;</a>
+    <% } %>
   </div>
 
   <% if (!isOwner) { %>

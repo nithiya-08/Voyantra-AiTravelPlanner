@@ -9,6 +9,7 @@
 <%@ page import="com.voyantra.ai.EmergencyInfoService" %>
 <%@ page import="com.voyantra.util.ChecklistTemplates" %>
 <%@ page import="com.voyantra.ai.GoogleMapsService" %>
+<%@ page import="com.voyantra.ai.NearbyRecommendationService" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
 <%
@@ -85,6 +86,37 @@
     Double convertedBudget = localCurrency != null ? CurrencyService.convertFromInr(budget, localCurrency) : null;
 
     EmergencyInfoService.EmergencyInfo emergencyInfo = EmergencyInfoService.getEmergencyInfo(destination);
+
+    // ---- Nearby vendor marketplace recommendations for this destination ----
+    ArrayList<Object[]> nearbyVendors = new ArrayList<>();
+    try (Connection nearbyConn = DBConnection.getConnection()) {
+        if (nearbyConn != null) {
+            String nearbySql = "SELECT vendor_id, business_name, category, city, price_range, photo_url, is_verified, "
+                + "(SELECT AVG(rating) FROM vendor_reviews r WHERE r.vendor_id = v.vendor_id) AS avg_rating "
+                + "FROM vendors v WHERE status = 'APPROVED' AND (city LIKE ? OR ? LIKE CONCAT('%', city, '%')) "
+                + "ORDER BY FIELD(category, 'HOTEL', 'HOMESTAY', 'ACTIVITY', 'RESTAURANT', 'GUIDE', 'TRANSPORT'), "
+                + "avg_rating DESC LIMIT 6";
+            PreparedStatement nearbyStmt = nearbyConn.prepareStatement(nearbySql);
+            nearbyStmt.setString(1, "%" + destination + "%");
+            nearbyStmt.setString(2, destination);
+            ResultSet nearbyRs = nearbyStmt.executeQuery();
+            while (nearbyRs.next()) {
+                nearbyVendors.add(new Object[] {
+                    nearbyRs.getInt("vendor_id"),
+                    nearbyRs.getString("business_name"),
+                    nearbyRs.getString("category"),
+                    nearbyRs.getString("city"),
+                    nearbyRs.getString("price_range"),
+                    nearbyRs.getString("photo_url"),
+                    nearbyRs.getBoolean("is_verified"),
+                    nearbyRs.getObject("avg_rating")
+                });
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    String aiNearbyBlurb = nearbyVendors.isEmpty() ? NearbyRecommendationService.getAiSuggestions(destination) : null;
 
     // ---- Checklist: auto-seed default items the first time this trip's page is viewed ----
     try (Connection checklistConn = DBConnection.getConnection()) {
@@ -581,6 +613,36 @@
       </div>
     <% } else { %>
       <p style="color:var(--muted); font-size:0.88rem;">Emergency info isn't available right now.</p>
+    <% } %>
+  </div>
+
+  <!-- Nearby vendor marketplace recommendations -->
+  <div class="panel">
+    <div class="section-title" style="margin-top:0;">&#127968; Recommended near <%= destination %></div>
+    <% if (!nearbyVendors.isEmpty()) { %>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:14px;">
+      <% for (Object[] nv : nearbyVendors) {
+          int nvId = (int) nv[0];
+          boolean nvVerified = (boolean) nv[6];
+          Object nvRatingObj = nv[7];
+      %>
+        <a href="vendor-details.jsp?vendorId=<%= nvId %>" style="display:block; background:var(--ink-3); border:1px solid var(--line); border-radius:12px; padding:14px; transition:border-color 0.2s ease;">
+          <div style="font-weight:700; font-size:0.92rem; margin-bottom:6px;"><%= nv[1] %><% if (nvVerified) { %> <span style="color:var(--teal); font-size:0.78rem;">&#10003; Verified</span><% } %></div>
+          <div style="font-size:0.78rem; color:var(--muted); margin-bottom:4px;"><%= nv[2] %> &middot; <%= nv[3] %></div>
+          <% if (nv[4] != null) { %><div style="font-size:0.78rem; color:var(--gold);"><%= nv[4] %></div><% } %>
+          <% if (nvRatingObj != null) { %><div style="font-size:0.78rem; color:var(--muted); margin-top:4px;">&#9733; <%= String.format("%.1f", (Double) nvRatingObj) %></div><% } %>
+        </a>
+      <% } %>
+      </div>
+      <div style="margin-top:14px;"><a href="vendors.jsp" style="color:var(--gold); font-size:0.84rem;">Browse all local vendors &rarr;</a></div>
+    <% } else if (aiNearbyBlurb != null) { %>
+      <p style="font-size:0.9rem; line-height:1.7; color:var(--paper);"><%= aiNearbyBlurb %></p>
+      <div style="margin-top:12px; font-size:0.76rem; color:var(--muted); font-style:italic;">
+        AI-generated general guidance, not a verified listing — verify locally before you book.
+      </div>
+      <div style="margin-top:10px;"><a href="vendor-form.jsp" style="color:var(--gold); font-size:0.84rem;">Know a great local business here? List it on Voyantra &rarr;</a></div>
+    <% } else { %>
+      <p style="color:var(--muted); font-size:0.88rem;">No recommendations available right now.</p>
     <% } %>
   </div>
 
