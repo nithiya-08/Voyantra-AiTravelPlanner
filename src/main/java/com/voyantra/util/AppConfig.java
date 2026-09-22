@@ -23,7 +23,7 @@ public class AppConfig {
 
     static {
         String[] candidatePaths = {
-            "C:/Users/MY PC/eclipse-workspace/AITravelPlanner/config.local.properties",
+            "C:/Users/MY PC/eclipse-workspace/AITravelPlanner-Tourism/config.local.properties",
             "config.local.properties"
         };
         for (String path : candidatePaths) {

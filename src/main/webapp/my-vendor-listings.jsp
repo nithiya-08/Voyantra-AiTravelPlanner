@@ -3,17 +3,34 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.voyantra.db.DBConnection" %>
 <%
-    // ---- Step 1: Check the user is logged in ----
     Integer userId = (Integer) session.getAttribute("userId");
     String userName = (String) session.getAttribute("userName");
-    Boolean isAdminAttr = (Boolean) session.getAttribute("isAdmin");
-    boolean isAdmin = (isAdminAttr != null && isAdminAttr);
-    Boolean isVendorAttr = (Boolean) session.getAttribute("isVendor");
-    boolean isVendor = (isVendorAttr != null && isVendorAttr);
-
     if (userId == null) {
         response.sendRedirect("login.html");
         return;
+    }
+
+    ArrayList<Object[]> listings = new ArrayList<>();
+    try (Connection conn = DBConnection.getConnection()) {
+        if (conn != null) {
+            String sql = "SELECT vendor_id, business_name, category, city, status, rejection_reason "
+                       + "FROM vendors WHERE user_id = ? ORDER BY vendor_id DESC";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                listings.add(new Object[] {
+                    rs.getInt("vendor_id"),
+                    rs.getString("business_name"),
+                    rs.getString("category"),
+                    rs.getString("city"),
+                    rs.getString("status"),
+                    rs.getString("rejection_reason")
+                });
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
     }
 %>
 <!DOCTYPE html>
@@ -21,7 +38,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard — Voyantra</title>
+<title>My vendor listings — Voyantra</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -73,8 +90,9 @@
     font-size: 0.76rem; font-weight: 600; padding: 5px 11px; border-radius: 999px;
     background: var(--gold-soft); color: var(--gold);
   }
-  .trip-tag.shared { background: rgba(79,195,176,0.14); color: var(--teal); }
-  .trip-tag.countdown { background: rgba(226,112,79,0.14); color: var(--coral); }
+  .trip-tag.status-approved { background: rgba(79,195,176,0.14); color: var(--teal); }
+  .trip-tag.status-rejected { background: rgba(226,112,79,0.14); color: var(--coral); }
+  .reject-reason { font-size: 0.8rem; color: var(--coral); margin-bottom: 14px; }
   .trip-interests { font-size: 0.84rem; color: var(--muted); margin-bottom: 18px; }
   .trip-actions { display: flex; gap: 10px; }
   .trip-actions a, .trip-actions button {
@@ -111,104 +129,57 @@
   </a>
   <div class="header-right">
     <span class="greeting">Hi, <strong><%= userName %></strong></span>
-    <a href="vendors.jsp" class="btn btn-ghost">Local vendors</a>
-    <% if (isVendor) { %>
-    <a href="my-vendor-listings.jsp" class="btn btn-ghost">My listings</a>
-    <% } else { %>
-    <a href="vendor-form.jsp" class="btn btn-ghost">Become a vendor</a>
-    <% } %>
-    <% if (isAdmin) { %>
-    <a href="admin-dashboard.jsp" class="btn btn-ghost" data-i18n="nav_admin">Admin</a>
-    <% } %>
-    <a href="LogoutServlet" class="btn btn-ghost" data-i18n="nav_logout">Log out</a>
+    <a href="dashboard.jsp" class="btn btn-ghost">My trips</a>
+    <a href="LogoutServlet" class="btn btn-ghost">Log out</a>
   </div>
 </header>
 
 <main>
   <div class="page-head">
     <div>
-      <h1 data-i18n="dashboard_heading">Your trips</h1>
-      <p data-i18n="dashboard_sub">Every trip you've planned, in one place.</p>
+      <h1>My vendor listings</h1>
+      <p>Manage the businesses you've listed on Voyantra.</p>
     </div>
-    <a href="trip-form.html" class="btn btn-primary" data-i18n="dashboard_newtrip">+ New trip</a>
+    <a href="vendor-form.jsp" class="btn btn-primary">+ Add listing</a>
   </div>
 
-  <%
-      ArrayList<Object[]> trips = new ArrayList<>();
-      try (Connection conn = DBConnection.getConnection()) {
-          if (conn != null) {
-              String sql = "SELECT t.trip_id, t.destination, t.budget, t.num_days, t.travel_style, t.interests, "
-                         + "(t.user_id != ?) AS is_shared, t.start_date "
-                         + "FROM trips t LEFT JOIN trip_collaborators c ON t.trip_id = c.trip_id "
-                         + "WHERE t.user_id = ? OR c.user_id = ? "
-                         + "ORDER BY t.trip_id DESC";
-              PreparedStatement stmt = conn.prepareStatement(sql);
-              stmt.setInt(1, userId);
-              stmt.setInt(2, userId);
-              stmt.setInt(3, userId);
-              ResultSet rs = stmt.executeQuery();
-              while (rs.next()) {
-                  trips.add(new Object[] {
-                      rs.getInt("trip_id"),
-                      rs.getString("destination"),
-                      rs.getDouble("budget"),
-                      rs.getInt("num_days"),
-                      rs.getString("travel_style"),
-                      rs.getString("interests"),
-                      rs.getBoolean("is_shared"),
-                      rs.getDate("start_date")
-                  });
-              }
-          }
-      } catch (Exception e) {
-          e.printStackTrace();
-      }
-  %>
-
-  <% if (trips.isEmpty()) { %>
+  <% if (listings.isEmpty()) { %>
       <div class="empty-state">
-          <p data-i18n="dashboard_empty">You haven't planned any trips yet.</p>
-          <a href="trip-form.html" class="btn btn-primary" data-i18n="dashboard_empty_cta">Plan your first trip →</a>
+          <p>You haven't listed a business yet.</p>
+          <a href="vendor-form.jsp" class="btn btn-primary">List your business &rarr;</a>
       </div>
   <% } else { %>
       <div class="trip-grid">
-      <% for (Object[] trip : trips) {
-          int tripId = (int) trip[0];
-          String destination = (String) trip[1];
-          double budget = (double) trip[2];
-          int numDays = (int) trip[3];
-          String travelStyle = (String) trip[4];
-          String interests = (String) trip[5];
-          boolean isShared = (boolean) trip[6];
-          java.sql.Date tStartDate = (java.sql.Date) trip[7];
-          Long daysUntil = null;
-          if (tStartDate != null) {
-              long diffMs = tStartDate.getTime() - new java.util.Date().getTime();
-              daysUntil = diffMs / (1000L * 60 * 60 * 24);
-          }
+      <% for (Object[] v : listings) {
+          int vendorId = (int) v[0];
+          String businessName = (String) v[1];
+          String category = (String) v[2];
+          String city = (String) v[3];
+          String status = (String) v[4];
+          String rejectionReason = (String) v[5];
+          String statusClass = "APPROVED".equals(status) ? "status-approved" : ("REJECTED".equals(status) ? "status-rejected" : "");
       %>
           <div class="trip-card">
-              <h3><%= destination %></h3>
+              <h3><%= businessName %></h3>
               <div class="trip-meta">
-                  <span class="trip-tag"><%= numDays %> days</span>
-                  <span class="trip-tag">₹<%= (int) budget %></span>
-                  <span class="trip-tag"><%= travelStyle %></span>
-                  <% if (isShared) { %><span class="trip-tag shared" data-i18n="dashboard_shared_badge">Shared with you</span><% } %>
-                  <% if (daysUntil != null && daysUntil >= 0) { %>
-                      <span class="trip-tag countdown"><%= daysUntil == 0 ? "Today!" : daysUntil + " days to go" %></span>
-                  <% } %>
+                  <span class="trip-tag"><%= category %></span>
+                  <span class="trip-tag"><%= city %></span>
+                  <span class="trip-tag <%= statusClass %>"><%= status %></span>
               </div>
-              <div class="trip-interests"><%= interests %></div>
+              <% if ("REJECTED".equals(status) && rejectionReason != null && !rejectionReason.trim().isEmpty()) { %>
+              <div class="reject-reason">Reason: <%= rejectionReason %></div>
+              <% } %>
               <div class="trip-actions">
-                  <a href="trip-details.jsp?tripId=<%= tripId %>" data-i18n="dashboard_view">View</a>
-                  <% if (!isShared) { %>
-                  <a href="edit-trip.jsp?tripId=<%= tripId %>" data-i18n="dashboard_edit">Edit</a>
-                  <form action="DeleteTripServlet" method="POST" style="flex:1; margin:0;">
-                      <input type="hidden" name="tripId" value="<%= tripId %>">
-                      <button type="submit" class="delete-btn" style="width:100%;" data-i18n="dashboard_delete"
-                              onclick="return confirm('Delete this trip?');">Delete</button>
+                  <a href="vendor-details.jsp?vendorId=<%= vendorId %>">View</a>
+                  <a href="vendor-form.jsp?vendorId=<%= vendorId %>">Edit</a>
+                  <a href="vendor-inquiries.jsp?vendorId=<%= vendorId %>">Inquiries</a>
+              </div>
+              <div class="trip-actions" style="margin-top:10px;">
+                  <form action="VendorDeleteServlet" method="POST" style="flex:1; margin:0;">
+                      <input type="hidden" name="vendorId" value="<%= vendorId %>">
+                      <button type="submit" class="delete-btn" style="width:100%;"
+                              onclick="return confirm('Delete this listing?');">Delete</button>
                   </form>
-                  <% } %>
               </div>
           </div>
       <% } %>
@@ -216,7 +187,5 @@
   <% } %>
 </main>
 
-<script src="js/i18n.js?v=3"></script>
-<script src="js/chatbot.js?v=3"></script>
 </body>
 </html>

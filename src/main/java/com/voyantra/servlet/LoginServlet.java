@@ -56,7 +56,7 @@ public class LoginServlet extends HttpServlet {
                 return;
             }
 
-            String sql = "SELECT user_id, name, password, is_verified, is_admin FROM users WHERE email = ?";
+            String sql = "SELECT user_id, name, password, is_verified, is_admin, is_vendor FROM users WHERE email = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
@@ -101,11 +101,13 @@ public class LoginServlet extends HttpServlet {
             int userId = rs.getInt("user_id");
             String userName = rs.getString("name");
             boolean isAdmin = rs.getBoolean("is_admin");
+            boolean isVendor = rs.getBoolean("is_vendor");
 
             HttpSession session = request.getSession();
             session.setAttribute("userId", userId);
             session.setAttribute("userName", userName);
             session.setAttribute("isAdmin", isAdmin);
+            session.setAttribute("isVendor", isVendor);
 
             JSONObject json = new JSONObject();
             json.put("success", true);
