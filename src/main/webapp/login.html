@@ -16,37 +16,20 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     background: var(--ink); color: var(--paper); font-family: 'Inter', sans-serif;
-    min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr;
+    min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 6vh 6vw;
   }
   a { color: inherit; }
   ::selection { background: var(--gold); color: var(--ink); }
 
-  /* ---- Left brand panel ---- */
-  .side {
-    padding: 5vh 4.5vw; display: flex; flex-direction: column; justify-content: space-between;
-    background: linear-gradient(160deg, var(--ink-3), var(--ink) 75%);
-    border-right: 1px solid var(--line);
-    position: relative; overflow: hidden;
-  }
-  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; z-index: 1; }
-  .brand-mark { width: 30px; height: 30px; flex-shrink: 0; }
-  .brand-word { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.25rem; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; margin-bottom: 32px; }
+  .brand-mark { width: 28px; height: 28px; flex-shrink: 0; }
+  .brand-word { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.15rem; }
   .brand-word .accent { color: var(--gold); font-weight: 500; font-style: italic; }
-  .side-mid { z-index: 1; }
-  .quote { font-family: 'Fraunces', serif; font-size: 1.9rem; line-height: 1.35; max-width: 20ch; font-weight: 400; }
-  .quote em { font-style: italic; color: var(--gold); }
-  .side-foot { font-size: 0.84rem; color: var(--muted); z-index: 1; }
-  .glow-blob {
-    position: absolute; width: 340px; height: 340px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(231,169,76,0.14), transparent 70%);
-    bottom: -100px; left: -80px; z-index: 0;
-  }
 
   /* ---- Form panel ---- */
-  .form-wrap { display: flex; align-items: center; justify-content: center; padding: 6vh 6vw; }
   .form-card { width: 100%; max-width: 380px; }
   .back-link {
-    display: none; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--muted);
+    display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--muted);
     margin-bottom: 22px; width: fit-content;
   }
   .back-link:hover { color: var(--gold); }
@@ -105,19 +88,11 @@
     font-size: 0.85rem; margin-bottom: 22px;
   }
   .error-banner.show { display: flex; }
-
-  @media (max-width: 860px) {
-    body { grid-template-columns: 1fr; }
-    .side { display: none; }
-    .back-link { display: flex; }
-    .form-wrap { padding: 8vh 7vw; align-items: flex-start; }
-  }
 </style>
 </head>
 <body>
 
-<div class="side">
-  <div class="glow-blob"></div>
+<div class="form-card">
   <a href="index.jsp" class="brand">
     <svg class="brand-mark" viewBox="0 0 40 40" fill="none">
       <circle cx="20" cy="20" r="18.5" stroke="#E7A94C" stroke-width="1.4" opacity="0.4"/>
@@ -127,16 +102,8 @@
     </svg>
     <span class="brand-word">Voy<span class="accent">antra</span></span>
   </a>
-  <div class="side-mid">
-    <div class="quote">"Tell it your budget.<br>Get a <em>finished</em> trip — not a search page."</div>
-  </div>
-  <div class="side-foot">Built with Java · MySQL · Gemini API</div>
-</div>
-
-<div class="form-wrap">
-  <div class="form-card">
-    <a href="index.jsp" class="back-link">← Back to home</a>
-    <h1 data-i18n="auth_login_title">Welcome back</h1>
+  <a href="index.jsp" class="back-link">← Back to home</a>
+  <h1 data-i18n="auth_login_title">Welcome back</h1>
     <p class="sub" data-i18n="auth_login_sub">Log in to see your saved trips and itineraries.</p>
 
     <div class="success-banner" id="successBanner">✓ Logged in — redirecting...</div>
@@ -165,9 +132,8 @@
       <button type="submit" class="submit"><span class="spinner" id="loginSpinner"></span><span id="loginBtnText" data-i18n="auth_login_btn">Log in</span></button>
     </form>
 
-    <div class="switch"><span data-i18n="auth_login_switch">Don't have an account?</span> <a href="register.html" data-i18n="auth_login_switch_link">Register here</a></div>
-    <div class="switch" style="margin-top:8px;"><a href="vendor-login.html">Vendor login</a> &middot; <a href="admin-login.html">Admin login</a></div>
-  </div>
+  <div class="switch"><span data-i18n="auth_login_switch">Don't have an account?</span> <a href="register.html" data-i18n="auth_login_switch_link">Register here</a></div>
+  <div class="switch" style="margin-top:8px;"><a href="vendor-login.html">Vendor login</a> &middot; <a href="admin-login.html">Admin login</a></div>
 </div>
 
 <script>

@@ -25,6 +25,7 @@
 
       hero_eyebrow: "AI-planned, budget-first",
       hero_lead: "Most travel sites hand you a pile of hotels, reviews and flights and leave the planning to you. Tell us your budget, your days, and what you're into — we'll lay out the whole trip, day by day.",
+      hero_marketplace: "New: discover and contact real local homestays, guides, transport and restaurants — verified, reviewed, and woven right into your itinerary.",
       hero_cta_primary: "Plan my trip →", hero_cta_secondary: "See how it works",
       hero_micro: "One form in, one complete day-wise plan out",
       hero_visual_line: "You set the shape of the trip. The AI fills in the rest — stays, food and activities, day by day.",
@@ -57,7 +58,7 @@
       contact_name_ph: "Your name", contact_email_ph: "Your email", contact_msg_ph: "Your message", contact_send: "Send message",
 
       cta_heading: "Your next trip is one form away.", cta_sub: "Set a budget, pick your days, and let the plan build itself.", cta_button: "Start planning free →",
-      footer_note: "Built with Java · MySQL · Gemini API",
+      footer_note: "Plan the trip. Find the people who make it real.",
 
       auth_login_title: "Welcome back", auth_login_sub: "Log in to see your saved trips and itineraries.",
       auth_email_label: "Email", auth_password_label: "Password", auth_remember: "Remember me", auth_forgot: "Forgot password?",
@@ -141,7 +142,7 @@
       contact_name_ph: "உங்கள் பெயர்", contact_email_ph: "உங்கள் மின்னஞ்சல்", contact_msg_ph: "உங்கள் செய்தி", contact_send: "செய்தி அனுப்பு",
 
       cta_heading: "உங்கள் அடுத்த பயணம் ஒரு படிவம் தொலைவில் உள்ளது.", cta_sub: "பட்ஜெட்டை அமைத்து, நாட்களைத் தேர்ந்தெடுத்து, திட்டத்தை உருவாகவிடுங்கள்.", cta_button: "இலவசமாகத் திட்டமிடத் தொடங்குங்கள் →",
-      footer_note: "Java · MySQL · Gemini API கொண்டு உருவாக்கப்பட்டது",
+      footer_note: "பயணத்தைத் திட்டமிடுங்கள். அதை நிஜமாக்கும் மக்களைக் கண்டறியுங்கள்.",
 
       auth_login_title: "மீண்டும் வரவேற்கிறோம்", auth_login_sub: "உங்கள் சேமித்த பயணங்களையும் திட்டங்களையும் காண உள்நுழையவும்.",
       auth_email_label: "மின்னஞ்சல்", auth_password_label: "கடவுச்சொல்", auth_remember: "என்னை நினைவில் கொள்", auth_forgot: "கடவுச்சொல் மறந்துவிட்டதா?",
@@ -225,7 +226,7 @@
       contact_name_ph: "आपका नाम", contact_email_ph: "आपका ईमेल", contact_msg_ph: "आपका संदेश", contact_send: "संदेश भेजें",
 
       cta_heading: "आपकी अगली यात्रा सिर्फ़ एक फॉर्म दूर है।", cta_sub: "बजट तय करें, दिन चुनें, और योजना खुद बनने दें।", cta_button: "मुफ़्त में योजना शुरू करें →",
-      footer_note: "Java · MySQL · Gemini API से बनाया गया",
+      footer_note: "यात्रा की योजना बनाएं। इसे असली बनाने वालों को खोजें।",
 
       auth_login_title: "वापसी पर स्वागत है", auth_login_sub: "अपनी सहेजी गई यात्राएं और योजनाएं देखने के लिए लॉग इन करें।",
       auth_email_label: "ईमेल", auth_password_label: "पासवर्ड", auth_remember: "मुझे याद रखें", auth_forgot: "पासवर्ड भूल गए?",
@@ -309,7 +310,7 @@
       contact_name_ph: "Votre nom", contact_email_ph: "Votre e-mail", contact_msg_ph: "Votre message", contact_send: "Envoyer le message",
 
       cta_heading: "Votre prochain voyage n'est qu'à un formulaire.", cta_sub: "Fixez un budget, choisissez vos jours, et laissez le plan se construire.", cta_button: "Commencez gratuitement →",
-      footer_note: "Créé avec Java · MySQL · Gemini API",
+      footer_note: "Planifiez le voyage. Trouvez ceux qui le rendent réel.",
 
       auth_login_title: "Content de vous revoir", auth_login_sub: "Connectez-vous pour voir vos voyages et itinéraires enregistrés.",
       auth_email_label: "E-mail", auth_password_label: "Mot de passe", auth_remember: "Se souvenir de moi", auth_forgot: "Mot de passe oublié ?",
@@ -393,7 +394,7 @@
       contact_name_ph: "Ihr Name", contact_email_ph: "Ihre E-Mail", contact_msg_ph: "Ihre Nachricht", contact_send: "Nachricht senden",
 
       cta_heading: "Ihre nächste Reise ist nur ein Formular entfernt.", cta_sub: "Budget festlegen, Tage wählen und den Plan sich selbst erstellen lassen.", cta_button: "Kostenlos starten →",
-      footer_note: "Erstellt mit Java · MySQL · Gemini API",
+      footer_note: "Planen Sie die Reise. Finden Sie die Menschen, die sie real machen.",
 
       auth_login_title: "Willkommen zurück", auth_login_sub: "Melden Sie sich an, um Ihre gespeicherten Reisen und Pläne zu sehen.",
       auth_email_label: "E-Mail", auth_password_label: "Passwort", auth_remember: "Angemeldet bleiben", auth_forgot: "Passwort vergessen?",
@@ -477,7 +478,7 @@
       contact_name_ph: "Tu nombre", contact_email_ph: "Tu correo", contact_msg_ph: "Tu mensaje", contact_send: "Enviar mensaje",
 
       cta_heading: "Tu próximo viaje está a un formulario de distancia.", cta_sub: "Define un presupuesto, elige tus días y deja que el plan se construya solo.", cta_button: "Empieza gratis →",
-      footer_note: "Creado con Java · MySQL · Gemini API",
+      footer_note: "Planifica el viaje. Encuentra a quienes lo hacen realidad.",
 
       auth_login_title: "Bienvenido de nuevo", auth_login_sub: "Inicia sesión para ver tus viajes e itinerarios guardados.",
       auth_email_label: "Correo", auth_password_label: "Contraseña", auth_remember: "Recordarme", auth_forgot: "¿Olvidaste tu contraseña?",

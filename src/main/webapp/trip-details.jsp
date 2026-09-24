@@ -10,6 +10,7 @@
 <%@ page import="com.voyantra.util.ChecklistTemplates" %>
 <%@ page import="com.voyantra.ai.GoogleMapsService" %>
 <%@ page import="com.voyantra.ai.NearbyRecommendationService" %>
+<%@ page import="com.voyantra.ai.GooglePlacesService" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
 <%
@@ -128,7 +129,13 @@
     } catch (Exception e) {
         e.printStackTrace();
     }
-    String aiNearbyBlurb = nearbyVendors.isEmpty() ? NearbyRecommendationService.getAiSuggestions(destination) : null;
+    // No Voyantra vendor for this destination yet — try real Google-sourced hotels
+    // before falling back to a generic AI text blurb.
+    java.util.List<GooglePlacesService.Place> googleHotels = nearbyVendors.isEmpty()
+        ? GooglePlacesService.searchPlaces("hotels in " + destination)
+        : java.util.Collections.emptyList();
+    String aiNearbyBlurb = (nearbyVendors.isEmpty() && googleHotels.isEmpty())
+        ? NearbyRecommendationService.getAiSuggestions(destination) : null;
 
     // ---- Checklist: auto-seed default items the first time this trip's page is viewed ----
     try (Connection checklistConn = DBConnection.getConnection()) {
@@ -255,6 +262,16 @@
         }
     } catch (Exception e) {
         e.printStackTrace();
+    }
+
+    // No approved Voyantra restaurant for this destination yet — try real
+    // Google-sourced restaurants (veg-aware query) before showing nothing.
+    java.util.List<GooglePlacesService.Place> googleRestaurants = java.util.Collections.emptyList();
+    if (recommendedRestaurants.isEmpty()) {
+        String placesQuery = "VEG".equals(foodPreference)
+            ? "vegetarian restaurants in " + destination
+            : "restaurants in " + destination;
+        googleRestaurants = GooglePlacesService.searchPlaces(placesQuery);
     }
 
     // ---- Build map marker data (skip stops that couldn't be geocoded, i.e. 0,0) ----
@@ -716,6 +733,20 @@
         </a>
       <% } %>
       </div>
+    <% } else if (!googleRestaurants.isEmpty()) { %>
+      <div style="font-size:0.78rem; color:var(--muted); margin-bottom:10px;">No Voyantra-listed restaurants here yet — showing real places from Google:</div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(230px,1fr)); gap:14px;">
+      <% for (GooglePlacesService.Place gp : googleRestaurants) { %>
+        <a href="<%= gp.mapsUrl() %>" target="_blank" rel="noopener noreferrer" style="display:block; background:var(--ink-3); border:1px solid var(--line); border-radius:12px; padding:16px;">
+          <div style="font-weight:700; font-size:0.94rem; margin-bottom:6px;"><%= gp.name %></div>
+          <div style="font-size:0.78rem; color:var(--muted); margin-bottom:6px;"><%= gp.address %></div>
+          <div style="font-size:0.8rem; color:var(--muted);">
+            <% if (gp.rating >= 0) { %>&#9733; <%= gp.rating %> (Google)<% } else { %>No Google rating<% } %>
+          </div>
+        </a>
+      <% } %>
+      </div>
+      <div style="margin-top:12px; font-size:0.76rem; color:var(--muted); font-style:italic;">From Google, not a verified Voyantra listing.</div>
     <% } else { %>
       <p style="color:var(--muted); font-size:0.88rem;">No matching restaurants listed on Voyantra for <%= destination %> yet<%= "VEG".equals(foodPreference) ? " with a vegetarian menu" : "" %>. <a href="vendor-form.jsp" style="color:var(--gold);">Know one? List it &rarr;</a></p>
     <% } %>
@@ -743,6 +774,21 @@
       <% } %>
       </div>
       <div style="margin-top:14px;"><a href="vendors.jsp" style="color:var(--gold); font-size:0.84rem;">Browse all local vendors &rarr;</a></div>
+    <% } else if (!googleHotels.isEmpty()) { %>
+      <div style="font-size:0.78rem; color:var(--muted); margin-bottom:10px;">No Voyantra-listed vendors here yet — showing real places from Google:</div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:14px;">
+      <% for (GooglePlacesService.Place gp : googleHotels) { %>
+        <a href="<%= gp.mapsUrl() %>" target="_blank" rel="noopener noreferrer" style="display:block; background:var(--ink-3); border:1px solid var(--line); border-radius:12px; padding:14px;">
+          <div style="font-weight:700; font-size:0.92rem; margin-bottom:6px;"><%= gp.name %></div>
+          <div style="font-size:0.78rem; color:var(--muted); margin-bottom:4px;"><%= gp.address %></div>
+          <div style="font-size:0.78rem; color:var(--muted);">
+            <% if (gp.rating >= 0) { %>&#9733; <%= gp.rating %> (Google)<% } else { %>No Google rating<% } %>
+          </div>
+        </a>
+      <% } %>
+      </div>
+      <div style="margin-top:12px; font-size:0.76rem; color:var(--muted); font-style:italic;">From Google, not a verified Voyantra listing.</div>
+      <div style="margin-top:10px;"><a href="vendor-form.jsp" style="color:var(--gold); font-size:0.84rem;">Know a great local business here? List it on Voyantra &rarr;</a></div>
     <% } else if (aiNearbyBlurb != null) { %>
       <p style="font-size:0.9rem; line-height:1.7; color:var(--paper);"><%= aiNearbyBlurb %></p>
       <div style="margin-top:12px; font-size:0.76rem; color:var(--muted); font-style:italic;">

@@ -458,6 +458,7 @@
     <div class="eyebrow"><span class="pulse-dot"></span><span data-i18n="hero_eyebrow">AI-planned, budget-first</span></div>
     <h1>Say your budget.<br><span class="type-line">Get a <em id="typeWord">finished itinerary</em><span class="type-cursor"></span>.</span></h1>
     <p class="lead" data-i18n="hero_lead">Most travel sites hand you a pile of hotels, reviews and flights and leave the planning to you. Tell us your budget, your days, and what you're into — we'll lay out the whole trip, day by day.</p>
+    <p class="lead" style="font-size:0.94rem; color:var(--muted);" data-i18n="hero_marketplace">New: discover and contact real local homestays, guides, transport and restaurants — verified, reviewed, and woven right into your itinerary.</p>
     <div class="hero-cta">
       <a href="<%= isLoggedIn ? "trip-form.html" : "register.html" %>" class="btn btn-primary" data-i18n="hero_cta_primary">Plan my trip →</a>
       <a href="#how" class="btn btn-ghost" data-i18n="hero_cta_secondary">See how it works</a>
@@ -597,7 +598,7 @@
   <div class="f-links">
     <a href="#home" data-i18n="nav_home">Home</a><a href="#about" data-i18n="nav_about">About</a><a href="#features" data-i18n="nav_features">Features</a><a href="#contact" data-i18n="nav_contact">Contact</a>
   </div>
-  <div class="f-bottom" data-i18n="footer_note">Built with Java · MySQL · Gemini API</div>
+  <div class="f-bottom" data-i18n="footer_note">Plan the trip. Find the people who make it real.</div>
 </footer>
 
 <script src="js/i18n.js?v=3"></script>
