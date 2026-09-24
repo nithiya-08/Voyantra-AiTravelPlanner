@@ -460,7 +460,7 @@
   <div class="reveal in">
     <div class="eyebrow"><span class="pulse-dot"></span><span data-i18n="hero_eyebrow">AI-planned, budget-first</span></div>
     <h1>Say your budget.<br><span class="type-line">Get a <em id="typeWord">finished itinerary</em><span class="type-cursor"></span>.</span></h1>
-    <p class="lead" data-i18n="hero_lead">Most travel sites hand you a pile of hotels, reviews and flights and leave the planning to you. Tell us your budget, your days, and what you're into — we'll lay out the whole trip, day by day.</p>
+    <p class="lead" data-i18n="hero_lead">Tell us your budget, your days, and what you're into — we'll lay out the whole trip, day by day: stays, food, activities and weather, all sequenced for you.</p>
     <p class="lead" style="font-size:0.94rem; color:var(--muted);" data-i18n="hero_marketplace">New: discover and contact real local homestays, guides, transport and restaurants — verified, reviewed, and woven right into your itinerary.</p>
     <div class="hero-cta">
       <a href="<%= isLoggedIn ? "trip-form.html" : "register.html" %>" class="btn btn-primary" data-i18n="hero_cta_primary">Plan my trip →</a>
@@ -525,10 +525,9 @@
       </div>
     </div>
     <div class="about-copy reveal" style="transition-delay:0.1s">
-      <p data-i18n="about_p1">Existing travel platforms are built around search and booking — you look up hotels, flights, and reviews separately, then stitch a plan together yourself.</p>
-      <p data-i18n="about_p2">Voyantra was built to close that gap. You tell us your budget, how many days you have, who you're travelling with, and what you enjoy — and our AI does the planning: stays, food, activities, weather, all sequenced day by day.</p>
-      <p data-i18n="about_p3">And it doesn't stop at a plan on paper. Voyantra is also a marketplace for local homestays, guides, transport and restaurants — real businesses you can browse, review, and contact directly, approved by our team so you know they're genuine.</p>
-      <p data-i18n="about_p4">It's the difference between searching for a trip and simply being handed one — with the people who'll actually make it happen, one click away.</p>
+      <p data-i18n="about_p1">Voyantra plans your trip and hands you a finished itinerary. Tell us your budget, how many days you have, who you're travelling with, and what you enjoy — our AI lays out stays, food, activities and weather, sequenced day by day.</p>
+      <p data-i18n="about_p2">And it doesn't stop at a plan on paper. Voyantra is also a marketplace for local homestays, guides, transport and restaurants — real businesses you can browse, review, and contact directly, approved by our team so you know they're genuine.</p>
+      <p data-i18n="about_p3">Everything in one place: a complete trip plan, and the real people who'll make it happen — ready whenever you are.</p>
     </div>
   </div>
 </section>
@@ -552,7 +551,7 @@
   <div class="section-head reveal">
     <div class="kicker" data-i18n="features_kicker">What you get</div>
     <h2 data-i18n="features_heading">Built around the trip, not the booking.</h2>
-    <p data-i18n="features_sub">Other platforms stop at search results. This one keeps going until you have a plan.</p>
+    <p data-i18n="features_sub">A complete plan, and the real local businesses to go with it.</p>
   </div>
   <div class="features">
     <div class="feature reveal"><div class="icon">$</div><h3 data-i18n="feat1_t">Budget-aware suggestions</h3><p data-i18n="feat1_d">Hotels, food and activities are picked to fit inside what you set.</p></div>
