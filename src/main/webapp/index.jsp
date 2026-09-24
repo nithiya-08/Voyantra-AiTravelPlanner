@@ -616,7 +616,7 @@
   <div class="f-bottom" data-i18n="footer_note">Plan the trip. Find the people who make it real.</div>
 </footer>
 
-<script src="js/i18n.js?v=3"></script>
+<script src="js/i18n.js?v=4"></script>
 <script src="js/chatbot.js?v=3"></script>
 <script>
   // typewriter headline

@@ -244,7 +244,7 @@
   <% } %>
 </main>
 
-<script src="js/i18n.js?v=3"></script>
+<script src="js/i18n.js?v=4"></script>
 <script src="js/chatbot.js?v=3"></script>
 </body>
 </html>
