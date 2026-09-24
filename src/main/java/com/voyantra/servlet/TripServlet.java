@@ -51,6 +51,10 @@ public class TripServlet extends HttpServlet {
         String travelStyle = request.getParameter("travelStyle");
         String[] interestsArray = request.getParameterValues("interests");
         String startDateStr = request.getParameter("startDate"); // optional
+        String foodPreference = request.getParameter("foodPreference"); // optional: VEG, NON_VEG
+        if (foodPreference != null && !("VEG".equals(foodPreference) || "NON_VEG".equals(foodPreference))) {
+            foodPreference = null;
+        }
 
         if (stopNames == null || stopNames.length == 0 ||
             budgetStr == null || numDaysStr == null ||
@@ -121,7 +125,7 @@ public class TripServlet extends HttpServlet {
 
             // ---- Step 1: Insert the trip itself ----
             String sql = "INSERT INTO trips (user_id, destination, budget, num_days, travel_style, interests, "
-                       + "start_date, country_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                       + "start_date, country_code, food_preference) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS);
             stmt.setInt(1, userId);
             stmt.setString(2, mainDestination);
@@ -131,6 +135,7 @@ public class TripServlet extends HttpServlet {
             stmt.setString(6, interests);
             if (startDate != null) stmt.setDate(7, startDate); else stmt.setNull(7, java.sql.Types.DATE);
             stmt.setString(8, countryCode);
+            stmt.setString(9, foodPreference);
 
             int rows = stmt.executeUpdate();
 

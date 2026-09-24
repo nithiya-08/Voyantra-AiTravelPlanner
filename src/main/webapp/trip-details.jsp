@@ -33,13 +33,14 @@
     String interests = null;
     java.sql.Date startDate = null;
     String countryCode = null;
+    String foodPreference = null;
     boolean found = false;
     boolean isOwner = false;
 
     try (Connection conn = DBConnection.getConnection()) {
         if (conn != null) {
             String sql = "SELECT destination, budget, num_days, travel_style, interests, user_id, "
-                       + "start_date, country_code "
+                       + "start_date, country_code, food_preference "
                        + "FROM trips WHERE trip_id = ? AND (user_id = ? OR trip_id IN "
                        + "(SELECT trip_id FROM trip_collaborators WHERE user_id = ?))";
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -56,6 +57,7 @@
                 isOwner = rs.getInt("user_id") == userId;
                 startDate = rs.getDate("start_date");
                 countryCode = rs.getString("country_code");
+                foodPreference = rs.getString("food_preference");
                 found = true;
             }
         }
@@ -197,6 +199,57 @@
                     stopsRs.getString("stop_name"),
                     stopsRs.getDouble("latitude"),
                     stopsRs.getDouble("longitude")
+                });
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    // ---- Recommended restaurants: veg/non-veg aware, ranked by rating, with real
+    //      distance (from the trip's first stop) and each vendor's signature dish. ----
+    ArrayList<Object[]> recommendedRestaurants = new ArrayList<>();
+    Double tripLat = null, tripLon = null;
+    if (!stops.isEmpty()) {
+        double firstLat = (double) stops.get(0)[1];
+        double firstLon = (double) stops.get(0)[2];
+        if (firstLat != 0 || firstLon != 0) {
+            tripLat = firstLat;
+            tripLon = firstLon;
+        }
+    }
+    try (Connection restConn = DBConnection.getConnection()) {
+        if (restConn != null) {
+            StringBuilder restSql = new StringBuilder(
+                "SELECT vendor_id, business_name, diet_type, signature_dish, price_range, latitude, longitude, "
+                + "(SELECT AVG(rating) FROM vendor_reviews r WHERE r.vendor_id = v.vendor_id) AS avg_rating, "
+                + "(SELECT COUNT(*) FROM vendor_reviews r WHERE r.vendor_id = v.vendor_id) AS review_count "
+                + "FROM vendors v WHERE status = 'APPROVED' AND category = 'RESTAURANT' "
+                + "AND (city LIKE ? OR ? LIKE CONCAT('%', city, '%'))");
+            if ("VEG".equals(foodPreference)) {
+                restSql.append(" AND diet_type IN ('VEG', 'BOTH')");
+            }
+            restSql.append(" ORDER BY avg_rating DESC LIMIT 3");
+            PreparedStatement restStmt = restConn.prepareStatement(restSql.toString());
+            restStmt.setString(1, "%" + destination + "%");
+            restStmt.setString(2, destination);
+            ResultSet restRs = restStmt.executeQuery();
+            while (restRs.next()) {
+                Object vLatObj = restRs.getObject("latitude");
+                Object vLonObj = restRs.getObject("longitude");
+                Double distanceKm = null;
+                if (tripLat != null && vLatObj != null && vLonObj != null) {
+                    distanceKm = RouteOptimizer.haversineDistance(tripLat, tripLon, restRs.getDouble("latitude"), restRs.getDouble("longitude"));
+                }
+                recommendedRestaurants.add(new Object[] {
+                    restRs.getInt("vendor_id"),
+                    restRs.getString("business_name"),
+                    restRs.getString("diet_type"),
+                    restRs.getString("signature_dish"),
+                    restRs.getString("price_range"),
+                    restRs.getObject("avg_rating"),
+                    restRs.getInt("review_count"),
+                    distanceKm
                 });
             }
         }
@@ -623,6 +676,48 @@
       </div>
     <% } else { %>
       <p style="color:var(--muted); font-size:0.88rem;">Emergency info isn't available right now.</p>
+    <% } %>
+  </div>
+
+  <!-- Recommended restaurants: veg/non-veg aware, ranked, with distance and signature dish -->
+  <div class="panel">
+    <div class="section-title" style="margin-top:0;">&#127860; Where to eat</div>
+    <% if (foodPreference == null) { %>
+      <div style="font-size:0.82rem; color:var(--muted); margin-bottom:14px;">
+        No food preference set for this trip — <a href="edit-trip.jsp?tripId=<%= tripId %>" style="color:var(--gold);">tell us veg or non-veg</a> for better matches.
+      </div>
+    <% } %>
+    <% if (!recommendedRestaurants.isEmpty()) { %>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(230px,1fr)); gap:14px;">
+      <% for (Object[] rr : recommendedRestaurants) {
+          int rrId = (int) rr[0];
+          String rrDiet = (String) rr[2];
+          String rrDish = (String) rr[3];
+          String rrPrice = (String) rr[4];
+          Object rrRatingObj = rr[5];
+          int rrReviewCount = (int) rr[6];
+          Double rrDistance = (Double) rr[7];
+      %>
+        <a href="vendor-details.jsp?vendorId=<%= rrId %>" style="display:block; background:var(--ink-3); border:1px solid var(--line); border-radius:12px; padding:16px; transition:border-color 0.2s ease;">
+          <div style="font-weight:700; font-size:0.94rem; margin-bottom:6px;"><%= rr[1] %></div>
+          <% if (rrDish != null && !rrDish.trim().isEmpty()) { %>
+          <div style="font-size:0.82rem; color:var(--gold); margin-bottom:6px;">&#127859; Famous for: <%= rrDish %></div>
+          <% } %>
+          <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:6px;">
+            <% if ("VEG".equals(rrDiet)) { %><span class="trip-tag" style="background:rgba(79,195,176,0.14); color:var(--teal);">Vegetarian</span><% } %>
+            <% if ("NON_VEG".equals(rrDiet)) { %><span class="trip-tag" style="background:rgba(226,112,79,0.14); color:var(--coral);">Non-vegetarian</span><% } %>
+            <% if ("BOTH".equals(rrDiet)) { %><span class="trip-tag">Veg &amp; Non-veg</span><% } %>
+            <% if (rrPrice != null && !rrPrice.trim().isEmpty()) { %><span class="trip-tag"><%= rrPrice %></span><% } %>
+          </div>
+          <div style="font-size:0.8rem; color:var(--muted);">
+            <% if (rrRatingObj != null) { %>&#9733; <%= String.format("%.1f", (Double) rrRatingObj) %> (<%= rrReviewCount %>)<% } else { %>No reviews yet<% } %>
+            <% if (rrDistance != null) { %> &middot; <%= String.format("%.1f", rrDistance) %> km away<% } %>
+          </div>
+        </a>
+      <% } %>
+      </div>
+    <% } else { %>
+      <p style="color:var(--muted); font-size:0.88rem;">No matching restaurants listed on Voyantra for <%= destination %> yet<%= "VEG".equals(foodPreference) ? " with a vegetarian menu" : "" %>. <a href="vendor-form.jsp" style="color:var(--gold);">Know one? List it &rarr;</a></p>
     <% } %>
   </div>
 

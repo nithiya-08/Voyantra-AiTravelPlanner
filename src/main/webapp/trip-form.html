@@ -205,6 +205,15 @@
         <div class="field-err">⚠ Select at least one interest</div>
       </div>
 
+      <div class="field" id="foodPrefField">
+        <label for="foodPreference">Food preference <span class="hint">(optional — powers restaurant recommendations)</span></label>
+        <select id="foodPreference" name="foodPreference">
+          <option value="">No preference</option>
+          <option value="VEG">Vegetarian</option>
+          <option value="NON_VEG">Non-vegetarian</option>
+        </select>
+      </div>
+
       <button type="submit" class="submit">
         <span class="spinner" id="tripSpinner"></span>
         <span id="tripBtnText" data-i18n="tripform_submit">Save trip details</span>

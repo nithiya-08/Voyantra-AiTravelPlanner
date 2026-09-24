@@ -21,11 +21,12 @@
     String travelStyle = null;
     String interests = null;
     java.sql.Date startDate = null;
+    String foodPreference = null;
     boolean found = false;
 
     try (Connection conn = DBConnection.getConnection()) {
         if (conn != null) {
-            String sql = "SELECT destination, budget, num_days, travel_style, interests, start_date "
+            String sql = "SELECT destination, budget, num_days, travel_style, interests, start_date, food_preference "
                        + "FROM trips WHERE trip_id = ? AND user_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, tripId);
@@ -38,12 +39,14 @@
                 travelStyle = rs.getString("travel_style");
                 interests = rs.getString("interests");
                 startDate = rs.getDate("start_date");
+                foodPreference = rs.getString("food_preference");
                 found = true;
             }
         }
     } catch (Exception e) {
         e.printStackTrace();
     }
+    if (foodPreference == null) foodPreference = "";
 
     if (!found) {
         response.sendRedirect("dashboard.jsp");
@@ -218,6 +221,15 @@
             <span class="chip-body">Shopping</span>
           </label>
         </div>
+      </div>
+
+      <div class="field">
+        <label for="foodPreference">Food preference <span class="hint" style="font-weight:400; color:var(--muted); font-size:0.8rem;">(optional — powers restaurant recommendations)</span></label>
+        <select id="foodPreference" name="foodPreference">
+          <option value="" <%= foodPreference.isEmpty() ? "selected" : "" %>>No preference</option>
+          <option value="VEG" <%= "VEG".equals(foodPreference) ? "selected" : "" %>>Vegetarian</option>
+          <option value="NON_VEG" <%= "NON_VEG".equals(foodPreference) ? "selected" : "" %>>Non-vegetarian</option>
+        </select>
       </div>
 
       <button type="submit" class="submit" data-i18n="edittrip_save">Save changes</button>

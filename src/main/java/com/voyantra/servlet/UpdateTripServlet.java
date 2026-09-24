@@ -44,6 +44,10 @@ public class UpdateTripServlet extends HttpServlet {
         String travelStyle = request.getParameter("travelStyle");
         String[] interestsArray = request.getParameterValues("interests");
         String startDateStr = request.getParameter("startDate"); // optional
+        String foodPreference = request.getParameter("foodPreference"); // optional: VEG, NON_VEG
+        if (foodPreference != null && !("VEG".equals(foodPreference) || "NON_VEG".equals(foodPreference))) {
+            foodPreference = null;
+        }
 
         if (tripIdStr == null || destination == null || destination.trim().isEmpty() ||
             budgetStr == null || numDaysStr == null ||
@@ -88,7 +92,7 @@ public class UpdateTripServlet extends HttpServlet {
             }
 
             String sql = "UPDATE trips SET destination = ?, budget = ?, num_days = ?, "
-                       + "travel_style = ?, interests = ?, start_date = ? WHERE trip_id = ? AND user_id = ?";
+                       + "travel_style = ?, interests = ?, start_date = ?, food_preference = ? WHERE trip_id = ? AND user_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, destination);
             stmt.setDouble(2, budget);
@@ -96,8 +100,9 @@ public class UpdateTripServlet extends HttpServlet {
             stmt.setString(4, travelStyle);
             stmt.setString(5, interests);
             if (startDate != null) stmt.setDate(6, startDate); else stmt.setNull(6, java.sql.Types.DATE);
-            stmt.setInt(7, tripId);
-            stmt.setInt(8, userId);
+            stmt.setString(7, foodPreference);
+            stmt.setInt(8, tripId);
+            stmt.setInt(9, userId);
 
             stmt.executeUpdate();
 

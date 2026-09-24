@@ -23,6 +23,8 @@
     String priceRange = "";
     String photoUrl = "";
     String websiteUrl = "";
+    String dietType = "";
+    String signatureDish = "";
 
     if (editMode) {
         vendorId = Integer.parseInt(vendorIdStr);
@@ -30,7 +32,8 @@
         try (Connection conn = DBConnection.getConnection()) {
             if (conn != null) {
                 String sql = "SELECT business_name, category, description, city, state, address, phone, email, "
-                           + "price_range, photo_url, website_url FROM vendors WHERE vendor_id = ? AND user_id = ?";
+                           + "price_range, photo_url, website_url, diet_type, signature_dish "
+                           + "FROM vendors WHERE vendor_id = ? AND user_id = ?";
                 PreparedStatement stmt = conn.prepareStatement(sql);
                 stmt.setInt(1, vendorId);
                 stmt.setInt(2, userId);
@@ -47,6 +50,8 @@
                     priceRange = rs.getString("price_range");
                     photoUrl = rs.getString("photo_url");
                     websiteUrl = rs.getString("website_url");
+                    dietType = rs.getString("diet_type");
+                    signatureDish = rs.getString("signature_dish");
                     found = true;
                 }
             }
@@ -66,6 +71,8 @@
     if (priceRange == null) priceRange = "";
     if (photoUrl == null) photoUrl = "";
     if (websiteUrl == null) websiteUrl = "";
+    if (dietType == null) dietType = "";
+    if (signatureDish == null) signatureDish = "";
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -222,10 +229,39 @@
         <input type="url" id="websiteUrl" name="websiteUrl" value="<%= websiteUrl %>" placeholder="https://...">
       </div>
 
+      <div id="foodFields" style="display:none;">
+        <div class="field-row">
+          <div class="field">
+            <label for="dietType">Menu type</label>
+            <select id="dietType" name="dietType">
+              <option value="">Not specified</option>
+              <option value="VEG" <%= "VEG".equals(dietType) ? "selected" : "" %>>Vegetarian only</option>
+              <option value="NON_VEG" <%= "NON_VEG".equals(dietType) ? "selected" : "" %>>Non-vegetarian available</option>
+              <option value="BOTH" <%= "BOTH".equals(dietType) ? "selected" : "" %>>Both veg &amp; non-veg</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="signatureDish">Signature dish <span style="font-weight:400; color:var(--muted); font-size:0.8rem;">(what you're famous for)</span></label>
+            <input type="text" id="signatureDish" name="signatureDish" value="<%= signatureDish %>" placeholder="e.g. Chettinad Chicken">
+          </div>
+        </div>
+      </div>
+
       <button type="submit" class="submit"><%= editMode ? "Save changes" : "Submit for approval" %></button>
     </form>
   </div>
 </main>
 
+<script>
+  (function () {
+    var categorySelect = document.getElementById('category');
+    var foodFields = document.getElementById('foodFields');
+    function toggleFoodFields() {
+      foodFields.style.display = categorySelect.value === 'RESTAURANT' ? 'block' : 'none';
+    }
+    categorySelect.addEventListener('change', toggleFoodFields);
+    toggleFoodFields();
+  })();
+</script>
 </body>
 </html>
