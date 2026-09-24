@@ -45,11 +45,12 @@
             String sql = "SELECT destination, budget, num_days, travel_style, interests, user_id, "
                        + "start_date, country_code, food_preference "
                        + "FROM trips WHERE trip_id = ? AND (user_id = ? OR trip_id IN "
-                       + "(SELECT trip_id FROM trip_collaborators WHERE user_id = ?))";
+                       + "(SELECT trip_id FROM trip_collaborators WHERE user_id = ?) OR ? = 1)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, tripId);
             stmt.setInt(2, userId);
             stmt.setInt(3, userId);
+            stmt.setInt(4, isAdmin ? 1 : 0);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 destination = rs.getString("destination");

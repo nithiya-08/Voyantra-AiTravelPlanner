@@ -15,6 +15,7 @@
     }
 
     ArrayList<Object[]> users = new ArrayList<>();
+    java.util.Map<Integer, Integer> tripCounts = new java.util.HashMap<>();
     try (Connection conn = DBConnection.getConnection()) {
         if (conn != null) {
             String sql = "SELECT user_id, name, email, is_admin, is_vendor, is_blocked FROM users ORDER BY user_id DESC";
@@ -29,6 +30,12 @@
                     rs.getBoolean("is_vendor"),
                     rs.getBoolean("is_blocked")
                 });
+            }
+
+            Statement tripSt = conn.createStatement();
+            ResultSet tripRs = tripSt.executeQuery("SELECT user_id, COUNT(*) c FROM trips GROUP BY user_id");
+            while (tripRs.next()) {
+                tripCounts.put(tripRs.getInt("user_id"), tripRs.getInt("c"));
             }
         }
     } catch (Exception e) {
@@ -96,13 +103,14 @@
 
 <main>
   <h1>Users</h1>
-  <p class="sub">Block or unblock user accounts.</p>
+  <p class="sub">See how many trips each tourist has planned, block or unblock accounts.</p>
 
   <% for (Object[] u : users) {
       int rowUserId = (int) u[0];
       boolean rowIsAdmin = (boolean) u[3];
       boolean rowIsVendor = (boolean) u[4];
       boolean rowIsBlocked = (boolean) u[5];
+      int rowTripCount = tripCounts.containsKey(rowUserId) ? tripCounts.get(rowUserId) : 0;
   %>
     <div class="user-row">
       <div>
@@ -112,15 +120,21 @@
           <% if (rowIsAdmin) { %><span class="trip-tag">Admin</span><% } %>
           <% if (rowIsVendor) { %><span class="trip-tag">Vendor</span><% } %>
           <% if (rowIsBlocked) { %><span class="trip-tag blocked">Blocked</span><% } %>
+          <span class="trip-tag"><%= rowTripCount %> trip<%= rowTripCount == 1 ? "" : "s" %> planned</span>
         </div>
       </div>
-      <% if (!rowIsAdmin) { %>
-      <form action="AdminToggleUserBlockServlet" method="POST" style="margin:0;">
-        <input type="hidden" name="userId" value="<%= rowUserId %>">
-        <input type="hidden" name="action" value="<%= rowIsBlocked ? "UNBLOCK" : "BLOCK" %>">
-        <button type="submit" class="<%= rowIsBlocked ? "unblock" : "block" %>"><%= rowIsBlocked ? "Unblock" : "Block" %></button>
-      </form>
-      <% } %>
+      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <% if (rowTripCount > 0) { %>
+        <a href="admin-user-trips.jsp?userId=<%= rowUserId %>" style="border:1px solid var(--line-strong); padding:9px 16px; border-radius:8px; font-size:0.82rem; font-weight:600;">View trips</a>
+        <% } %>
+        <% if (!rowIsAdmin) { %>
+        <form action="AdminToggleUserBlockServlet" method="POST" style="margin:0;">
+          <input type="hidden" name="userId" value="<%= rowUserId %>">
+          <input type="hidden" name="action" value="<%= rowIsBlocked ? "UNBLOCK" : "BLOCK" %>">
+          <button type="submit" class="<%= rowIsBlocked ? "unblock" : "block" %>"><%= rowIsBlocked ? "Unblock" : "Block" %></button>
+        </form>
+        <% } %>
+      </div>
     </div>
   <% } %>
 </main>
