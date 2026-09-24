@@ -20,7 +20,7 @@
   var TRANSLATIONS = {
     en: {
       nav_home: "Home", nav_about: "About Us", nav_how: "How It Works", nav_features: "Features",
-      nav_contact: "Contact Us", nav_login: "Log in", nav_getstarted: "Get Started",
+      nav_vendors: "Local Vendors", nav_contact: "Contact Us", nav_login: "Log in", nav_getstarted: "Get Started",
       nav_dashboard: "Dashboard", nav_logout: "Log out", nav_admin: "Admin",
 
       hero_eyebrow: "AI-planned, budget-first",
@@ -36,6 +36,11 @@
 
       about_kicker: "About us", about_heading: "We think travel planning should take minutes, not evenings.",
       about_stat1: "inputs needed to start", about_stat2: "AI-generated, day by day",
+      about_stat3: "travellers + local vendors, one platform",
+      about_p1: "Existing travel platforms are built around search and booking — you look up hotels, flights, and reviews separately, then stitch a plan together yourself.",
+      about_p2: "Voyantra was built to close that gap. You tell us your budget, how many days you have, who you're travelling with, and what you enjoy — and our AI does the planning: stays, food, activities, weather, all sequenced day by day.",
+      about_p3: "And it doesn't stop at a plan on paper. Voyantra is also a marketplace for local homestays, guides, transport and restaurants — real businesses you can browse, review, and contact directly, approved by our team so you know they're genuine.",
+      about_p4: "It's the difference between searching for a trip and simply being handed one — with the people who'll actually make it happen, one click away.",
 
       how_kicker: "How it works", how_heading: "Four inputs. One complete plan.",
       how_sub: "Everything downstream — hotels, food, activities, weather — is generated from what you tell us up front.",
@@ -43,6 +48,7 @@
       step2_t: "Pick your days", step2_d: "How long you're travelling — from a quick weekend to a two-week trip.",
       step3_t: "Tell us the style", step3_d: "Solo, family, or with friends. It shapes the pace and the stays we suggest.",
       step4_t: "Get your itinerary", step4_d: "A day-by-day plan with food, stays and things to do — ready to save or download.",
+      how_vendor_note: "Then browse real local vendors near your destination — homestays, guides, restaurants — and contact them directly from your itinerary.",
 
       features_kicker: "What you get", features_heading: "Built around the trip, not the booking.",
       features_sub: "Other platforms stop at search results. This one keeps going until you have a plan.",
@@ -52,6 +58,14 @@
       feat4_t: "See it before you go", feat4_d: "Photos and short videos of your destinations, alongside the plan.",
       feat5_t: "Download as PDF", feat5_d: "Keep a copy of your itinerary offline — no signal required on arrival.",
       feat6_t: "Edit anytime", feat6_d: "Plans change. Come back and adjust any day whenever you need to.",
+      feat7_t: "Real local vendors", feat7_d: "Homestays, guides, transport and restaurants near your destination — approved by our team, not AI guesses.",
+      feat8_t: "Reviews you can trust", feat8_d: "Ratings from real travellers, plus Verified and Top Rated badges — know before you contact a vendor.",
+      feat9_t: "Food that fits your diet", feat9_d: "Vegetarian or non-vegetarian — get restaurant picks with real distance and their signature dish.",
+
+      vendor_cta_kicker: "For local businesses",
+      vendor_cta_heading: "Run a homestay, guide tours, or cook amazing food?",
+      vendor_cta_sub: "List your business on Voyantra for free and get discovered by travellers planning their trip — approved by our team, reviewed by real guests.",
+      vendor_cta_button: "List your business →",
 
       contact_kicker: "Contact", contact_heading: "Questions before you start planning?", contact_sub: "Reach out and we'll get back to you.",
       contact_email_l: "Email", contact_phone_l: "Phone", contact_based_l: "Based in",

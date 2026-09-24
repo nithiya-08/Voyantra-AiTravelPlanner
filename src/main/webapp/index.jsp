@@ -4,6 +4,9 @@
     boolean isLoggedIn = (loggedInUserId != null);
     Boolean isAdminAttr = (Boolean) session.getAttribute("isAdmin");
     boolean isAdmin = (isAdminAttr != null && isAdminAttr);
+    Boolean isVendorAttr = (Boolean) session.getAttribute("isVendor");
+    boolean isVendor = (isVendorAttr != null && isVendorAttr);
+    String vendorCtaLink = isVendor ? "my-vendor-listings.jsp" : (isLoggedIn ? "vendor-form.jsp" : "vendor-login.html");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -203,7 +206,7 @@
 
   /* ============ About ============ */
   .about-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 60px; align-items: center; }
-  .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 28px; }
+  .about-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 28px; }
   .stat { background: var(--ink-2); border: 1px solid var(--line); border-radius: 14px; padding: 20px; }
   .stat .num { font-family: 'Fraunces', serif; font-size: 1.9rem; color: var(--gold); }
   .stat .lbl { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
@@ -518,12 +521,14 @@
       <div class="about-stats">
         <div class="stat"><div class="num">4</div><div class="lbl" data-i18n="about_stat1">inputs needed to start</div></div>
         <div class="stat"><div class="num">100%</div><div class="lbl" data-i18n="about_stat2">AI-generated, day by day</div></div>
+        <div class="stat"><div class="num">2-sided</div><div class="lbl" data-i18n="about_stat3">travellers + local vendors, one platform</div></div>
       </div>
     </div>
     <div class="about-copy reveal" style="transition-delay:0.1s">
-      <p>Existing travel platforms are built around search and booking — you look up hotels, flights, and reviews separately, then stitch a plan together yourself.</p>
-      <p>Voyantra was built to close that gap. You tell us your budget, how many days you have, who you're travelling with, and what you enjoy — and our AI does the planning: stays, food, activities, weather, all sequenced day by day.</p>
-      <p>It's the difference between searching for a trip and simply being handed one.</p>
+      <p data-i18n="about_p1">Existing travel platforms are built around search and booking — you look up hotels, flights, and reviews separately, then stitch a plan together yourself.</p>
+      <p data-i18n="about_p2">Voyantra was built to close that gap. You tell us your budget, how many days you have, who you're travelling with, and what you enjoy — and our AI does the planning: stays, food, activities, weather, all sequenced day by day.</p>
+      <p data-i18n="about_p3">And it doesn't stop at a plan on paper. Voyantra is also a marketplace for local homestays, guides, transport and restaurants — real businesses you can browse, review, and contact directly, approved by our team so you know they're genuine.</p>
+      <p data-i18n="about_p4">It's the difference between searching for a trip and simply being handed one — with the people who'll actually make it happen, one click away.</p>
     </div>
   </div>
 </section>
@@ -540,6 +545,7 @@
     <div class="step"><span class="tag">03</span><h3 data-i18n="step3_t">Tell us the style</h3><p data-i18n="step3_d">Solo, family, or with friends. It shapes the pace and the stays we suggest.</p></div>
     <div class="step"><span class="tag">04</span><h3 data-i18n="step4_t">Get your itinerary</h3><p data-i18n="step4_d">A day-by-day plan with food, stays and things to do — ready to save or download.</p></div>
   </div>
+  <p class="reveal" style="text-align:center; color:var(--muted); font-size:0.94rem; margin-top:24px;" data-i18n="how_vendor_note">Then browse real local vendors near your destination — homestays, guides, restaurants — and contact them directly from your itinerary.</p>
 </section>
 
 <section id="features">
@@ -555,8 +561,18 @@
     <div class="feature reveal" style="transition-delay:0.15s"><div class="icon">▶</div><h3 data-i18n="feat4_t">See it before you go</h3><p data-i18n="feat4_d">Photos and short videos of your destinations, alongside the plan.</p></div>
     <div class="feature reveal" style="transition-delay:0.2s"><div class="icon">⬇</div><h3 data-i18n="feat5_t">Download as PDF</h3><p data-i18n="feat5_d">Keep a copy of your itinerary offline — no signal required on arrival.</p></div>
     <div class="feature reveal" style="transition-delay:0.25s"><div class="icon">✎</div><h3 data-i18n="feat6_t">Edit anytime</h3><p data-i18n="feat6_d">Plans change. Come back and adjust any day whenever you need to.</p></div>
+    <div class="feature reveal" style="transition-delay:0.3s; border-color:rgba(79,195,176,0.25);"><div class="icon" style="color:var(--teal);">⌂</div><h3 data-i18n="feat7_t">Real local vendors</h3><p data-i18n="feat7_d">Homestays, guides, transport and restaurants near your destination — approved by our team, not AI guesses.</p></div>
+    <div class="feature reveal" style="transition-delay:0.35s; border-color:rgba(79,195,176,0.25);"><div class="icon" style="color:var(--teal);">★</div><h3 data-i18n="feat8_t">Reviews you can trust</h3><p data-i18n="feat8_d">Ratings from real travellers, plus Verified and Top Rated badges — know before you contact a vendor.</p></div>
+    <div class="feature reveal" style="transition-delay:0.4s; border-color:rgba(79,195,176,0.25);"><div class="icon" style="color:var(--teal);">⑂</div><h3 data-i18n="feat9_t">Food that fits your diet</h3><p data-i18n="feat9_d">Vegetarian or non-vegetarian — get restaurant picks with real distance and their signature dish.</p></div>
   </div>
 </section>
+
+<div class="cta-band reveal" style="border-color:rgba(79,195,176,0.3); margin-top:0;">
+  <div class="kicker" style="color:var(--teal);" data-i18n="vendor_cta_kicker">For local businesses</div>
+  <h2 data-i18n="vendor_cta_heading">Run a homestay, guide tours, or cook amazing food?</h2>
+  <p data-i18n="vendor_cta_sub">List your business on Voyantra for free and get discovered by travellers planning their trip — approved by our team, reviewed by real guests.</p>
+  <a href="<%= vendorCtaLink %>" class="btn btn-primary" style="background:var(--teal);" data-i18n="vendor_cta_button">List your business →</a>
+</div>
 
 <section id="contact">
   <div class="section-head reveal">
@@ -596,7 +612,7 @@
     <span class="brand-word" style="font-size:1.05rem;">Voy<span class="accent">antra</span></span>
   </a>
   <div class="f-links">
-    <a href="#home" data-i18n="nav_home">Home</a><a href="#about" data-i18n="nav_about">About</a><a href="#features" data-i18n="nav_features">Features</a><a href="#contact" data-i18n="nav_contact">Contact</a>
+    <a href="#home" data-i18n="nav_home">Home</a><a href="#about" data-i18n="nav_about">About</a><a href="#features" data-i18n="nav_features">Features</a><a href="vendors.jsp" data-i18n="nav_vendors">Local Vendors</a><a href="#contact" data-i18n="nav_contact">Contact</a>
   </div>
   <div class="f-bottom" data-i18n="footer_note">Plan the trip. Find the people who make it real.</div>
 </footer>
