@@ -19,6 +19,8 @@
         response.sendRedirect("login.html");
         return;
     }
+    Boolean isAdminAttr = (Boolean) session.getAttribute("isAdmin");
+    boolean isAdmin = (isAdminAttr != null && isAdminAttr);
 
     String tripIdStr = request.getParameter("tripId");
     if (tripIdStr == null) {
@@ -87,6 +89,31 @@
 
     String localCurrency = CurrencyService.currencyForCountry(countryCode);
     Double convertedBudget = localCurrency != null ? CurrencyService.convertFromInr(budget, localCurrency) : null;
+
+    // ---- Real tourist photos of this destination (shared across all trips to it) ----
+    ArrayList<Object[]> touristPhotos = new ArrayList<>();
+    try (Connection photosConn = DBConnection.getConnection()) {
+        if (photosConn != null) {
+            String photosSql = "SELECT dp.photo_id, dp.photo_url, dp.caption, dp.created_at, dp.user_id, u.name "
+                + "FROM destination_photos dp JOIN users u ON dp.user_id = u.user_id "
+                + "WHERE dp.destination = ? ORDER BY dp.photo_id DESC LIMIT 12";
+            PreparedStatement photosStmt = photosConn.prepareStatement(photosSql);
+            photosStmt.setString(1, destination);
+            ResultSet photosRs = photosStmt.executeQuery();
+            while (photosRs.next()) {
+                touristPhotos.add(new Object[] {
+                    photosRs.getInt("photo_id"),
+                    photosRs.getString("photo_url"),
+                    photosRs.getString("caption"),
+                    photosRs.getTimestamp("created_at"),
+                    photosRs.getInt("user_id"),
+                    photosRs.getString("name")
+                });
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
 
     EmergencyInfoService.EmergencyInfo emergencyInfo = EmergencyInfoService.getEmergencyInfo(destination);
 
@@ -578,6 +605,46 @@
       <iframe src="https://www.youtube.com/embed/<%= destVideoId %>" allowfullscreen></iframe>
   </div>
   <% } %>
+
+  <!-- Real tourist photos of this destination — separate from the stock carousel above -->
+  <div class="panel">
+    <div class="section-title" style="margin-top:0;">&#128248; Real tourist photos of <%= destination %></div>
+    <p style="font-size:0.82rem; color:var(--muted); margin-top:-10px; margin-bottom:16px;">Shared by travellers who've actually been here — not stock photos.</p>
+    <% if (!touristPhotos.isEmpty()) { %>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:12px; margin-bottom:20px;">
+      <% for (Object[] tp : touristPhotos) {
+          int photoId = (int) tp[0];
+          String photoUrl = (String) tp[1];
+          String caption = (String) tp[2];
+          int photoOwnerId = (int) tp[4];
+          String uploaderName = (String) tp[5];
+      %>
+        <div style="position:relative;">
+          <img src="<%= photoUrl %>" alt="Photo of <%= destination %>" style="width:100%; height:120px; object-fit:cover; border-radius:10px; display:block;">
+          <div style="font-size:0.72rem; color:var(--muted); margin-top:4px;">by <%= uploaderName %></div>
+          <% if (caption != null && !caption.trim().isEmpty()) { %>
+          <div style="font-size:0.76rem; color:var(--paper); margin-top:2px;"><%= caption %></div>
+          <% } %>
+          <% if (isAdmin || photoOwnerId == userId) { %>
+          <form action="DeleteDestinationPhotoServlet" method="POST" style="margin-top:4px;">
+            <input type="hidden" name="photoId" value="<%= photoId %>">
+            <input type="hidden" name="tripId" value="<%= tripId %>">
+            <button type="submit" style="background:none; border:none; color:var(--muted); font-size:0.72rem; cursor:pointer; padding:0;" onclick="return confirm('Delete this photo?');">Delete</button>
+          </form>
+          <% } %>
+        </div>
+      <% } %>
+      </div>
+    <% } else { %>
+      <p class="empty-state" style="margin-bottom:20px;">No tourist photos yet — be the first to add one.</p>
+    <% } %>
+    <form action="UploadDestinationPhotoServlet" method="POST" enctype="multipart/form-data" class="mini-form">
+      <input type="hidden" name="tripId" value="<%= tripId %>">
+      <input type="file" name="photo" accept="image/jpeg,image/png,image/webp,image/gif" required>
+      <input type="text" name="caption" placeholder="Caption (optional)" style="flex:1; min-width:140px;">
+      <button type="submit">Add photo</button>
+    </form>
+  </div>
 
   <div class="trip-hero">
     <div class="kicker" data-i18n="td_kicker">Trip details</div>
