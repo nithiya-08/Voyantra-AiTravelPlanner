@@ -1,8 +1,11 @@
 package com.voyantra.servlet;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -43,10 +46,23 @@ public class AdminDeleteReviewServlet extends HttpServlet {
 
         try (Connection conn = DBConnection.getConnection()) {
             if (conn != null) {
+                String photoSql = "SELECT photo_url FROM vendor_reviews WHERE review_id = ?";
+                PreparedStatement photoStmt = conn.prepareStatement(photoSql);
+                photoStmt.setInt(1, reviewId);
+                ResultSet photoRs = photoStmt.executeQuery();
+                String photoUrl = photoRs.next() ? photoRs.getString("photo_url") : null;
+
                 String sql = "DELETE FROM vendor_reviews WHERE review_id = ?";
                 PreparedStatement stmt = conn.prepareStatement(sql);
                 stmt.setInt(1, reviewId);
                 stmt.executeUpdate();
+
+                if (photoUrl != null && photoUrl.startsWith("uploads/reviews/")) {
+                    String realPath = getServletContext().getRealPath("/" + photoUrl);
+                    if (realPath != null) {
+                        try { Files.deleteIfExists(Paths.get(realPath)); } catch (Exception ignored) {}
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

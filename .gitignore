@@ -10,5 +10,9 @@ config.local.properties
 .classpath
 .project
 
+# User-uploaded review photos — real content, not source
+/src/main/webapp/uploads/reviews/*
+!/src/main/webapp/uploads/reviews/.gitkeep
+
 # Misc
 *.log

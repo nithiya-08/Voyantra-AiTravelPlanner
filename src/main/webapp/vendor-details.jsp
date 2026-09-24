@@ -80,7 +80,7 @@
                 ResultSet inquiryCountRs = inquiryCountStmt.executeQuery();
                 if (inquiryCountRs.next()) inquiryCount = inquiryCountRs.getInt("c");
 
-                String reviewSql = "SELECT r.review_id, u.name, r.rating, r.comment, r.created_at, r.user_id "
+                String reviewSql = "SELECT r.review_id, u.name, r.rating, r.comment, r.created_at, r.user_id, r.photo_url "
                                   + "FROM vendor_reviews r JOIN users u ON r.user_id = u.user_id "
                                   + "WHERE r.vendor_id = ? ORDER BY r.review_id DESC";
                 PreparedStatement reviewStmt = conn.prepareStatement(reviewSql);
@@ -92,7 +92,8 @@
                         reviewRs.getInt("rating"),
                         reviewRs.getString("comment"),
                         reviewRs.getTimestamp("created_at"),
-                        reviewRs.getInt("review_id")
+                        reviewRs.getInt("review_id"),
+                        reviewRs.getString("photo_url")
                     });
                     if (reviewRs.getInt("user_id") == userId) {
                         myRating = reviewRs.getInt("rating");
@@ -313,7 +314,7 @@
 
   <div class="section-title">Leave a review</div>
   <div class="form-card">
-    <form action="VendorReviewServlet" method="POST">
+    <form action="VendorReviewServlet" method="POST" enctype="multipart/form-data">
       <input type="hidden" name="vendorId" value="<%= vendorId %>">
       <div class="field">
         <label for="rating">Rating</label>
@@ -328,6 +329,10 @@
       <div class="field">
         <label for="comment">Comment <span style="font-weight:400; color:var(--muted); font-size:0.8rem;">(optional)</span></label>
         <textarea id="comment" name="comment"><%= myComment != null ? myComment : "" %></textarea>
+      </div>
+      <div class="field">
+        <label for="photo">Add a photo <span style="font-weight:400; color:var(--muted); font-size:0.8rem;">(optional — helps other travellers, max 5MB)</span></label>
+        <input type="file" id="photo" name="photo" accept="image/jpeg,image/png,image/webp,image/gif">
       </div>
       <button type="submit" class="submit"><%= myRating != null ? "Update review" : "Submit review" %></button>
     </form>
@@ -350,6 +355,9 @@
       </div>
       <% if (r[2] != null && !((String) r[2]).trim().isEmpty()) { %>
         <div class="comment"><%= r[2] %></div>
+      <% } %>
+      <% if (r[5] != null && !((String) r[5]).trim().isEmpty()) { %>
+        <img src="<%= r[5] %>" alt="Photo from review" style="max-width:220px; max-height:220px; border-radius:10px; margin-top:10px; display:block; object-fit:cover;">
       <% } %>
       <% if (isAdmin) { %>
       <form action="AdminDeleteReviewServlet" method="POST" style="margin-top:8px;">
