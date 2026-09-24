@@ -22,7 +22,7 @@
                 "SELECT v.vendor_id, v.business_name, v.category, v.city, v.price_range, v.photo_url, "
                 + "(SELECT AVG(rating) FROM vendor_reviews r WHERE r.vendor_id = v.vendor_id) AS avg_rating, "
                 + "(SELECT COUNT(*) FROM vendor_reviews r WHERE r.vendor_id = v.vendor_id) AS review_count, "
-                + "v.is_verified "
+                + "v.is_verified, v.website_url "
                 + "FROM vendors v WHERE v.status = 'APPROVED'");
             if (!category.isEmpty()) sql.append(" AND v.category = ?");
             if (!city.isEmpty()) sql.append(" AND v.city LIKE ?");
@@ -43,7 +43,8 @@
                     rs.getString("photo_url"),
                     rs.getObject("avg_rating"),
                     rs.getInt("review_count"),
-                    rs.getBoolean("is_verified")
+                    rs.getBoolean("is_verified"),
+                    rs.getString("website_url")
                 });
             }
         }
@@ -119,11 +120,14 @@
   .trip-tag { font-size: 0.76rem; font-weight: 600; padding: 5px 11px; border-radius: 999px; background: var(--gold-soft); color: var(--gold); }
   .rating { font-size: 0.84rem; color: var(--muted); margin-bottom: 16px; }
   .rating strong { color: var(--gold); }
+  .vendor-actions { display: flex; gap: 8px; }
   .vendor-body a.view-btn {
-    display: block; text-align: center; padding: 9px; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+    flex: 1; display: block; text-align: center; padding: 9px; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
     border: 1px solid var(--line-strong); color: var(--paper); transition: all 0.2s ease;
   }
   .vendor-body a.view-btn:hover { border-color: var(--teal); color: var(--teal); }
+  .vendor-body a.website-btn { border-color: rgba(79,195,176,0.3); color: var(--teal); }
+  .vendor-body a.website-btn:hover { border-color: var(--teal); background: rgba(79,195,176,0.1); }
 
   .empty-state { text-align: center; padding: 60px 20px; background: var(--ink-2); border: 1px dashed var(--line-strong); border-radius: 16px; color: var(--muted); }
 
@@ -185,6 +189,7 @@
         Object avgRatingObj = v[6];
         int reviewCount = (int) v[7];
         boolean vVerified = (boolean) v[8];
+        String websiteUrl = (String) v[9];
     %>
         <div class="vendor-card">
             <% if (photoUrl != null && !photoUrl.trim().isEmpty()) { %>
@@ -206,7 +211,12 @@
                       No reviews yet
                     <% } %>
                 </div>
-                <a class="view-btn" href="vendor-details.jsp?vendorId=<%= vendorId %>">View details</a>
+                <div class="vendor-actions">
+                    <a class="view-btn" href="vendor-details.jsp?vendorId=<%= vendorId %>">View details</a>
+                    <% if (websiteUrl != null && !websiteUrl.trim().isEmpty()) { %>
+                    <a class="view-btn website-btn" href="<%= websiteUrl %>" target="_blank" rel="noopener noreferrer">Website &#8599;</a>
+                    <% } %>
+                </div>
             </div>
         </div>
     <% } %>
