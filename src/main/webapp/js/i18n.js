@@ -122,7 +122,7 @@
       nav_dashboard: "டாஷ்போர்டு", nav_logout: "வெளியேறு", nav_admin: "நிர்வாகி",
 
       hero_eyebrow: "AI திட்டமிட்டது, பட்ஜெட்டை முதன்மையாகக் கொண்டது",
-      hero_lead: "பெரும்பாலான பயண தளங்கள் ஹோட்டல்கள், மதிப்புரைகள் மற்றும் விமானங்களை மட்டும் தருகின்றன — திட்டமிடல் உங்கள் வேலை. உங்கள் பட்ஜெட், நாட்கள், விருப்பங்களை சொல்லுங்கள் — நாங்கள் நாள்வாரியாக முழு பயணத்தையும் வடிவமைத்துத் தருகிறோம்.",
+      hero_lead: "உங்கள் பட்ஜெட், நாட்கள், விருப்பங்களை சொல்லுங்கள் — நாங்கள் முழு பயணத்தையும் நாள்வாரியாக வடிவமைத்துத் தருகிறோம்: தங்குமிடம், உணவு, செயல்பாடுகள் மற்றும் வானிலை அனைத்தும் வரிசைப்படுத்தப்பட்டு.",
       hero_cta_primary: "எனது பயணத்தைத் திட்டமிடு →", hero_cta_secondary: "இது எப்படி செயல்படுகிறது எனப் பார்க்க",
       hero_micro: "ஒரு படிவம் உள்ளீடு, ஒரு முழுமையான நாள்வாரி திட்டம் வெளியீடு",
       hero_visual_line: "பயணத்தின் வடிவத்தை நீங்கள் அமைக்கிறீர்கள். மீதமுள்ளதை AI நிரப்புகிறது — தங்குமிடங்கள், உணவு, செயல்பாடுகள், நாள்தோறும்.",
@@ -142,7 +142,7 @@
       step4_t: "உங்கள் பயணத் திட்டத்தைப் பெறுங்கள்", step4_d: "உணவு, தங்குமிடம், செயல்பாடுகளுடன் கூடிய நாள்வாரி திட்டம் — சேமிக்க அல்லது பதிவிறக்க தயார்.",
 
       features_kicker: "நீங்கள் பெறுவது", features_heading: "முன்பதிவுக்காக அல்ல, பயணத்திற்காக வடிவமைக்கப்பட்டது.",
-      features_sub: "மற்ற தளங்கள் தேடல் முடிவுகளுடன் நிற்கின்றன. இது ஒரு முழு திட்டம் கிடைக்கும் வரை தொடர்கிறது.",
+      features_sub: "ஒரு முழுமையான திட்டம், அத்துடன் உண்மையான உள்ளூர் வணிகங்களும்.",
       feat1_t: "பட்ஜெட்டை கருத்தில் கொண்ட பரிந்துரைகள்", feat1_d: "ஹோட்டல்கள், உணவு, செயல்பாடுகள் உங்கள் பட்ஜெட்டிற்குள் பொருந்துமாறு தேர்ந்தெடுக்கப்படுகின்றன.",
       feat2_t: "வானிலை உள்ளடக்கம்", feat2_d: "பயணப் பையைப் பொதிவதற்கு முன் ஒவ்வொரு நாளின் வானிலை முன்னறிவிப்பையும் காணுங்கள்.",
       feat3_t: "நாள்வாரி கட்டமைப்பு", feat3_d: "ஒரு உண்மையான வரிசை, எனவே 2ஆம் நாள் மற்றும் 4ஆம் நாளுக்கு இடையே என்ன நடக்கும் என்று உங்களுக்குத் தெரியும்.",
@@ -206,7 +206,7 @@
       nav_dashboard: "डैशबोर्ड", nav_logout: "लॉग आउट", nav_admin: "एडमिन",
 
       hero_eyebrow: "AI-नियोजित, बजट-प्राथमिकता",
-      hero_lead: "ज़्यादातर ट्रैवल साइट्स आपको होटल, रिव्यू और फ्लाइट्स का ढेर थमा देती हैं और योजना बनाना आप पर छोड़ देती हैं। अपना बजट, दिन और रुचियां बताइए — हम दिन-प्रतिदिन पूरी यात्रा तैयार कर देंगे।",
+      hero_lead: "अपना बजट, दिन और रुचियां बताइए — हम पूरी यात्रा दिन-प्रतिदिन तैयार कर देंगे: ठहरने की जगह, खाना, गतिविधियां और मौसम, सब कुछ क्रम में।",
       hero_cta_primary: "मेरी यात्रा की योजना बनाएं →", hero_cta_secondary: "देखें यह कैसे काम करता है",
       hero_micro: "एक फॉर्म भरें, एक पूरी दिन-वार योजना पाएं",
       hero_visual_line: "आप यात्रा का ढांचा तय करते हैं। बाकी सब — ठहरना, खाना, गतिविधियां — AI हर दिन के हिसाब से भर देता है।",
@@ -226,7 +226,7 @@
       step4_t: "अपनी यात्रा योजना पाएं", step4_d: "खाना, ठहरना और गतिविधियों के साथ दिन-वार योजना — सेव या डाउनलोड करने के लिए तैयार।",
 
       features_kicker: "आपको क्या मिलता है", features_heading: "बुकिंग के लिए नहीं, यात्रा के लिए बनाया गया।",
-      features_sub: "बाकी प्लेटफॉर्म सर्च रिजल्ट पर रुक जाते हैं। यह तब तक चलता है जब तक आपके पास पूरी योजना न हो।",
+      features_sub: "एक पूरी योजना, और साथ में असली स्थानीय व्यवसाय भी।",
       feat1_t: "बजट के अनुसार सुझाव", feat1_d: "होटल, खाना और गतिविधियां आपके बजट में फिट होने के लिए चुनी जाती हैं।",
       feat2_t: "मौसम, अंतर्निहित", feat2_d: "बैग पैक करने से पहले अपनी यात्रा के हर दिन का पूर्वानुमान देखें।",
       feat3_t: "दिन-वार संरचना", feat3_d: "एक वास्तविक क्रम, ताकि आपको पता हो कि दूसरे दिन और चौथे दिन में क्या होगा।",
@@ -290,7 +290,7 @@
       nav_dashboard: "Tableau de bord", nav_logout: "Déconnexion", nav_admin: "Admin",
 
       hero_eyebrow: "Planifié par IA, priorité au budget",
-      hero_lead: "La plupart des sites de voyage vous donnent une pile d'hôtels, d'avis et de vols et vous laissent tout planifier. Indiquez-nous votre budget, vos jours et vos envies — nous organisons tout le voyage, jour par jour.",
+      hero_lead: "Indiquez-nous votre budget, vos jours et vos envies — nous organisons tout le voyage, jour par jour : hébergements, repas, activités et météo, tout enchaîné pour vous.",
       hero_cta_primary: "Planifier mon voyage →", hero_cta_secondary: "Voir comment ça marche",
       hero_micro: "Un formulaire, un plan complet jour par jour",
       hero_visual_line: "Vous définissez la forme du voyage. L'IA remplit le reste — hébergements, repas et activités, jour après jour.",
@@ -310,7 +310,7 @@
       step4_t: "Recevez votre itinéraire", step4_d: "Un plan jour par jour avec repas, hébergements et activités — prêt à sauvegarder ou télécharger.",
 
       features_kicker: "Ce que vous obtenez", features_heading: "Conçu autour du voyage, pas de la réservation.",
-      features_sub: "Les autres plateformes s'arrêtent aux résultats de recherche. Celle-ci continue jusqu'à avoir un vrai plan.",
+      features_sub: "Un plan complet, et les vraies entreprises locales qui vont avec.",
       feat1_t: "Suggestions adaptées au budget", feat1_d: "Hôtels, repas et activités choisis pour rester dans votre budget.",
       feat2_t: "Météo intégrée", feat2_d: "Consultez les prévisions de chaque jour avant de faire vos valises.",
       feat3_t: "Structure jour par jour", feat3_d: "Un vrai déroulé, pour savoir ce qui se passe le jour 2 par rapport au jour 4.",
@@ -374,7 +374,7 @@
       nav_dashboard: "Dashboard", nav_logout: "Abmelden", nav_admin: "Admin",
 
       hero_eyebrow: "KI-geplant, budgetorientiert",
-      hero_lead: "Die meisten Reiseseiten geben Ihnen einen Haufen Hotels, Bewertungen und Flüge und überlassen die Planung Ihnen. Nennen Sie uns Ihr Budget, Ihre Tage und Ihre Interessen — wir planen die ganze Reise, Tag für Tag.",
+      hero_lead: "Nennen Sie uns Ihr Budget, Ihre Tage und Ihre Interessen — wir planen die ganze Reise, Tag für Tag: Unterkünfte, Essen, Aktivitäten und Wetter, alles für Sie zusammengestellt.",
       hero_cta_primary: "Meine Reise planen →", hero_cta_secondary: "So funktioniert's ansehen",
       hero_micro: "Ein Formular rein, ein kompletter Tagesplan raus",
       hero_visual_line: "Sie bestimmen die Form der Reise. Die KI füllt den Rest — Unterkünfte, Essen und Aktivitäten, Tag für Tag.",
@@ -394,7 +394,7 @@
       step4_t: "Reiseplan erhalten", step4_d: "Ein Tagesplan mit Essen, Unterkünften und Aktivitäten — bereit zum Speichern oder Herunterladen.",
 
       features_kicker: "Das bekommen Sie", features_heading: "Rund um die Reise gebaut, nicht um die Buchung.",
-      features_sub: "Andere Plattformen enden bei Suchergebnissen. Diese macht weiter, bis Sie einen fertigen Plan haben.",
+      features_sub: "Ein vollständiger Plan – und die echten lokalen Anbieter dazu.",
       feat1_t: "Budgetbewusste Vorschläge", feat1_d: "Hotels, Essen und Aktivitäten werden passend zu Ihrem Budget ausgewählt.",
       feat2_t: "Wetter inklusive", feat2_d: "Sehen Sie die Vorhersage für jeden Reisetag, bevor Sie packen.",
       feat3_t: "Tag-für-Tag-Struktur", feat3_d: "Eine echte Abfolge, damit Sie wissen, was an Tag 2 gegenüber Tag 4 passiert.",
@@ -458,7 +458,7 @@
       nav_dashboard: "Panel", nav_logout: "Cerrar sesión", nav_admin: "Admin",
 
       hero_eyebrow: "Planificado por IA, con el presupuesto primero",
-      hero_lead: "La mayoría de los sitios de viajes te dan un montón de hoteles, reseñas y vuelos y te dejan la planificación a ti. Dinos tu presupuesto, tus días y tus intereses — organizamos todo el viaje, día a día.",
+      hero_lead: "Dinos tu presupuesto, tus días y tus intereses — organizamos todo el viaje, día a día: alojamiento, comida, actividades y clima, todo secuenciado para ti.",
       hero_cta_primary: "Planificar mi viaje →", hero_cta_secondary: "Ver cómo funciona",
       hero_micro: "Un formulario, un plan diario completo",
       hero_visual_line: "Tú defines la forma del viaje. La IA completa el resto: alojamiento, comida y actividades, día a día.",
@@ -478,7 +478,7 @@
       step4_t: "Recibe tu itinerario", step4_d: "Un plan diario con comida, alojamiento y actividades — listo para guardar o descargar.",
 
       features_kicker: "Lo que obtienes", features_heading: "Diseñado en torno al viaje, no a la reserva.",
-      features_sub: "Otras plataformas se detienen en los resultados de búsqueda. Esta sigue hasta darte un plan completo.",
+      features_sub: "Un plan completo, y los negocios locales reales que lo acompañan.",
       feat1_t: "Sugerencias según tu presupuesto", feat1_d: "Hoteles, comida y actividades elegidos para ajustarse a lo que definiste.",
       feat2_t: "Clima incluido", feat2_d: "Consulta el pronóstico de cada día de tu viaje antes de hacer la maleta.",
       feat3_t: "Estructura día a día", feat3_d: "Una secuencia real, para saber qué pasa el día 2 frente al día 4.",
