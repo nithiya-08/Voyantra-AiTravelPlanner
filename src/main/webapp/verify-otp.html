@@ -38,6 +38,16 @@
   }
   .field-err { font-size: 0.82rem; color: var(--coral); margin-bottom: 14px; display: none; }
   .field-err.show { display: block; }
+  .resend-row { margin-top: 18px; font-size: 0.85rem; color: var(--muted); }
+  .resend-row button {
+    background: none; border: none; padding: 0; width: auto; color: var(--gold); font-weight: 600;
+    cursor: pointer; font-size: inherit; text-decoration: underline;
+  }
+  .resend-row button:disabled { color: var(--muted); cursor: default; text-decoration: none; }
+  .resend-note { font-size: 0.82rem; margin-top: 10px; display: none; }
+  .resend-note.show { display: block; }
+  .resend-note.ok { color: var(--teal); }
+  .resend-note.err { color: var(--coral); }
   .spinner {
     width: 15px; height: 15px; border-radius: 50%; display: none;
     border: 2px solid rgba(13,21,38,0.3); border-top-color: var(--ink);
@@ -58,6 +68,11 @@
     <div class="field-err" id="otpErr">Please enter the 6-digit code</div>
     <button type="submit"><span class="spinner" id="otpSpinner"></span><span id="otpBtnText" data-i18n="otp_verify_btn">Verify</span></button>
   </form>
+
+  <div class="resend-row">
+    Didn't get a code? <button type="button" id="resendBtn">Resend it</button>
+  </div>
+  <div class="resend-note" id="resendNote"></div>
 </div>
 <script src="js/i18n.js?v=3"></script>
 <script src="js/chatbot.js?v=3"></script>
@@ -104,6 +119,55 @@
         errEl.textContent = '⚠ Could not reach the server. Please try again.';
         errEl.classList.add('show');
         btn.disabled = false; spinner.style.display = 'none'; btnText.textContent = 'Verify';
+      });
+  });
+
+  const resendBtn = document.getElementById('resendBtn');
+  const resendNote = document.getElementById('resendNote');
+  let cooldown = 0;
+  let cooldownTimer = null;
+
+  function startCooldown(seconds) {
+    cooldown = seconds;
+    resendBtn.disabled = true;
+    resendBtn.textContent = 'Resend it (' + cooldown + 's)';
+    cooldownTimer = setInterval(() => {
+      cooldown--;
+      if (cooldown <= 0) {
+        clearInterval(cooldownTimer);
+        resendBtn.disabled = false;
+        resendBtn.textContent = 'Resend it';
+      } else {
+        resendBtn.textContent = 'Resend it (' + cooldown + 's)';
+      }
+    }, 1000);
+  }
+
+  resendBtn.addEventListener('click', function () {
+    resendNote.className = 'resend-note';
+    resendBtn.disabled = true;
+    const originalText = resendBtn.textContent;
+    resendBtn.textContent = 'Sending...';
+
+    fetch('ResendOtpServlet', { method: 'POST', body: new URLSearchParams({ email: email }) })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          resendNote.textContent = '✓ ' + data.message;
+          resendNote.className = 'resend-note show ok';
+          startCooldown(30);
+        } else {
+          resendNote.textContent = '⚠ ' + data.message;
+          resendNote.className = 'resend-note show err';
+          resendBtn.disabled = false;
+          resendBtn.textContent = originalText;
+        }
+      })
+      .catch(() => {
+        resendNote.textContent = '⚠ Could not reach the server. Please try again.';
+        resendNote.className = 'resend-note show err';
+        resendBtn.disabled = false;
+        resendBtn.textContent = originalText;
       });
   });
 </script>
