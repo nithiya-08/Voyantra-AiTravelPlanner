@@ -15,48 +15,40 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    background: var(--ink); color: var(--paper); font-family: 'Inter', sans-serif;
-    min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr;
+    background:
+      radial-gradient(circle at 15% 15%, rgba(79,195,176,0.12), transparent 40%),
+      radial-gradient(circle at 85% 85%, rgba(231,169,76,0.08), transparent 40%),
+      var(--ink);
+    color: var(--paper); font-family: 'Inter', sans-serif;
+    min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 6vh 6vw;
   }
   a { color: inherit; }
-  ::selection { background: var(--gold); color: var(--ink); }
+  ::selection { background: var(--teal); color: var(--ink); }
 
-  .side {
-    padding: 5vh 4.5vw; display: flex; flex-direction: column; justify-content: space-between;
-    background: linear-gradient(160deg, var(--ink-3), var(--ink) 75%);
-    border-right: 1px solid var(--line);
-    position: relative; overflow: hidden;
-  }
-  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; z-index: 1; }
-  .brand-mark { width: 30px; height: 30px; flex-shrink: 0; }
-  .brand-word { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.25rem; }
+  .brand { display: flex; align-items: center; gap: 9px; text-decoration: none; margin-bottom: 20px; justify-content: center; }
+  .brand-mark { width: 26px; height: 26px; flex-shrink: 0; }
+  .brand-word { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.1rem; }
   .brand-word .accent { color: var(--gold); font-weight: 500; font-style: italic; }
-  .side-mid { z-index: 1; }
-  .quote { font-family: 'Fraunces', serif; font-size: 1.9rem; line-height: 1.35; max-width: 20ch; font-weight: 400; }
-  .quote em { font-style: italic; color: var(--teal); }
-  .side-foot { font-size: 0.84rem; color: var(--muted); z-index: 1; }
-  .glow-blob {
-    position: absolute; width: 340px; height: 340px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(79,195,176,0.14), transparent 70%);
-    bottom: -100px; left: -80px; z-index: 0;
-  }
 
-  .form-wrap { display: flex; align-items: center; justify-content: center; padding: 6vh 6vw; }
-  .form-card { width: 100%; max-width: 380px; }
+  .form-card {
+    width: 100%; max-width: 340px;
+    background: var(--ink-2); border: 1px solid var(--line); border-radius: 20px;
+    padding: 32px 30px; box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+  }
   .back-link {
-    display: none; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--muted);
-    margin-bottom: 22px; width: fit-content;
+    display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--muted);
+    margin-bottom: 14px; width: fit-content;
   }
   .back-link:hover { color: var(--gold); }
-  .kicker { font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal); font-weight: 700; margin-bottom: 12px; }
-  h1 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 2rem; margin-bottom: 8px; }
-  .sub { color: var(--muted); font-size: 0.92rem; margin-bottom: 32px; }
-  label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 8px; }
-  .field { margin-bottom: 20px; }
+  .kicker { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal); font-weight: 700; margin-bottom: 10px; }
+  h1 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.6rem; margin-bottom: 6px; }
+  .sub { color: var(--muted); font-size: 0.86rem; margin-bottom: 24px; }
+  label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 7px; }
+  .field { margin-bottom: 16px; }
   .input-shell { position: relative; }
   input {
-    width: 100%; padding: 13px 15px; border-radius: 10px; border: 1px solid var(--line-strong);
-    background: var(--ink-2); color: var(--paper); font-family: inherit; font-size: 0.92rem;
+    width: 100%; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--line-strong);
+    background: var(--ink-3); color: var(--paper); font-family: inherit; font-size: 0.9rem;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
   input.has-toggle { padding-right: 44px; }
@@ -73,8 +65,8 @@
   .field.invalid input { border-color: var(--coral); }
   .field.invalid .field-err { display: flex; }
   button.submit {
-    width: 100%; padding: 14px; border-radius: 10px; border: none; cursor: pointer;
-    background: var(--teal); color: var(--ink); font-weight: 700; font-size: 0.94rem;
+    width: 100%; padding: 12px; border-radius: 10px; border: none; cursor: pointer;
+    background: var(--teal); color: var(--ink); font-weight: 700; font-size: 0.92rem;
     transition: transform 0.2s ease, box-shadow 0.2s ease; margin-top: 6px;
     display: flex; align-items: center; justify-content: center; gap: 8px;
   }
@@ -86,7 +78,7 @@
     animation: spin 0.7s linear infinite; display: none;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .switch { text-align: center; margin-top: 26px; font-size: 0.88rem; color: var(--muted); }
+  .switch { text-align: center; margin-top: 18px; font-size: 0.85rem; color: var(--muted); }
   .switch a { color: var(--teal); font-weight: 600; }
   .switch-row { display: flex; flex-direction: column; gap: 6px; }
   .success-banner {
@@ -101,19 +93,11 @@
     font-size: 0.85rem; margin-bottom: 22px;
   }
   .error-banner.show { display: flex; }
-
-  @media (max-width: 860px) {
-    body { grid-template-columns: 1fr; }
-    .side { display: none; }
-    .back-link { display: flex; }
-    .form-wrap { padding: 8vh 7vw; align-items: flex-start; }
-  }
 </style>
 </head>
 <body>
 
-<div class="side">
-  <div class="glow-blob"></div>
+<div class="form-card">
   <a href="index.jsp" class="brand">
     <svg class="brand-mark" viewBox="0 0 40 40" fill="none">
       <circle cx="20" cy="20" r="18.5" stroke="#E7A94C" stroke-width="1.4" opacity="0.4"/>
@@ -123,17 +107,9 @@
     </svg>
     <span class="brand-word">Voy<span class="accent">antra</span></span>
   </a>
-  <div class="side-mid">
-    <div class="quote">"List your business once.<br>Get found by <em>every</em> traveller nearby."</div>
-  </div>
-  <div class="side-foot">Voyantra for Local Businesses</div>
-</div>
-
-<div class="form-wrap">
-  <div class="form-card">
-    <a href="index.jsp" class="back-link">← Back to home</a>
-    <div class="kicker">Vendor portal</div>
-    <h1>Welcome back</h1>
+  <a href="index.jsp" class="back-link">← Back to home</a>
+  <div class="kicker">Vendor portal</div>
+  <h1>Welcome back</h1>
     <p class="sub">Log in to manage your listing and inquiries.</p>
 
     <div class="success-banner" id="successBanner">✓ Logged in — redirecting...</div>
@@ -159,10 +135,9 @@
       <button type="submit" class="submit"><span class="spinner" id="loginSpinner"></span><span id="loginBtnText">Log in</span></button>
     </form>
 
-    <div class="switch switch-row">
-      <div>New here? <a href="register.html">Register</a>, then list your business from your dashboard.</div>
-      <div><a href="login.html">Tourist login</a> &middot; <a href="admin-login.html">Admin login</a></div>
-    </div>
+  <div class="switch switch-row">
+    <div>New here? <a href="register.html">Register</a>, then list your business from your dashboard.</div>
+    <div><a href="login.html">Tourist login</a> &middot; <a href="admin-login.html">Admin login</a></div>
   </div>
 </div>
 
