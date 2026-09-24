@@ -1004,7 +1004,7 @@
                   <span id="genBtnText" data-i18n="td_generate_btn">Generate itinerary with AI</span>
               </button>
               <p class="sub" style="margin-top:14px; display:none;" id="genWaitNote" data-i18n="td_generate_wait">
-                  This can take up to 20-30 seconds — please don't close this tab.
+                  This can take up to 40 seconds — please don't close this tab.
               </p>
           </form>
       </div>
@@ -1138,7 +1138,7 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="js/i18n.js?v=4"></script>
+<script src="js/i18n.js?v=5"></script>
 <script src="js/chatbot.js?v=3"></script>
 <script>
   const tripMapStops = <%= mapStopsJson %>;

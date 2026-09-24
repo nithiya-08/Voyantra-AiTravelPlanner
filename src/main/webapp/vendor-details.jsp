@@ -370,7 +370,7 @@
   <% } } %>
 </main>
 
-<script src="js/i18n.js?v=4"></script>
+<script src="js/i18n.js?v=5"></script>
 <script>
   (function () {
     var LANG_NAMES = { ta: 'Tamil', hi: 'Hindi', fr: 'French', de: 'German', es: 'Spanish' };

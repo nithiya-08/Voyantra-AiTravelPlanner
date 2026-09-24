@@ -101,7 +101,7 @@
 
       td_kicker: "Trip details", td_download: "Download as PDF", td_regenerate: "Regenerate itinerary",
       td_share: "Share trip", td_itinerary_heading: "Day-wise itinerary",
-      td_generate_btn: "Generate itinerary with AI", td_generate_wait: "This can take up to 20-30 seconds — please don't close this tab.",
+      td_generate_btn: "Generate itinerary with AI", td_generate_wait: "This can take up to 40 seconds — please don't close this tab.",
       td_empty_p1: "No AI itinerary generated yet for this trip.", td_empty_p2: "Click below and the AI will build your day-wise plan.",
       td_activities: "Activities", td_food: "Food", td_stay: "Stay", td_weather: "Weather",
       td_forecast_badge: "Forecast", td_seasonal_badge: "Seasonal estimate",
@@ -185,7 +185,7 @@
 
       td_kicker: "பயண விவரங்கள்", td_download: "PDF ஆக பதிவிறக்கவும்", td_regenerate: "திட்டத்தை மீண்டும் உருவாக்கு",
       td_share: "பயணத்தைப் பகிரவும்", td_itinerary_heading: "நாள்வாரி பயணத் திட்டம்",
-      td_generate_btn: "AI மூலம் திட்டத்தை உருவாக்கு", td_generate_wait: "இதற்கு 20-30 விநாடிகள் வரை ஆகலாம் — இந்த தாவலை மூட வேண்டாம்.",
+      td_generate_btn: "AI மூலம் திட்டத்தை உருவாக்கு", td_generate_wait: "இதற்கு 40 விநாடிகள் வரை ஆகலாம் — இந்த தாவலை மூட வேண்டாம்.",
       td_empty_p1: "இந்த பயணத்திற்கு இன்னும் AI திட்டம் உருவாக்கப்படவில்லை.", td_empty_p2: "கீழே கிளிக் செய்யவும், AI உங்கள் நாள்வாரி திட்டத்தை உருவாக்கும்.",
       td_activities: "செயல்பாடுகள்", td_food: "உணவு", td_stay: "தங்குமிடம்", td_weather: "வானிலை",
       td_forecast_badge: "முன்னறிவிப்பு", td_seasonal_badge: "பருவகால மதிப்பீடு",
@@ -269,7 +269,7 @@
 
       td_kicker: "यात्रा विवरण", td_download: "PDF के रूप में डाउनलोड करें", td_regenerate: "योजना फिर से बनाएं",
       td_share: "यात्रा साझा करें", td_itinerary_heading: "दिन-वार यात्रा योजना",
-      td_generate_btn: "AI से योजना बनाएं", td_generate_wait: "इसमें 20-30 सेकंड तक लग सकते हैं — कृपया यह टैब बंद न करें।",
+      td_generate_btn: "AI से योजना बनाएं", td_generate_wait: "इसमें 40 सेकंड तक लग सकते हैं — कृपया यह टैब बंद न करें।",
       td_empty_p1: "इस यात्रा के लिए अभी तक कोई AI योजना नहीं बनी है।", td_empty_p2: "नीचे क्लिक करें, AI आपकी दिन-वार योजना बना देगा।",
       td_activities: "गतिविधियां", td_food: "खाना", td_stay: "ठहरना", td_weather: "मौसम",
       td_forecast_badge: "पूर्वानुमान", td_seasonal_badge: "मौसमी अनुमान",
@@ -353,7 +353,7 @@
 
       td_kicker: "Détails du voyage", td_download: "Télécharger en PDF", td_regenerate: "Régénérer l'itinéraire",
       td_share: "Partager le voyage", td_itinerary_heading: "Itinéraire jour par jour",
-      td_generate_btn: "Générer l'itinéraire avec l'IA", td_generate_wait: "Cela peut prendre 20 à 30 secondes — ne fermez pas cet onglet.",
+      td_generate_btn: "Générer l'itinéraire avec l'IA", td_generate_wait: "Cela peut prendre jusqu'à 40 secondes — ne fermez pas cet onglet.",
       td_empty_p1: "Aucun itinéraire IA n'a encore été généré pour ce voyage.", td_empty_p2: "Cliquez ci-dessous et l'IA créera votre plan jour par jour.",
       td_activities: "Activités", td_food: "Repas", td_stay: "Hébergement", td_weather: "Météo",
       td_forecast_badge: "Prévision", td_seasonal_badge: "Estimation saisonnière",
@@ -437,7 +437,7 @@
 
       td_kicker: "Reisedetails", td_download: "Als PDF herunterladen", td_regenerate: "Reiseplan neu erstellen",
       td_share: "Reise teilen", td_itinerary_heading: "Tagesplan",
-      td_generate_btn: "Reiseplan mit KI erstellen", td_generate_wait: "Das kann 20-30 Sekunden dauern — bitte diesen Tab nicht schließen.",
+      td_generate_btn: "Reiseplan mit KI erstellen", td_generate_wait: "Das kann bis zu 40 Sekunden dauern — bitte diesen Tab nicht schließen.",
       td_empty_p1: "Für diese Reise wurde noch kein KI-Plan erstellt.", td_empty_p2: "Klicken Sie unten, und die KI erstellt Ihren Tagesplan.",
       td_activities: "Aktivitäten", td_food: "Essen", td_stay: "Unterkunft", td_weather: "Wetter",
       td_forecast_badge: "Vorhersage", td_seasonal_badge: "Saisonale Schätzung",
@@ -521,7 +521,7 @@
 
       td_kicker: "Detalles del viaje", td_download: "Descargar en PDF", td_regenerate: "Regenerar itinerario",
       td_share: "Compartir viaje", td_itinerary_heading: "Itinerario diario",
-      td_generate_btn: "Generar itinerario con IA", td_generate_wait: "Esto puede tardar 20-30 segundos — no cierres esta pestaña.",
+      td_generate_btn: "Generar itinerario con IA", td_generate_wait: "Esto puede tardar hasta 40 segundos — no cierres esta pestaña.",
       td_empty_p1: "Aún no se ha generado un itinerario de IA para este viaje.", td_empty_p2: "Haz clic abajo y la IA creará tu plan diario.",
       td_activities: "Actividades", td_food: "Comida", td_stay: "Alojamiento", td_weather: "Clima",
       td_forecast_badge: "Pronóstico", td_seasonal_badge: "Estimación estacional",

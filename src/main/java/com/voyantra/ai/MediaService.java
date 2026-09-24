@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.voyantra.util.AppConfig;
+import com.voyantra.util.TtlCache;
 
 public class MediaService {
 
@@ -18,10 +19,19 @@ public class MediaService {
     private static final String YOUTUBE_API_KEY =
         AppConfig.get("YOUTUBE_API_KEY", "YOUR_YOUTUBE_API_KEY_HERE");
 
+    // A destination's photos/video don't change from one page view to the
+    // next — cache them so every view of the same trip doesn't re-hit
+    // Unsplash/YouTube.
+    private static final TtlCache<String[]> IMAGE_CACHE = new TtlCache<>(24 * 60 * 60 * 1000L);
+    private static final TtlCache<String> VIDEO_CACHE = new TtlCache<>(24 * 60 * 60 * 1000L);
+
     /**
      * Returns a direct image URL for the given destination, or null if it fails.
      */
     public static String[] getDestinationImages(String destination) {
+        String cacheKey = destination.toLowerCase();
+        String[] cached = IMAGE_CACHE.get(cacheKey);
+        if (cached != null) return cached;
         try {
             String query = URLEncoder.encode(destination, "UTF-8");
             String urlString = "https://api.unsplash.com/search/photos?query=" + query
@@ -38,6 +48,7 @@ public class MediaService {
             for (int i = 0; i < results.length(); i++) {
                 urls[i] = results.getJSONObject(i).getJSONObject("urls").getString("regular");
             }
+            IMAGE_CACHE.put(cacheKey, urls);
             return urls;
 
         } catch (Exception e) {
@@ -45,7 +56,7 @@ public class MediaService {
             return null;
         }
     }
-    
+
 
     /**
      * Returns a YouTube video ID for a "<destination> travel guide" search,
@@ -53,6 +64,9 @@ public class MediaService {
      * https://www.youtube.com/embed/VIDEO_ID
      */
     public static String getDestinationVideoId(String destination) {
+        String cacheKey = destination.toLowerCase();
+        String cached = VIDEO_CACHE.get(cacheKey);
+        if (cached != null) return cached;
         try {
             String query = URLEncoder.encode(destination + " travel guide", "UTF-8");
             String urlString = "https://www.googleapis.com/youtube/v3/search?part=snippet"
@@ -66,9 +80,11 @@ public class MediaService {
             JSONArray items = json.getJSONArray("items");
             if (items.length() == 0) return null;
 
-            return items.getJSONObject(0)
+            String videoId = items.getJSONObject(0)
                 .getJSONObject("id")
                 .getString("videoId");
+            VIDEO_CACHE.put(cacheKey, videoId);
+            return videoId;
 
         } catch (Exception e) {
             e.printStackTrace();

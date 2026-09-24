@@ -80,7 +80,12 @@ public class GeminiClient {
         conn.setRequestProperty("Content-Type", "application/json");
         conn.setDoOutput(true);
         conn.setConnectTimeout(8000);
-        conn.setReadTimeout(25000);
+        // Measured real-world latency on this model has gone as high as ~29s
+        // even for a successful, short response — a 25s timeout was killing
+        // calls right before they would have succeeded. 45s gives headroom
+        // for a full multi-day itinerary, which generates more text than a
+        // short prompt and so can take even longer.
+        conn.setReadTimeout(45000);
 
         try (OutputStream os = conn.getOutputStream()) {
             byte[] input = jsonBody.getBytes("utf-8");

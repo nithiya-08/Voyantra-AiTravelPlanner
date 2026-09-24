@@ -12,11 +12,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.voyantra.util.AppConfig;
+import com.voyantra.util.TtlCache;
 
 public class WeatherService {
 
     private static final String API_KEY =
         AppConfig.get("OPENWEATHERMAP_API_KEY", "YOUR_OPENWEATHERMAP_API_KEY_HERE");
+
+    // Weather shifts over hours, not per page view — cache briefly so
+    // repeat views of the same trip don't re-hit OpenWeatherMap every time.
+    private static final TtlCache<WeatherInfo> CURRENT_CACHE = new TtlCache<>(20 * 60 * 1000L);
+    private static final TtlCache<List<WeatherInfo>> FORECAST_CACHE = new TtlCache<>(30 * 60 * 1000L);
 
     /**
      * Returns a simple object holding the current weather for a city.
@@ -24,6 +30,8 @@ public class WeatherService {
      * returns null so the calling page can just skip showing weather.
      */
     public static WeatherInfo getCurrentWeather(String city) {
+        WeatherInfo cached = CURRENT_CACHE.get(city.toLowerCase());
+        if (cached != null) return cached;
         try {
             String urlString = "https://api.openweathermap.org/data/2.5/weather?q="
                 + java.net.URLEncoder.encode(city, "UTF-8")
@@ -53,7 +61,9 @@ public class WeatherService {
             String description = json.getJSONArray("weather").getJSONObject(0).getString("description");
             int humidity = json.getJSONObject("main").getInt("humidity");
 
-            return new WeatherInfo(temp, description, humidity);
+            WeatherInfo info = new WeatherInfo(temp, description, humidity);
+            CURRENT_CACHE.put(city.toLowerCase(), info);
+            return info;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,6 +78,10 @@ public class WeatherService {
      * general seasonal note for those.
      */
     public static List<WeatherInfo> getForecast(String city, int numDays) {
+        String cacheKey = city.toLowerCase() + "|" + numDays;
+        List<WeatherInfo> cached = FORECAST_CACHE.get(cacheKey);
+        if (cached != null) return cached;
+
         List<WeatherInfo> result = new ArrayList<>();
         try {
             String urlString = "https://api.openweathermap.org/data/2.5/forecast?q="
@@ -126,6 +140,7 @@ public class WeatherService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        if (!result.isEmpty()) FORECAST_CACHE.put(cacheKey, result);
         return result;
     }
 
