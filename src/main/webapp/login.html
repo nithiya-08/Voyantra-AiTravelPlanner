@@ -15,32 +15,40 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    background: var(--ink); color: var(--paper); font-family: 'Inter', sans-serif;
+    background:
+      radial-gradient(circle at 15% 15%, rgba(231,169,76,0.12), transparent 40%),
+      radial-gradient(circle at 85% 85%, rgba(79,195,176,0.10), transparent 40%),
+      var(--ink);
+    color: var(--paper); font-family: 'Inter', sans-serif;
     min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 6vh 6vw;
   }
   a { color: inherit; }
   ::selection { background: var(--gold); color: var(--ink); }
 
-  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; margin-bottom: 32px; }
-  .brand-mark { width: 28px; height: 28px; flex-shrink: 0; }
-  .brand-word { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.15rem; }
+  .brand { display: flex; align-items: center; gap: 9px; text-decoration: none; margin-bottom: 22px; justify-content: center; }
+  .brand-mark { width: 26px; height: 26px; flex-shrink: 0; }
+  .brand-word { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.1rem; }
   .brand-word .accent { color: var(--gold); font-weight: 500; font-style: italic; }
 
   /* ---- Form panel ---- */
-  .form-card { width: 100%; max-width: 380px; }
+  .form-card {
+    width: 100%; max-width: 340px;
+    background: var(--ink-2); border: 1px solid var(--line); border-radius: 20px;
+    padding: 32px 30px; box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+  }
   .back-link {
-    display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--muted);
-    margin-bottom: 22px; width: fit-content;
+    display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--muted);
+    margin-bottom: 16px; width: fit-content;
   }
   .back-link:hover { color: var(--gold); }
-  h1 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 2rem; margin-bottom: 8px; }
-  .sub { color: var(--muted); font-size: 0.92rem; margin-bottom: 32px; }
-  label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 8px; }
-  .field { margin-bottom: 20px; }
+  h1 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.6rem; margin-bottom: 6px; text-align: center; }
+  .sub { color: var(--muted); font-size: 0.86rem; margin-bottom: 24px; text-align: center; }
+  label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 7px; }
+  .field { margin-bottom: 16px; }
   .input-shell { position: relative; }
   input {
-    width: 100%; padding: 13px 15px; border-radius: 10px; border: 1px solid var(--line-strong);
-    background: var(--ink-2); color: var(--paper); font-family: inherit; font-size: 0.92rem;
+    width: 100%; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--line-strong);
+    background: var(--ink-3); color: var(--paper); font-family: inherit; font-size: 0.9rem;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
   input.has-toggle { padding-right: 44px; }
@@ -56,13 +64,13 @@
   .field-err { font-size: 0.78rem; color: var(--coral); margin-top: 6px; display: none; align-items: center; gap: 5px; }
   .field.invalid input { border-color: var(--coral); }
   .field.invalid .field-err { display: flex; }
-  .row-between { display: flex; justify-content: space-between; align-items: center; margin-bottom: 26px; font-size: 0.84rem; }
+  .row-between { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 0.82rem; }
   .row-between a { color: var(--gold); }
   .checkline { display: flex; align-items: center; gap: 8px; color: var(--muted); cursor: pointer; }
   .checkline input { width: auto; accent-color: var(--gold); }
   button.submit {
-    width: 100%; padding: 14px; border-radius: 10px; border: none; cursor: pointer;
-    background: var(--gold); color: var(--ink); font-weight: 700; font-size: 0.94rem;
+    width: 100%; padding: 12px; border-radius: 10px; border: none; cursor: pointer;
+    background: var(--gold); color: var(--ink); font-weight: 700; font-size: 0.92rem;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     display: flex; align-items: center; justify-content: center; gap: 8px;
   }
@@ -74,7 +82,7 @@
     animation: spin 0.7s linear infinite; display: none;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .switch { text-align: center; margin-top: 26px; font-size: 0.88rem; color: var(--muted); }
+  .switch { text-align: center; margin-top: 18px; font-size: 0.85rem; color: var(--muted); }
   .switch a { color: var(--gold); font-weight: 600; }
   .success-banner {
     display: none; align-items: center; gap: 10px; background: rgba(79,195,176,0.12);

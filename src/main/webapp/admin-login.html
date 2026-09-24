@@ -15,26 +15,34 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    background: var(--ink); color: var(--paper); font-family: 'Inter', sans-serif;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(226,112,79,0.10), transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(226,112,79,0.06), transparent 40%),
+      var(--ink);
+    color: var(--paper); font-family: 'Inter', sans-serif;
     min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 6vh 6vw;
   }
   a { color: inherit; }
   ::selection { background: var(--coral); color: var(--ink); }
 
-  .form-card { width: 100%; max-width: 380px; }
-  .lock-icon {
-    width: 48px; height: 48px; border-radius: 14px; background: rgba(226,112,79,0.14);
-    display: flex; align-items: center; justify-content: center; margin-bottom: 20px;
+  .form-card {
+    width: 100%; max-width: 340px;
+    background: var(--ink-2); border: 1px solid var(--line); border-radius: 20px;
+    padding: 32px 30px; box-shadow: 0 24px 60px rgba(0,0,0,0.4);
   }
-  .kicker { font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--coral); font-weight: 700; margin-bottom: 12px; }
-  h1 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 2rem; margin-bottom: 8px; }
-  .sub { color: var(--muted); font-size: 0.92rem; margin-bottom: 32px; }
-  label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 8px; }
-  .field { margin-bottom: 20px; }
+  .lock-icon {
+    width: 44px; height: 44px; border-radius: 13px; background: rgba(226,112,79,0.14);
+    display: flex; align-items: center; justify-content: center; margin-bottom: 16px;
+  }
+  .kicker { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--coral); font-weight: 700; margin-bottom: 10px; }
+  h1 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.6rem; margin-bottom: 6px; }
+  .sub { color: var(--muted); font-size: 0.86rem; margin-bottom: 24px; }
+  label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 7px; }
+  .field { margin-bottom: 16px; }
   .input-shell { position: relative; }
   input {
-    width: 100%; padding: 13px 15px; border-radius: 10px; border: 1px solid var(--line-strong);
-    background: var(--ink-2); color: var(--paper); font-family: inherit; font-size: 0.92rem;
+    width: 100%; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--line-strong);
+    background: var(--ink-3); color: var(--paper); font-family: inherit; font-size: 0.9rem;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
   input.has-toggle { padding-right: 44px; }
@@ -51,8 +59,8 @@
   .field.invalid input { border-color: var(--coral); }
   .field.invalid .field-err { display: flex; }
   button.submit {
-    width: 100%; padding: 14px; border-radius: 10px; border: none; cursor: pointer;
-    background: var(--coral); color: var(--ink); font-weight: 700; font-size: 0.94rem;
+    width: 100%; padding: 12px; border-radius: 10px; border: none; cursor: pointer;
+    background: var(--coral); color: var(--ink); font-weight: 700; font-size: 0.92rem;
     transition: transform 0.2s ease, box-shadow 0.2s ease; margin-top: 6px;
     display: flex; align-items: center; justify-content: center; gap: 8px;
   }
@@ -64,7 +72,7 @@
     animation: spin 0.7s linear infinite; display: none;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .switch { text-align: center; margin-top: 26px; font-size: 0.88rem; color: var(--muted); }
+  .switch { text-align: center; margin-top: 18px; font-size: 0.85rem; color: var(--muted); }
   .switch a { color: var(--muted); }
   .switch a:hover { color: var(--paper); }
   .success-banner {
