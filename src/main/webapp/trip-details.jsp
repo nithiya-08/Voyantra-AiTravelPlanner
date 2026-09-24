@@ -447,6 +447,10 @@
     padding: 24px; margin-bottom: 18px; transition: border-color 0.2s ease;
   }
   .day-card:hover { border-color: rgba(231,169,76,0.35); }
+
+  .nearby-card { cursor: pointer; transition: border-color 0.2s ease, transform 0.15s ease; }
+  .nearby-card:hover { border-color: rgba(231,169,76,0.4); transform: translateY(-2px); }
+  .nearby-card .website-link { position: relative; z-index: 2; }
   .day-card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
   .day-badge {
     font-family: 'Fraunces', serif; font-weight: 600; font-size: 1rem; color: var(--ink);
@@ -786,8 +790,8 @@
           Double rrDistance = (Double) rr[7];
           String rrWebsite = (String) rr[8];
       %>
-        <div style="background:var(--ink-3); border:1px solid var(--line); border-radius:12px; padding:16px; transition:border-color 0.2s ease;">
-          <a href="vendor-details.jsp?vendorId=<%= rrId %>" style="display:block; font-weight:700; font-size:0.94rem; margin-bottom:6px;"><%= rr[1] %></a>
+        <div class="nearby-card" onclick="window.location.href='vendor-details.jsp?vendorId=<%= rrId %>'" style="background:var(--ink-3); border:1px solid var(--line); border-radius:12px; padding:16px;">
+          <div style="font-weight:700; font-size:0.94rem; margin-bottom:6px;"><%= rr[1] %></div>
           <% if (rrDish != null && !rrDish.trim().isEmpty()) { %>
           <div style="font-size:0.82rem; color:var(--gold); margin-bottom:6px;">&#127859; Famous for: <%= rrDish %></div>
           <% } %>
@@ -802,7 +806,9 @@
             <% if (rrDistance != null) { %> &middot; <%= String.format("%.1f", rrDistance) %> km away<% } %>
           </div>
           <% if (rrWebsite != null && !rrWebsite.trim().isEmpty()) { %>
-          <a href="<%= rrWebsite %>" target="_blank" rel="noopener noreferrer" style="font-size:0.78rem; color:var(--teal);">&#128279; Visit their website &#8599;</a>
+          <a href="<%= rrWebsite %>" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="website-link" style="font-size:0.78rem; color:var(--teal);">&#128279; Visit their website &#8599;</a>
+          <% } else { %>
+          <div style="font-size:0.78rem; color:var(--muted); font-style:italic;">No website listed yet</div>
           <% } %>
         </div>
       <% } %>
@@ -840,13 +846,15 @@
           Object nvRatingObj = nv[7];
           String nvWebsite = (String) nv[8];
       %>
-        <div style="background:var(--ink-3); border:1px solid var(--line); border-radius:12px; padding:14px; transition:border-color 0.2s ease;">
-          <a href="vendor-details.jsp?vendorId=<%= nvId %>" style="display:block; font-weight:700; font-size:0.92rem; margin-bottom:6px;"><%= nv[1] %><% if (nvVerified) { %> <span style="color:var(--teal); font-size:0.78rem;">&#10003; Verified</span><% } %></a>
+        <div class="nearby-card" onclick="window.location.href='vendor-details.jsp?vendorId=<%= nvId %>'" style="background:var(--ink-3); border:1px solid var(--line); border-radius:12px; padding:14px;">
+          <div style="font-weight:700; font-size:0.92rem; margin-bottom:6px;"><%= nv[1] %><% if (nvVerified) { %> <span style="color:var(--teal); font-size:0.78rem;">&#10003; Verified</span><% } %></div>
           <div style="font-size:0.78rem; color:var(--muted); margin-bottom:4px;"><%= nv[2] %> &middot; <%= nv[3] %></div>
           <% if (nv[4] != null) { %><div style="font-size:0.78rem; color:var(--gold);"><%= nv[4] %></div><% } %>
           <% if (nvRatingObj != null) { %><div style="font-size:0.78rem; color:var(--muted); margin-top:4px;">&#9733; <%= String.format("%.1f", (Double) nvRatingObj) %></div><% } %>
           <% if (nvWebsite != null && !nvWebsite.trim().isEmpty()) { %>
-          <a href="<%= nvWebsite %>" target="_blank" rel="noopener noreferrer" style="display:block; margin-top:6px; font-size:0.76rem; color:var(--teal);">&#128279; Visit their website &#8599;</a>
+          <a href="<%= nvWebsite %>" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="website-link" style="display:block; margin-top:6px; font-size:0.76rem; color:var(--teal);">&#128279; Visit their website &#8599;</a>
+          <% } else { %>
+          <div style="margin-top:6px; font-size:0.76rem; color:var(--muted); font-style:italic;">No website listed yet</div>
           <% } %>
         </div>
       <% } %>
