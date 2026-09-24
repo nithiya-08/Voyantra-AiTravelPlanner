@@ -71,8 +71,44 @@ public class GenerateItineraryServlet extends HttpServlet {
             String travelStyle = rs.getString("travel_style");
             String interests = rs.getString("interests");
 
+            // ---- Look up a real approved Voyantra vendor for this destination, if one exists,
+            //      so the AI itinerary can point at an actual bookable local listing. ----
+            Integer hotelVendorId = null;
+            String hotelVendorName = null;
+            Integer foodVendorId = null;
+            String foodVendorName = null;
+
+            String vendorSql = "SELECT vendor_id, business_name FROM vendors "
+                + "WHERE status = 'APPROVED' AND category IN ('HOTEL', 'HOMESTAY') "
+                + "AND (city LIKE ? OR ? LIKE CONCAT('%', city, '%')) "
+                + "ORDER BY (SELECT AVG(rating) FROM vendor_reviews r WHERE r.vendor_id = vendors.vendor_id) DESC "
+                + "LIMIT 1";
+            PreparedStatement vendorStmt = conn.prepareStatement(vendorSql);
+            vendorStmt.setString(1, "%" + destination + "%");
+            vendorStmt.setString(2, destination);
+            ResultSet vendorRs = vendorStmt.executeQuery();
+            if (vendorRs.next()) {
+                hotelVendorId = vendorRs.getInt("vendor_id");
+                hotelVendorName = vendorRs.getString("business_name");
+            }
+
+            String foodVendorSql = "SELECT vendor_id, business_name FROM vendors "
+                + "WHERE status = 'APPROVED' AND category = 'RESTAURANT' "
+                + "AND (city LIKE ? OR ? LIKE CONCAT('%', city, '%')) "
+                + "ORDER BY (SELECT AVG(rating) FROM vendor_reviews r WHERE r.vendor_id = vendors.vendor_id) DESC "
+                + "LIMIT 1";
+            PreparedStatement foodVendorStmt = conn.prepareStatement(foodVendorSql);
+            foodVendorStmt.setString(1, "%" + destination + "%");
+            foodVendorStmt.setString(2, destination);
+            ResultSet foodVendorRs = foodVendorStmt.executeQuery();
+            if (foodVendorRs.next()) {
+                foodVendorId = foodVendorRs.getInt("vendor_id");
+                foodVendorName = foodVendorRs.getString("business_name");
+            }
+
             GeminiItineraryClient aiClient = new GeminiItineraryClient();
-            JSONArray days = aiClient.generateItinerary(destination, budget, numDays, travelStyle, interests);
+            JSONArray days = aiClient.generateItinerary(destination, budget, numDays, travelStyle, interests,
+                hotelVendorName, foodVendorName);
 
             String deleteSql = "DELETE FROM itineraries WHERE trip_id = ?";
             PreparedStatement deleteStmt = conn.prepareStatement(deleteSql);
@@ -80,7 +116,8 @@ public class GenerateItineraryServlet extends HttpServlet {
             deleteStmt.executeUpdate();
 
             String insertSql = "INSERT INTO itineraries (trip_id, day_number, activities, food_suggestions, "
-                              + "hotel_suggestion, weather_info) VALUES (?, ?, ?, ?, ?, ?)";
+                              + "hotel_suggestion, weather_info, suggested_hotel_vendor_id, suggested_food_vendor_id) "
+                              + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement insertStmt = conn.prepareStatement(insertSql);
 
             for (int i = 0; i < days.length(); i++) {
@@ -91,6 +128,8 @@ public class GenerateItineraryServlet extends HttpServlet {
                 insertStmt.setString(4, day.optString("food", ""));
                 insertStmt.setString(5, day.optString("hotel", ""));
                 insertStmt.setString(6, day.optString("weather", ""));
+                if (hotelVendorId != null) insertStmt.setInt(7, hotelVendorId); else insertStmt.setNull(7, java.sql.Types.INTEGER);
+                if (foodVendorId != null) insertStmt.setInt(8, foodVendorId); else insertStmt.setNull(8, java.sql.Types.INTEGER);
                 insertStmt.executeUpdate();
             }
 

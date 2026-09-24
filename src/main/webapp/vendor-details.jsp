@@ -275,7 +275,10 @@
   <% } %>
 
   <% if (description != null && !description.trim().isEmpty()) { %>
-    <div class="description"><%= description %></div>
+    <div class="description" id="vendorDescription" data-original="<%= description.replace("\"", "&quot;") %>"><%= description %></div>
+    <div id="translateControls" style="display:none; margin-bottom:20px;">
+      <button type="button" id="translateBtn" class="website-link" style="background:none; border:none; cursor:pointer; padding:0; font-family:inherit;"></button>
+    </div>
   <% } %>
 
   <div class="contact-card">
@@ -359,5 +362,62 @@
   <% } } %>
 </main>
 
+<script src="js/i18n.js?v=3"></script>
+<script>
+  (function () {
+    var LANG_NAMES = { ta: 'Tamil', hi: 'Hindi', fr: 'French', de: 'German', es: 'Spanish' };
+    var descEl = document.getElementById('vendorDescription');
+    var controls = document.getElementById('translateControls');
+    var btn = document.getElementById('translateBtn');
+    if (!descEl || !window.VoyantraI18n) return;
+
+    var lang = window.VoyantraI18n.currentLang();
+    if (lang === 'en' || !LANG_NAMES[lang]) return;
+
+    var original = descEl.getAttribute('data-original');
+    var showingTranslated = false;
+    var cachedTranslation = null;
+
+    function setLabel() {
+      btn.textContent = showingTranslated
+        ? '↺ Show original'
+        : '🌐 Translate to ' + LANG_NAMES[lang];
+    }
+
+    controls.style.display = 'block';
+    setLabel();
+
+    btn.addEventListener('click', function () {
+      if (showingTranslated) {
+        descEl.textContent = original;
+        showingTranslated = false;
+        setLabel();
+        return;
+      }
+      if (cachedTranslation) {
+        descEl.textContent = cachedTranslation;
+        showingTranslated = true;
+        setLabel();
+        return;
+      }
+      btn.textContent = 'Translating...';
+      fetch('TranslateVendorDescriptionServlet', {
+        method: 'POST',
+        body: new URLSearchParams({ vendorId: '<%= vendorId %>', lang: lang })
+      }).then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data.success) {
+            cachedTranslation = data.translated;
+            descEl.textContent = data.translated;
+            showingTranslated = true;
+            setLabel();
+          } else {
+            setLabel();
+          }
+        })
+        .catch(function () { setLabel(); });
+    });
+  })();
+</script>
 </body>
 </html>

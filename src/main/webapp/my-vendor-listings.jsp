@@ -16,7 +16,12 @@
             String sql = "SELECT v.vendor_id, v.business_name, v.category, v.city, v.status, v.rejection_reason, "
                        + "(SELECT COUNT(*) FROM vendor_inquiries i WHERE i.vendor_id = v.vendor_id) AS inquiry_count, "
                        + "(SELECT AVG(rating) FROM vendor_reviews r WHERE r.vendor_id = v.vendor_id) AS avg_rating, "
-                       + "(SELECT COUNT(*) FROM vendor_reviews r WHERE r.vendor_id = v.vendor_id) AS review_count "
+                       + "(SELECT COUNT(*) FROM vendor_reviews r WHERE r.vendor_id = v.vendor_id) AS review_count, "
+                       + "(SELECT COUNT(*) FROM vendor_inquiries i2 JOIN vendors v2 ON i2.vendor_id = v2.vendor_id "
+                       + " WHERE v2.category = v.category AND v2.city = v.city AND v2.status = 'APPROVED' "
+                       + " AND i2.created_at >= (NOW() - INTERVAL 30 DAY)) AS demand_count, "
+                       + "(SELECT COUNT(*) FROM vendors v3 WHERE v3.category = v.category AND v3.city = v.city "
+                       + " AND v3.status = 'APPROVED') AS competitor_count "
                        + "FROM vendors v WHERE v.user_id = ? ORDER BY v.vendor_id DESC";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, userId);
@@ -31,7 +36,9 @@
                     rs.getString("rejection_reason"),
                     rs.getInt("inquiry_count"),
                     rs.getObject("avg_rating"),
-                    rs.getInt("review_count")
+                    rs.getInt("review_count"),
+                    rs.getInt("demand_count"),
+                    rs.getInt("competitor_count")
                 });
             }
         }
@@ -166,6 +173,8 @@
           int inquiryCount = (int) v[6];
           Object avgRatingObj = v[7];
           int reviewCount = (int) v[8];
+          int demandCount = (int) v[9];
+          int competitorCount = (int) v[10];
           String statusClass = "APPROVED".equals(status) ? "status-approved" : ("REJECTED".equals(status) || "SUSPENDED".equals(status) ? "status-rejected" : "");
       %>
           <div class="trip-card">
@@ -180,6 +189,11 @@
                   &middot;
                   <% if (avgRatingObj != null) { %>&#9733; <%= String.format("%.1f", (Double) avgRatingObj) %> (<%= reviewCount %> reviews)<% } else { %>no reviews yet<% } %>
               </div>
+              <% if (demandCount > 0) { %>
+              <div style="font-size:0.78rem; color:var(--teal); background:rgba(79,195,176,0.1); border-radius:8px; padding:8px 10px; margin-bottom:14px;">
+                  &#128200; <%= demandCount %> tourist inquir<%= demandCount == 1 ? "y" : "ies" %> for <%= category %> in <%= city %> in the last 30 days, across <%= competitorCount %> vendor<%= competitorCount == 1 ? "" : "s" %>
+              </div>
+              <% } %>
               <% if ("REJECTED".equals(status) && rejectionReason != null && !rejectionReason.trim().isEmpty()) { %>
               <div class="reject-reason">Reason: <%= rejectionReason %></div>
               <% } %>

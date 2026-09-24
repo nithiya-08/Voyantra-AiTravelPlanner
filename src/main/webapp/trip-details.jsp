@@ -88,13 +88,23 @@
     EmergencyInfoService.EmergencyInfo emergencyInfo = EmergencyInfoService.getEmergencyInfo(destination);
 
     // ---- Nearby vendor marketplace recommendations for this destination ----
+    // Weather-aware: on bad weather, favor indoor categories (stay/food) over outdoor ones.
+    boolean badWeather = weather != null && weather.description != null && (
+        weather.description.toLowerCase().contains("rain") ||
+        weather.description.toLowerCase().contains("storm") ||
+        weather.description.toLowerCase().contains("snow") ||
+        weather.description.toLowerCase().contains("thunder"));
+    String categoryPriority = badWeather
+        ? "'HOTEL', 'HOMESTAY', 'RESTAURANT', 'ACTIVITY', 'GUIDE', 'TRANSPORT'"
+        : "'HOTEL', 'HOMESTAY', 'ACTIVITY', 'RESTAURANT', 'GUIDE', 'TRANSPORT'";
+
     ArrayList<Object[]> nearbyVendors = new ArrayList<>();
     try (Connection nearbyConn = DBConnection.getConnection()) {
         if (nearbyConn != null) {
             String nearbySql = "SELECT vendor_id, business_name, category, city, price_range, photo_url, is_verified, "
                 + "(SELECT AVG(rating) FROM vendor_reviews r WHERE r.vendor_id = v.vendor_id) AS avg_rating "
                 + "FROM vendors v WHERE status = 'APPROVED' AND (city LIKE ? OR ? LIKE CONCAT('%', city, '%')) "
-                + "ORDER BY FIELD(category, 'HOTEL', 'HOMESTAY', 'ACTIVITY', 'RESTAURANT', 'GUIDE', 'TRANSPORT'), "
+                + "ORDER BY FIELD(category, " + categoryPriority + "), "
                 + "avg_rating DESC LIMIT 6";
             PreparedStatement nearbyStmt = nearbyConn.prepareStatement(nearbySql);
             nearbyStmt.setString(1, "%" + destination + "%");
@@ -619,6 +629,9 @@
   <!-- Nearby vendor marketplace recommendations -->
   <div class="panel">
     <div class="section-title" style="margin-top:0;">&#127968; Recommended near <%= destination %></div>
+    <% if (badWeather && !nearbyVendors.isEmpty()) { %>
+      <div style="font-size:0.82rem; color:var(--muted); margin-bottom:12px;">&#127783; Weather looks rough right now, so we're showing indoor options first.</div>
+    <% } %>
     <% if (!nearbyVendors.isEmpty()) { %>
       <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:14px;">
       <% for (Object[] nv : nearbyVendors) {
@@ -665,8 +678,13 @@
       boolean hasItinerary = false;
       try (Connection conn2 = DBConnection.getConnection()) {
           if (conn2 != null) {
-              String sql2 = "SELECT day_number, activities, food_suggestions, hotel_suggestion, weather_info, is_favorite "
-                         + "FROM itineraries WHERE trip_id = ? ORDER BY day_number ASC";
+              String sql2 = "SELECT i.day_number, i.activities, i.food_suggestions, i.hotel_suggestion, i.weather_info, i.is_favorite, "
+                         + "i.suggested_hotel_vendor_id, hv.business_name AS hotel_vendor_name, "
+                         + "i.suggested_food_vendor_id, fv.business_name AS food_vendor_name "
+                         + "FROM itineraries i "
+                         + "LEFT JOIN vendors hv ON i.suggested_hotel_vendor_id = hv.vendor_id AND hv.status = 'APPROVED' "
+                         + "LEFT JOIN vendors fv ON i.suggested_food_vendor_id = fv.vendor_id AND fv.status = 'APPROVED' "
+                         + "WHERE i.trip_id = ? ORDER BY i.day_number ASC";
               PreparedStatement stmt2 = conn2.prepareStatement(sql2);
               stmt2.setInt(1, tripId);
               ResultSet rs2 = stmt2.executeQuery();
@@ -677,6 +695,10 @@
              int dayNum = rs2.getInt("day_number");
              boolean isFavDay = rs2.getBoolean("is_favorite");
              WeatherService.WeatherInfo dayForecast = (dayNum - 1 < forecast.size()) ? forecast.get(dayNum - 1) : null;
+             int hotelVendorIdForDay = rs2.getInt("suggested_hotel_vendor_id");
+             String hotelVendorNameForDay = rs2.getString("hotel_vendor_name");
+             int foodVendorIdForDay = rs2.getInt("suggested_food_vendor_id");
+             String foodVendorNameForDay = rs2.getString("food_vendor_name");
       %>
           <div class="day-card" id="day-<%= dayNum %>">
               <div class="day-card-head">
@@ -708,6 +730,9 @@
                       <div class="day-row-text">
                           <div class="lbl" data-i18n="td_food">Food</div>
                           <div class="val"><%= rs2.getString("food_suggestions") %></div>
+                          <% if (foodVendorNameForDay != null) { %>
+                          <a href="vendor-details.jsp?vendorId=<%= foodVendorIdForDay %>" style="display:inline-block; margin-top:6px; font-size:0.78rem; color:var(--teal);">&#128205; Real listing on Voyantra: <%= foodVendorNameForDay %> &rarr;</a>
+                          <% } %>
                       </div>
                   </div>
                   <div class="day-row hotel">
@@ -715,6 +740,9 @@
                       <div class="day-row-text">
                           <div class="lbl" data-i18n="td_stay">Stay</div>
                           <div class="val"><%= rs2.getString("hotel_suggestion") %></div>
+                          <% if (hotelVendorNameForDay != null) { %>
+                          <a href="vendor-details.jsp?vendorId=<%= hotelVendorIdForDay %>" style="display:inline-block; margin-top:6px; font-size:0.78rem; color:var(--teal);">&#128205; Real listing on Voyantra: <%= hotelVendorNameForDay %> &rarr;</a>
+                          <% } %>
                       </div>
                   </div>
                   <div class="day-row weather">
