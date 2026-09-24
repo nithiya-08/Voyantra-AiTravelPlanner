@@ -18,12 +18,31 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.voyantra.ai.GeminiClient;
+import com.voyantra.ai.WeatherService;
 import com.voyantra.db.DBConnection;
 
 @WebServlet("/ChatbotServlet")
 public class ChatbotServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
+
+    private static final String[] CLIMATE_KEYWORDS = {
+        "weather", "climate", "rain", "rainy", "monsoon", "hot", "cold", "cool",
+        "season", "humid", "temperature", "sunny", "snow", "chilly", "warm"
+    };
+
+    // A representative spread across India's climate zones (hill/cold, coastal,
+    // desert, plains) — kept short so a chat reply doesn't wait on 20 live
+    // weather lookups. These are all destinations Voyantra already has
+    // approved local vendors in, so any suggestion is actually bookable.
+    private static final String[] CLIMATE_SAMPLE_DESTINATIONS = {
+        "Ooty", "Manali", "Leh", "Goa", "Alleppey", "Jaipur", "Jodhpur", "Varanasi"
+    };
+
+    private static final String[] OTHER_VENDOR_DESTINATIONS = {
+        "Munnar", "Coorg", "Kodaikanal", "Shimla", "Darjeeling", "Pondicherry",
+        "Agra", "Mysore", "Hampi", "Port Blair", "Rishikesh", "Udaipur"
+    };
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -56,10 +75,19 @@ public class ChatbotServlet extends HttpServlet {
             prompt.append("Voyantra lets users enter a budget, number of days, travel style and interests, and ");
             prompt.append("generates a complete day-wise itinerary (activities, food, stay, weather) using AI. ");
             prompt.append("Users can save trips, edit them, download a PDF, see destination photos/videos, log expenses, ");
-            prompt.append("share a trip via a public link, and invite collaborators. ");
+            prompt.append("share a trip via a public link, and invite collaborators. Voyantra also has a local vendor ");
+            prompt.append("marketplace — real homestays, guides, transport and restaurants that travellers can browse, ");
+            prompt.append("review and contact directly. ");
             prompt.append("Answer the user's question conversationally, in 2-4 short sentences unless more detail is truly needed. ");
             prompt.append("If asked about a specific trip and trip details are provided below, use them. ");
+            prompt.append("If the user asks for a destination suggestion based on weather/climate/season, prefer recommending ");
+            prompt.append("from the live-weather data and Voyantra-covered destinations given below (real, bookable options) ");
+            prompt.append("over generic suggestions, and briefly say why the climate fits. ");
             prompt.append("If you don't know something about the site, say so briefly rather than inventing details.\n\n");
+
+            if (mentionsClimate(message)) {
+                appendClimateContext(prompt);
+            }
 
             if (!tripIdStr.isEmpty()) {
                 appendTripContext(request, prompt, tripIdStr);
@@ -90,6 +118,29 @@ public class ChatbotServlet extends HttpServlet {
         out.print(reply.toString());
     }
 
+    private boolean mentionsClimate(String message) {
+        String lower = message.toLowerCase();
+        for (String keyword : CLIMATE_KEYWORDS) {
+            if (lower.contains(keyword)) return true;
+        }
+        return false;
+    }
+
+    private void appendClimateContext(StringBuilder prompt) {
+        prompt.append("Live current weather in some Voyantra-covered destinations:\n");
+        for (String city : CLIMATE_SAMPLE_DESTINATIONS) {
+            WeatherService.WeatherInfo weather = WeatherService.getCurrentWeather(city);
+            if (weather != null) {
+                prompt.append("- ").append(city).append(": ")
+                    .append(Math.round(weather.temperature)).append("°C, ")
+                    .append(weather.description).append(", ")
+                    .append(weather.humidity).append("% humidity\n");
+            }
+        }
+        prompt.append("Voyantra also has approved local vendors ready to book in these other destinations: ");
+        prompt.append(String.join(", ", OTHER_VENDOR_DESTINATIONS)).append(".\n\n");
+    }
+
     private void appendTripContext(HttpServletRequest request, StringBuilder prompt, String tripIdStr) {
         try {
             HttpSession session = request.getSession(false);
@@ -111,11 +162,20 @@ public class ChatbotServlet extends HttpServlet {
 
                 if (!tripRs.next()) return;
 
-                prompt.append("This trip: ").append(tripRs.getString("destination"))
+                String tripDestination = tripRs.getString("destination");
+                prompt.append("This trip: ").append(tripDestination)
                     .append(", budget Rs ").append((int) tripRs.getDouble("budget"))
                     .append(", ").append(tripRs.getInt("num_days")).append(" days, style ")
                     .append(tripRs.getString("travel_style")).append(", interests ")
                     .append(tripRs.getString("interests")).append(".\n");
+
+                WeatherService.WeatherInfo tripWeather = WeatherService.getCurrentWeather(tripDestination);
+                if (tripWeather != null) {
+                    prompt.append("Current live weather in ").append(tripDestination).append(": ")
+                        .append(Math.round(tripWeather.temperature)).append("°C, ")
+                        .append(tripWeather.description).append(", ")
+                        .append(tripWeather.humidity).append("% humidity.\n");
+                }
 
                 String itinSql = "SELECT day_number, activities, food_suggestions, hotel_suggestion "
                     + "FROM itineraries WHERE trip_id = ? ORDER BY day_number ASC";
