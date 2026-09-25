@@ -114,11 +114,14 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("isAdmin", isAdmin);
             session.setAttribute("isVendor", isVendor);
 
+            // This servlet backs the tourist and vendor login pages only — admin-login.html
+            // posts to AdminLoginServlet instead. So even an is_admin account logging in
+            // here lands on its normal tourist/vendor dashboard, not the admin panel; it
+            // still gets an "Admin" nav link there (dashboard.jsp checks isAdmin) for
+            // one-click access when it wants it.
             String loginContext = request.getParameter("context");
             String redirectTo;
-            if (isAdmin) {
-                redirectTo = "admin-dashboard.jsp";
-            } else if ("vendor".equals(loginContext)) {
+            if ("vendor".equals(loginContext)) {
                 redirectTo = isVendor ? "my-vendor-listings.jsp" : "vendor-form.jsp";
             } else {
                 redirectTo = "dashboard.jsp";
