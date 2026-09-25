@@ -148,14 +148,14 @@
     </svg>
     <span class="brand-word">Voy<span class="accent">antra</span></span>
   </a>
-  <a href="my-vendor-listings.jsp" class="back-link">&larr; My listings</a>
+  <a href="my-vendor-listings.jsp" class="back-link" data-i18n="vendorform_back_listings">&larr; My listings</a>
 </header>
 
 <main>
   <div class="page-head">
-    <div class="kicker">Local vendors</div>
-    <h1><%= editMode ? "Edit your listing" : "List your business" %></h1>
-    <p>Get discovered by travellers planning trips near you.</p>
+    <div class="kicker" data-i18n="vendors_heading">Local vendors</div>
+    <h1 data-i18n="<%= editMode ? "vendorform_edit_h1" : "vendorform_add_h1" %>"><%= editMode ? "Edit your listing" : "List your business" %></h1>
+    <p data-i18n="vendorform_sub">Get discovered by travellers planning trips near you.</p>
   </div>
 
   <div class="form-card">
@@ -165,93 +165,95 @@
       <% } %>
 
       <div class="field">
-        <label for="businessName">Business name</label>
+        <label for="businessName" data-i18n="vendorform_bizname">Business name</label>
         <input type="text" id="businessName" name="businessName" value="<%= businessName %>" required>
       </div>
 
       <div class="field-row">
         <div class="field">
-          <label for="category">Category</label>
+          <label for="category" data-i18n="vendorform_category">Category</label>
           <select id="category" name="category" required>
-            <option value="HOTEL" <%= category.equals("HOTEL") ? "selected" : "" %>>Hotel</option>
-            <option value="HOMESTAY" <%= category.equals("HOMESTAY") ? "selected" : "" %>>Homestay</option>
-            <option value="GUIDE" <%= category.equals("GUIDE") ? "selected" : "" %>>Local guide</option>
-            <option value="TRANSPORT" <%= category.equals("TRANSPORT") ? "selected" : "" %>>Local transport</option>
-            <option value="ACTIVITY" <%= category.equals("ACTIVITY") ? "selected" : "" %>>Activity / experience</option>
-            <option value="RESTAURANT" <%= category.equals("RESTAURANT") ? "selected" : "" %>>Restaurant / food</option>
+            <option value="HOTEL" data-i18n="vendors_cat_hotel" <%= category.equals("HOTEL") ? "selected" : "" %>>Hotel</option>
+            <option value="HOMESTAY" data-i18n="vendors_cat_homestay" <%= category.equals("HOMESTAY") ? "selected" : "" %>>Homestay</option>
+            <option value="GUIDE" data-i18n="vendors_cat_guide" <%= category.equals("GUIDE") ? "selected" : "" %>>Local guide</option>
+            <option value="TRANSPORT" data-i18n="vendors_cat_transport" <%= category.equals("TRANSPORT") ? "selected" : "" %>>Local transport</option>
+            <option value="ACTIVITY" data-i18n="vendors_cat_activity" <%= category.equals("ACTIVITY") ? "selected" : "" %>>Activity / experience</option>
+            <option value="RESTAURANT" data-i18n="vendors_cat_restaurant" <%= category.equals("RESTAURANT") ? "selected" : "" %>>Restaurant / food</option>
           </select>
         </div>
         <div class="field">
-          <label for="priceRange">Price range <span style="font-weight:400; color:var(--muted); font-size:0.8rem;">(optional)</span></label>
-          <input type="text" id="priceRange" name="priceRange" value="<%= priceRange %>" placeholder="e.g. Rs. 1500 - 3000 / night">
+          <label for="priceRange"><span data-i18n="vendorform_pricerange">Price range</span> <span style="font-weight:400; color:var(--muted); font-size:0.8rem;" data-i18n="vendorform_optional">(optional)</span></label>
+          <input type="text" id="priceRange" name="priceRange" value="<%= priceRange %>" data-i18n-placeholder="vendorform_pricerange_ph" placeholder="e.g. Rs. 1500 - 3000 / night">
         </div>
       </div>
 
       <div class="field">
-        <label for="description">Description <span style="font-weight:400; color:var(--muted); font-size:0.8rem;">(optional)</span></label>
-        <textarea id="description" name="description" placeholder="What makes your place/service worth booking?"><%= description %></textarea>
+        <label for="description"><span data-i18n="vendorform_desc">Description</span> <span style="font-weight:400; color:var(--muted); font-size:0.8rem;" data-i18n="vendorform_optional">(optional)</span></label>
+        <textarea id="description" name="description" data-i18n-placeholder="vendorform_desc_ph" placeholder="What makes your place/service worth booking?"><%= description %></textarea>
       </div>
 
       <div class="field-row">
         <div class="field">
-          <label for="city">City</label>
+          <label for="city" data-i18n="vendors_city_ph">City</label>
           <input type="text" id="city" name="city" value="<%= city %>" required>
         </div>
         <div class="field">
-          <label for="state">State <span style="font-weight:400; color:var(--muted); font-size:0.8rem;">(optional)</span></label>
+          <label for="state"><span data-i18n="vendorform_state">State</span> <span style="font-weight:400; color:var(--muted); font-size:0.8rem;" data-i18n="vendorform_optional">(optional)</span></label>
           <input type="text" id="state" name="state" value="<%= state %>">
         </div>
       </div>
 
       <div class="field">
-        <label for="address">Address <span style="font-weight:400; color:var(--muted); font-size:0.8rem;">(optional)</span></label>
+        <label for="address"><span data-i18n="vendorform_address">Address</span> <span style="font-weight:400; color:var(--muted); font-size:0.8rem;" data-i18n="vendorform_optional">(optional)</span></label>
         <input type="text" id="address" name="address" value="<%= address %>">
       </div>
 
       <div class="field-row">
         <div class="field">
-          <label for="phone">Contact phone</label>
+          <label for="phone" data-i18n="vendorform_phone">Contact phone</label>
           <input type="text" id="phone" name="phone" value="<%= phone %>" required>
         </div>
         <div class="field">
-          <label for="email">Contact email <span style="font-weight:400; color:var(--muted); font-size:0.8rem;">(optional)</span></label>
+          <label for="email"><span data-i18n="vendorform_email">Contact email</span> <span style="font-weight:400; color:var(--muted); font-size:0.8rem;" data-i18n="vendorform_optional">(optional)</span></label>
           <input type="email" id="email" name="email" value="<%= vendorEmail %>">
         </div>
       </div>
 
       <div class="field">
-        <label for="photoUrl">Photo URL <span style="font-weight:400; color:var(--muted); font-size:0.8rem;">(optional)</span></label>
+        <label for="photoUrl"><span data-i18n="vendorform_photourl">Photo URL</span> <span style="font-weight:400; color:var(--muted); font-size:0.8rem;" data-i18n="vendorform_optional">(optional)</span></label>
         <input type="url" id="photoUrl" name="photoUrl" value="<%= photoUrl %>" placeholder="https://...">
       </div>
 
       <div class="field">
-        <label for="websiteUrl">Website or social media link <span style="font-weight:400; color:var(--muted); font-size:0.8rem;">(optional, but builds trust — travellers can check you're real)</span></label>
+        <label for="websiteUrl"><span data-i18n="vendorform_websiteurl">Website or social media link</span> <span style="font-weight:400; color:var(--muted); font-size:0.8rem;" data-i18n="vendorform_websiteurl_hint">(optional, but builds trust — travellers can check you're real)</span></label>
         <input type="url" id="websiteUrl" name="websiteUrl" value="<%= websiteUrl %>" placeholder="https://...">
       </div>
 
       <div id="foodFields" style="display:none;">
         <div class="field-row">
           <div class="field">
-            <label for="dietType">Menu type</label>
+            <label for="dietType" data-i18n="vendorform_menutype">Menu type</label>
             <select id="dietType" name="dietType">
-              <option value="">Not specified</option>
-              <option value="VEG" <%= "VEG".equals(dietType) ? "selected" : "" %>>Vegetarian only</option>
-              <option value="NON_VEG" <%= "NON_VEG".equals(dietType) ? "selected" : "" %>>Non-vegetarian available</option>
-              <option value="BOTH" <%= "BOTH".equals(dietType) ? "selected" : "" %>>Both veg &amp; non-veg</option>
+              <option value="" data-i18n="vendorform_notspecified">Not specified</option>
+              <option value="VEG" data-i18n="vendorform_veg_only" <%= "VEG".equals(dietType) ? "selected" : "" %>>Vegetarian only</option>
+              <option value="NON_VEG" data-i18n="vendorform_nonveg" <%= "NON_VEG".equals(dietType) ? "selected" : "" %>>Non-vegetarian available</option>
+              <option value="BOTH" data-i18n="vendorform_both" <%= "BOTH".equals(dietType) ? "selected" : "" %>>Both veg &amp; non-veg</option>
             </select>
           </div>
           <div class="field">
-            <label for="signatureDish">Signature dish <span style="font-weight:400; color:var(--muted); font-size:0.8rem;">(what you're famous for)</span></label>
+            <label for="signatureDish"><span data-i18n="vendorform_sigdish">Signature dish</span> <span style="font-weight:400; color:var(--muted); font-size:0.8rem;" data-i18n="vendorform_sigdish_hint">(what you're famous for)</span></label>
             <input type="text" id="signatureDish" name="signatureDish" value="<%= signatureDish %>" placeholder="e.g. Chettinad Chicken">
           </div>
         </div>
       </div>
 
-      <button type="submit" class="submit"><%= editMode ? "Save changes" : "Submit for approval" %></button>
+      <button type="submit" class="submit" data-i18n="<%= editMode ? "profile_save_btn" : "vendorform_submit_new" %>"><%= editMode ? "Save changes" : "Submit for approval" %></button>
     </form>
   </div>
 </main>
 
+<script src="js/i18n.js?v=5"></script>
+<script src="js/chatbot.js?v=3"></script>
 <script>
   (function () {
     var categorySelect = document.getElementById('category');

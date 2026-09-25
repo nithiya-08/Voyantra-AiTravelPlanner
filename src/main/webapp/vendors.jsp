@@ -147,36 +147,36 @@
     <span class="brand-word">Voy<span class="accent">antra</span></span>
   </a>
   <div class="header-right">
-    <span class="greeting">Hi, <strong><%= userName %></strong></span>
-    <a href="saved-vendors.jsp" class="btn btn-ghost">Saved</a>
-    <a href="my-inquiries.jsp" class="btn btn-ghost">My inquiries</a>
-    <a href="dashboard.jsp" class="btn btn-ghost">My trips</a>
-    <a href="LogoutServlet" class="btn btn-ghost">Log out</a>
+    <span class="greeting"><span data-i18n="nav_hi">Hi,</span> <strong><%= userName %></strong></span>
+    <a href="saved-vendors.jsp" class="btn btn-ghost" data-i18n="nav_saved">Saved</a>
+    <a href="my-inquiries.jsp" class="btn btn-ghost" data-i18n="nav_myinquiries">My inquiries</a>
+    <a href="dashboard.jsp" class="btn btn-ghost" data-i18n="nav_mytrips">My trips</a>
+    <a href="LogoutServlet" class="btn btn-ghost" data-i18n="nav_logout">Log out</a>
   </div>
 </header>
 
 <main>
   <div class="page-head">
-    <h1>Local vendors</h1>
-    <p>Homestays, guides, transport, and experiences from people who know the place.</p>
+    <h1 data-i18n="vendors_heading">Local vendors</h1>
+    <p data-i18n="vendors_sub">Homestays, guides, transport, and experiences from people who know the place.</p>
   </div>
 
   <form class="filter-bar" method="GET" action="vendors.jsp">
     <select name="category">
-      <option value="" <%= category.isEmpty() ? "selected" : "" %>>All categories</option>
-      <option value="HOTEL" <%= category.equals("HOTEL") ? "selected" : "" %>>Hotel</option>
-      <option value="HOMESTAY" <%= category.equals("HOMESTAY") ? "selected" : "" %>>Homestay</option>
-      <option value="GUIDE" <%= category.equals("GUIDE") ? "selected" : "" %>>Local guide</option>
-      <option value="TRANSPORT" <%= category.equals("TRANSPORT") ? "selected" : "" %>>Local transport</option>
-      <option value="ACTIVITY" <%= category.equals("ACTIVITY") ? "selected" : "" %>>Activity / experience</option>
-      <option value="RESTAURANT" <%= category.equals("RESTAURANT") ? "selected" : "" %>>Restaurant / food</option>
+      <option value="" data-i18n="vendors_cat_all" <%= category.isEmpty() ? "selected" : "" %>>All categories</option>
+      <option value="HOTEL" data-i18n="vendors_cat_hotel" <%= category.equals("HOTEL") ? "selected" : "" %>>Hotel</option>
+      <option value="HOMESTAY" data-i18n="vendors_cat_homestay" <%= category.equals("HOMESTAY") ? "selected" : "" %>>Homestay</option>
+      <option value="GUIDE" data-i18n="vendors_cat_guide" <%= category.equals("GUIDE") ? "selected" : "" %>>Local guide</option>
+      <option value="TRANSPORT" data-i18n="vendors_cat_transport" <%= category.equals("TRANSPORT") ? "selected" : "" %>>Local transport</option>
+      <option value="ACTIVITY" data-i18n="vendors_cat_activity" <%= category.equals("ACTIVITY") ? "selected" : "" %>>Activity / experience</option>
+      <option value="RESTAURANT" data-i18n="vendors_cat_restaurant" <%= category.equals("RESTAURANT") ? "selected" : "" %>>Restaurant / food</option>
     </select>
-    <input type="text" name="city" placeholder="City" value="<%= city %>">
-    <button type="submit">Filter</button>
+    <input type="text" name="city" data-i18n-placeholder="vendors_city_ph" placeholder="City" value="<%= city %>">
+    <button type="submit" data-i18n="vendors_filter_btn">Filter</button>
   </form>
 
   <% if (vendors.isEmpty()) { %>
-    <div class="empty-state">No vendors found. Try a different filter.</div>
+    <div class="empty-state" data-i18n="vendors_empty">No vendors found. Try a different filter.</div>
   <% } else { %>
     <div class="vendor-grid">
     <% for (Object[] v : vendors) {
@@ -196,7 +196,7 @@
               <img class="vendor-photo" src="<%= photoUrl %>" alt="<%= businessName %>">
             <% } %>
             <div class="vendor-body">
-                <h3><%= businessName %><% if (vVerified) { %> <span style="color:var(--teal); font-size:0.76rem; font-weight:700;">&#10003; Verified</span><% } %></h3>
+                <h3><%= businessName %><% if (vVerified) { %> <span style="color:var(--teal); font-size:0.76rem; font-weight:700;">&#10003; <span data-i18n="badge_verified">Verified</span></span><% } %></h3>
                 <div class="trip-meta">
                     <span class="trip-tag"><%= vCategory %></span>
                     <span class="trip-tag"><%= vCity %></span>
@@ -206,15 +206,15 @@
                 </div>
                 <div class="rating">
                     <% if (avgRatingObj != null) { %>
-                      <strong>&#9733; <%= String.format("%.1f", (Double) avgRatingObj) %></strong> (<%= reviewCount %> reviews)
+                      <strong>&#9733; <%= String.format("%.1f", (Double) avgRatingObj) %></strong> (<%= reviewCount %> <span data-i18n="reviews_suffix">reviews</span>)
                     <% } else { %>
-                      No reviews yet
+                      <span data-i18n="reviews_none">No reviews yet</span>
                     <% } %>
                 </div>
                 <div class="vendor-actions">
-                    <a class="view-btn" href="vendor-details.jsp?vendorId=<%= vendorId %>">View details</a>
+                    <a class="view-btn" href="vendor-details.jsp?vendorId=<%= vendorId %>" data-i18n="vendors_view_details">View details</a>
                     <% if (websiteUrl != null && !websiteUrl.trim().isEmpty()) { %>
-                    <a class="view-btn website-btn" href="<%= websiteUrl %>" target="_blank" rel="noopener noreferrer">Website &#8599;</a>
+                    <a class="view-btn website-btn" href="<%= websiteUrl %>" target="_blank" rel="noopener noreferrer" data-i18n="vendors_website_link">Website &#8599;</a>
                     <% } %>
                 </div>
             </div>
@@ -224,5 +224,7 @@
   <% } %>
 </main>
 
+<script src="js/i18n.js?v=5"></script>
+<script src="js/chatbot.js?v=3"></script>
 </body>
 </html>

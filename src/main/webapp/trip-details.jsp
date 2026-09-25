@@ -11,9 +11,11 @@
 <%@ page import="com.voyantra.ai.GoogleMapsService" %>
 <%@ page import="com.voyantra.ai.NearbyRecommendationService" %>
 <%@ page import="com.voyantra.ai.GooglePlacesService" %>
+<%@ page import="com.voyantra.util.LangUtil" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
 <%
+    String uiLangName = LangUtil.getLangName(request);
     Integer userId = (Integer) session.getAttribute("userId");
     if (userId == null) {
         response.sendRedirect("login.html");
@@ -116,7 +118,7 @@
         e.printStackTrace();
     }
 
-    EmergencyInfoService.EmergencyInfo emergencyInfo = EmergencyInfoService.getEmergencyInfo(destination);
+    EmergencyInfoService.EmergencyInfo emergencyInfo = EmergencyInfoService.getEmergencyInfo(destination, uiLangName);
 
     // ---- Nearby vendor marketplace recommendations for this destination ----
     // Weather-aware: on bad weather, favor indoor categories (stay/food) over outdoor ones.
@@ -164,7 +166,7 @@
         ? GooglePlacesService.searchPlaces("hotels in " + destination)
         : java.util.Collections.emptyList();
     String aiNearbyBlurb = (nearbyVendors.isEmpty() && googleHotels.isEmpty())
-        ? NearbyRecommendationService.getAiSuggestions(destination) : null;
+        ? NearbyRecommendationService.getAiSuggestions(destination, uiLangName) : null;
 
     // ---- Checklist: auto-seed default items the first time this trip's page is viewed ----
     try (Connection checklistConn = DBConnection.getConnection()) {

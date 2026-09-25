@@ -90,27 +90,27 @@
     </svg>
     <span class="brand-word">Voy<span class="accent">antra</span></span>
   </a>
-  <span class="badge">Shared trip — view only</span>
+  <span class="badge" data-i18n="publictrip_badge">Shared trip — view only</span>
 </header>
 
 <main>
 <% if (!found) { %>
   <div class="not-found">
-    <h1>Trip not found</h1>
-    <p style="color:var(--muted); margin-top:10px;">This share link is invalid or the trip no longer exists.</p>
+    <h1 data-i18n="publictrip_notfound_title">Trip not found</h1>
+    <p style="color:var(--muted); margin-top:10px;" data-i18n="publictrip_notfound_sub">This share link is invalid or the trip no longer exists.</p>
   </div>
 <% } else { %>
   <div class="trip-hero">
     <h1><%= destination %></h1>
     <div class="stat-row">
-      <div class="stat-box"><div class="k">Budget</div><div class="v">Rs. <%= (int) budget %></div></div>
-      <div class="stat-box"><div class="k">Duration</div><div class="v"><%= numDays %> days</div></div>
-      <div class="stat-box"><div class="k">Style</div><div class="v"><%= travelStyle %></div></div>
+      <div class="stat-box"><div class="k" data-i18n="publictrip_budget">Budget</div><div class="v">Rs. <%= (int) budget %></div></div>
+      <div class="stat-box"><div class="k" data-i18n="publictrip_duration">Duration</div><div class="v"><%= numDays %> <span data-i18n="publictrip_days">days</span></div></div>
+      <div class="stat-box"><div class="k" data-i18n="publictrip_style">Style</div><div class="v"><%= travelStyle %></div></div>
     </div>
-    <div class="interests-line"><strong style="color:var(--paper);">Interests:</strong> <%= interests %></div>
+    <div class="interests-line"><strong style="color:var(--paper);" data-i18n="publictrip_interests_label">Interests:</strong> <%= interests %></div>
   </div>
 
-  <div class="section-title">Day-wise itinerary</div>
+  <div class="section-title" data-i18n="publictrip_itinerary_heading">Day-wise itinerary</div>
   <%
       try (Connection conn2 = DBConnection.getConnection()) {
           if (conn2 != null) {
@@ -125,16 +125,16 @@
   %>
     <div class="day-card">
       <div class="day-badge"><%= rs2.getInt("day_number") %></div>
-      <div class="day-row"><div class="lbl">Activities</div><%= rs2.getString("activities") %></div>
-      <div class="day-row"><div class="lbl">Food</div><%= rs2.getString("food_suggestions") %></div>
-      <div class="day-row"><div class="lbl">Stay</div><%= rs2.getString("hotel_suggestion") %></div>
-      <div class="day-row"><div class="lbl">Weather</div><%= rs2.getString("weather_info") %></div>
+      <div class="day-row"><div class="lbl" data-i18n="publictrip_activities">Activities</div><%= rs2.getString("activities") %></div>
+      <div class="day-row"><div class="lbl" data-i18n="publictrip_food">Food</div><%= rs2.getString("food_suggestions") %></div>
+      <div class="day-row"><div class="lbl" data-i18n="publictrip_stay">Stay</div><%= rs2.getString("hotel_suggestion") %></div>
+      <div class="day-row"><div class="lbl" data-i18n="publictrip_weather">Weather</div><%= rs2.getString("weather_info") %></div>
     </div>
   <%
               }
               if (!any) {
   %>
-    <p style="color:var(--muted);">No itinerary has been generated for this trip yet.</p>
+    <p style="color:var(--muted);" data-i18n="publictrip_empty">No itinerary has been generated for this trip yet.</p>
   <%
               }
           }
@@ -145,5 +145,6 @@
 <% } %>
 </main>
 
+<script src="js/i18n.js?v=5"></script>
 </body>
 </html>

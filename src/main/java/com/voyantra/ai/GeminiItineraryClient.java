@@ -13,7 +13,7 @@ public class GeminiItineraryClient {
      */
     public JSONArray generateItinerary(String destination, double budget, int numDays,
                                         String travelStyle, String interests) throws Exception {
-        return generateItinerary(destination, budget, numDays, travelStyle, interests, null, null);
+        return generateItinerary(destination, budget, numDays, travelStyle, interests, null, null, "English");
     }
 
     /**
@@ -26,6 +26,18 @@ public class GeminiItineraryClient {
     public JSONArray generateItinerary(String destination, double budget, int numDays,
                                         String travelStyle, String interests,
                                         String hotelVendorName, String restaurantVendorName) throws Exception {
+        return generateItinerary(destination, budget, numDays, travelStyle, interests,
+            hotelVendorName, restaurantVendorName, "English");
+    }
+
+    /**
+     * Same as above, but the itinerary's own text (activities/food/hotel/weather) is
+     * written in the tourist's selected UI language, not just the surrounding page.
+     */
+    public JSONArray generateItinerary(String destination, double budget, int numDays,
+                                        String travelStyle, String interests,
+                                        String hotelVendorName, String restaurantVendorName,
+                                        String languageName) throws Exception {
 
         StringBuilder realOptions = new StringBuilder();
         if (hotelVendorName != null && !hotelVendorName.trim().isEmpty()) {
@@ -37,10 +49,16 @@ public class GeminiItineraryClient {
                 .append("\" is available here — mention it by this exact name in the \"food\" field at least once. ");
         }
 
+        String langInstruction = (languageName == null || languageName.equalsIgnoreCase("English"))
+            ? ""
+            : "Write the \"activities\", \"food\", \"hotel\" and \"weather\" text values in " + languageName
+                + " (but keep the JSON keys themselves in English). ";
+
         String prompt = "Create a " + numDays + "-day travel itinerary for " + destination + ". "
             + "Budget: Rs " + (int) budget + " total. Travel style: " + travelStyle + ". "
             + "Interests: " + interests + ". "
             + realOptions.toString()
+            + langInstruction
             + "Respond with ONLY a valid JSON array, no markdown, no explanation, no code fences. "
             + "Each element must have exactly these keys: "
             + "\"day\" (number), \"activities\" (string), \"food\" (string), "

@@ -87,53 +87,55 @@
     </svg>
     <span class="brand-word">Voy<span class="accent">antra</span></span>
   </a>
-  <a href="dashboard.jsp" class="back-link">&larr; Back to dashboard</a>
+  <a href="dashboard.jsp" class="back-link" data-i18n="profile_back">&larr; Back to dashboard</a>
 </header>
 
 <main>
-  <h1>My profile</h1>
-  <p class="sub">Manage your account details.</p>
+  <h1 data-i18n="profile_heading">My profile</h1>
+  <p class="sub" data-i18n="profile_sub">Manage your account details.</p>
 
-  <% if (profileSuccess) { %><div class="banner banner-success">Profile updated.</div><% } %>
-  <% if (profileError) { %><div class="banner banner-error">Please check your name and phone number (10 digits, starting 6-9).</div><% } %>
-  <% if (pwSuccess) { %><div class="banner banner-success">Password changed.</div><% } %>
-  <% if ("wrong".equals(pwError)) { %><div class="banner banner-error">Current password is incorrect.</div><% } %>
-  <% if ("weak".equals(pwError)) { %><div class="banner banner-error">New password must be at least 8 characters.</div><% } %>
+  <% if (profileSuccess) { %><div class="banner banner-success" data-i18n="profile_updated">Profile updated.</div><% } %>
+  <% if (profileError) { %><div class="banner banner-error" data-i18n="profile_err_namephone">Please check your name and phone number (10 digits, starting 6-9).</div><% } %>
+  <% if (pwSuccess) { %><div class="banner banner-success" data-i18n="profile_pw_changed">Password changed.</div><% } %>
+  <% if ("wrong".equals(pwError)) { %><div class="banner banner-error" data-i18n="profile_pw_wrong">Current password is incorrect.</div><% } %>
+  <% if ("weak".equals(pwError)) { %><div class="banner banner-error" data-i18n="profile_pw_weak">New password must be at least 8 characters.</div><% } %>
 
-  <div class="section-title">Account details</div>
+  <div class="section-title" data-i18n="profile_account_section">Account details</div>
   <div class="form-card">
     <form action="UpdateProfileServlet" method="POST">
       <div class="field">
-        <label for="email">Email</label>
+        <label for="email" data-i18n="auth_email_label">Email</label>
         <input type="email" id="email" value="<%= email %>" disabled>
       </div>
       <div class="field">
-        <label for="name">Name</label>
+        <label for="name" data-i18n="profile_name_label">Name</label>
         <input type="text" id="name" name="name" value="<%= name %>" required>
       </div>
       <div class="field">
-        <label for="phone">Phone</label>
+        <label for="phone" data-i18n="profile_phone_label">Phone</label>
         <input type="text" id="phone" name="phone" value="<%= phone %>" required>
       </div>
-      <button type="submit" class="submit">Save changes</button>
+      <button type="submit" class="submit" data-i18n="profile_save_btn">Save changes</button>
     </form>
   </div>
 
-  <div class="section-title">Change password</div>
+  <div class="section-title" data-i18n="profile_pw_section">Change password</div>
   <div class="form-card">
     <form action="ChangePasswordServlet" method="POST">
       <div class="field">
-        <label for="currentPassword">Current password</label>
+        <label for="currentPassword" data-i18n="profile_current_pw_label">Current password</label>
         <input type="password" id="currentPassword" name="currentPassword" required>
       </div>
       <div class="field">
-        <label for="newPassword">New password <span style="font-weight:400; color:var(--muted); font-size:0.8rem;">(min 8 characters)</span></label>
+        <label for="newPassword"><span data-i18n="profile_new_pw_label">New password</span> <span style="font-weight:400; color:var(--muted); font-size:0.8rem;" data-i18n="profile_new_pw_hint">(min 8 characters)</span></label>
         <input type="password" id="newPassword" name="newPassword" minlength="8" required>
       </div>
-      <button type="submit" class="submit">Update password</button>
+      <button type="submit" class="submit" data-i18n="profile_update_pw_btn">Update password</button>
     </form>
   </div>
 </main>
 
+<script src="js/i18n.js?v=5"></script>
+<script src="js/chatbot.js?v=3"></script>
 </body>
 </html>

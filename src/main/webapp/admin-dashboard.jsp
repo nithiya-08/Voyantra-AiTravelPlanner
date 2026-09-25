@@ -107,32 +107,33 @@
     </svg>
     <span class="brand-word">Voy<span class="accent">antra</span></span>
   </a>
-  <a href="dashboard.jsp" class="back-link">My trips &rarr;</a>
+  <a href="dashboard.jsp" class="back-link" data-i18n="admindash_mytrips">My trips &rarr;</a>
 </header>
 
 <main>
-  <h1>Admin dashboard</h1>
-  <p class="sub">Usage across all Voyantra users. <a href="admin-vendors.jsp" style="color:var(--gold);">Review vendor approvals &rarr;</a> &nbsp; <a href="admin-users.jsp" style="color:var(--gold);">Manage users &rarr;</a> &nbsp; <a href="admin-inquiries.jsp" style="color:var(--gold);">All inquiries &rarr;</a></p>
+  <h1 data-i18n="admindash_heading">Admin dashboard</h1>
+  <p class="sub"><span data-i18n="admindash_sub">Usage across all Voyantra users.</span> <a href="admin-vendors.jsp" style="color:var(--gold);" data-i18n="admindash_link_vendors">Review vendor approvals &rarr;</a> &nbsp; <a href="admin-users.jsp" style="color:var(--gold);" data-i18n="admindash_link_users">Manage users &rarr;</a> &nbsp; <a href="admin-inquiries.jsp" style="color:var(--gold);" data-i18n="admindash_link_inquiries">All inquiries &rarr;</a></p>
 
   <div class="stat-grid">
-    <div class="stat"><div class="num"><%= totalUsers %></div><div class="lbl">Total users</div></div>
-    <div class="stat"><div class="num"><%= verifiedUsers %></div><div class="lbl">Verified users</div></div>
-    <div class="stat"><div class="num"><%= totalTrips %></div><div class="lbl">Total trips</div></div>
-    <div class="stat"><div class="num"><%= totalItineraryDays %></div><div class="lbl">Itinerary days generated</div></div>
-    <div class="stat"><div class="num">Rs. <%= Math.round(avgBudget) %></div><div class="lbl">Average budget</div></div>
-    <div class="stat"><div class="num"><%= Math.round(avgDays * 10.0) / 10.0 %></div><div class="lbl">Average trip length (days)</div></div>
-    <div class="stat"><div class="num"><%= pendingVendors %></div><div class="lbl">Pending vendor approvals</div></div>
-    <div class="stat"><div class="num"><%= openReports %></div><div class="lbl">Open vendor reports</div></div>
-    <div class="stat"><div class="num"><%= blockedUsers %></div><div class="lbl">Blocked users</div></div>
+    <div class="stat"><div class="num"><%= totalUsers %></div><div class="lbl" data-i18n="admindash_stat_users">Total users</div></div>
+    <div class="stat"><div class="num"><%= verifiedUsers %></div><div class="lbl" data-i18n="admindash_stat_verified">Verified users</div></div>
+    <div class="stat"><div class="num"><%= totalTrips %></div><div class="lbl" data-i18n="admindash_stat_trips">Total trips</div></div>
+    <div class="stat"><div class="num"><%= totalItineraryDays %></div><div class="lbl" data-i18n="admindash_stat_itindays">Itinerary days generated</div></div>
+    <div class="stat"><div class="num">Rs. <%= Math.round(avgBudget) %></div><div class="lbl" data-i18n="admindash_stat_avgbudget">Average budget</div></div>
+    <div class="stat"><div class="num"><%= Math.round(avgDays * 10.0) / 10.0 %></div><div class="lbl" data-i18n="admindash_stat_avglen">Average trip length (days)</div></div>
+    <div class="stat"><div class="num"><%= pendingVendors %></div><div class="lbl" data-i18n="admindash_stat_pending">Pending vendor approvals</div></div>
+    <div class="stat"><div class="num"><%= openReports %></div><div class="lbl" data-i18n="admindash_stat_reports">Open vendor reports</div></div>
+    <div class="stat"><div class="num"><%= blockedUsers %></div><div class="lbl" data-i18n="admindash_stat_blocked">Blocked users</div></div>
   </div>
 
-  <div class="section-title">Top destinations</div>
+  <div class="section-title" data-i18n="admindash_topdest">Top destinations</div>
   <% if (topDestinations.isEmpty()) { %>
-    <p class="sub">No trips yet.</p>
+    <p class="sub" data-i18n="admindash_notrips">No trips yet.</p>
   <% } else { for (Object[] d : topDestinations) { %>
-    <div class="dest-row"><span><%= d[0] %></span><span class="cnt"><%= d[1] %> trips</span></div>
+    <div class="dest-row"><span><%= d[0] %></span><span class="cnt"><%= d[1] %> <span data-i18n="admindash_trips_word">trips</span></span></div>
   <% } } %>
 </main>
 
+<script src="js/i18n.js?v=5"></script>
 </body>
 </html>

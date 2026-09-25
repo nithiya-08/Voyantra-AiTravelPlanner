@@ -110,18 +110,18 @@
     </svg>
     <span class="brand-word">Voy<span class="accent">antra</span></span>
   </a>
-  <a href="index.jsp" class="back-link">← Back to home</a>
+  <a href="index.jsp" class="back-link" data-i18n="back_home">← Back to home</a>
   <h1 data-i18n="auth_login_title">Welcome back</h1>
     <p class="sub" data-i18n="auth_login_sub">Log in to see your saved trips and itineraries.</p>
 
-    <div class="success-banner" id="successBanner">✓ Logged in — redirecting...</div>
+    <div class="success-banner" id="successBanner" data-i18n="auth_login_success">✓ Logged in — redirecting...</div>
     <div class="error-banner" id="errorBanner"></div>
 
     <form id="loginForm" action="LoginServlet" method="POST" novalidate>
       <div class="field" id="emailField">
         <label for="email" data-i18n="auth_email_label">Email</label>
         <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email">
-        <div class="field-err">⚠ Enter a valid email address</div>
+        <div class="field-err" data-i18n="auth_email_err">⚠ Enter a valid email address</div>
       </div>
       <div class="field" id="passField">
         <label for="password" data-i18n="auth_password_label">Password</label>
@@ -131,7 +131,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" id="eyeIcon"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
           </button>
         </div>
-        <div class="field-err">⚠ Password is required</div>
+        <div class="field-err" data-i18n="auth_password_err">⚠ Password is required</div>
       </div>
       <div class="row-between">
         <label class="checkline"><input type="checkbox"> <span data-i18n="auth_remember">Remember me</span></label>

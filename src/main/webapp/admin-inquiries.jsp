@@ -89,15 +89,15 @@
     </svg>
     <span class="brand-word">Voy<span class="accent">antra</span></span>
   </a>
-  <a href="admin-dashboard.jsp" class="back-link">&larr; Admin dashboard</a>
+  <a href="admin-dashboard.jsp" class="back-link" data-i18n="adminusers_backdash">&larr; Admin dashboard</a>
 </header>
 
 <main>
-  <h1>All inquiries</h1>
-  <p class="sub">Every booking request sent across the platform (most recent 100).</p>
+  <h1 data-i18n="admininq_heading">All inquiries</h1>
+  <p class="sub" data-i18n="admininq_sub">Every booking request sent across the platform (most recent 100).</p>
 
   <% if (inquiries.isEmpty()) { %>
-    <p class="empty-state">No inquiries yet.</p>
+    <p class="empty-state" data-i18n="vendorinq_empty">No inquiries yet.</p>
   <% } else { for (Object[] inq : inquiries) {
       String status = (String) inq[5];
       String statusClass = "ACCEPTED".equals(status) ? "status-accepted" : ("DECLINED".equals(status) ? "status-declined" : "status-new");
@@ -113,5 +113,6 @@
   <% } } %>
 </main>
 
+<script src="js/i18n.js?v=5"></script>
 </body>
 </html>

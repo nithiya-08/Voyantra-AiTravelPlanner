@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import com.voyantra.ai.GeminiClient;
 import com.voyantra.ai.WeatherService;
 import com.voyantra.db.DBConnection;
+import com.voyantra.util.LangUtil;
 
 @WebServlet("/ChatbotServlet")
 public class ChatbotServlet extends HttpServlet {
@@ -84,6 +85,11 @@ public class ChatbotServlet extends HttpServlet {
             prompt.append("from the live-weather data and Voyantra-covered destinations given below (real, bookable options) ");
             prompt.append("over generic suggestions, and briefly say why the climate fits. ");
             prompt.append("If you don't know something about the site, say so briefly rather than inventing details.\n\n");
+
+            String langName = LangUtil.getLangName(request);
+            if (!langName.equalsIgnoreCase("English")) {
+                prompt.append("Reply in ").append(langName).append(", regardless of what language the user typed in.\n\n");
+            }
 
             if (mentionsClimate(message)) {
                 appendClimateContext(prompt);

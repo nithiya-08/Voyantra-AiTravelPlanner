@@ -98,12 +98,12 @@
     </svg>
     <span class="brand-word">Voy<span class="accent">antra</span></span>
   </a>
-  <a href="admin-dashboard.jsp" class="back-link">&larr; Admin dashboard</a>
+  <a href="admin-dashboard.jsp" class="back-link" data-i18n="adminusers_backdash">&larr; Admin dashboard</a>
 </header>
 
 <main>
-  <h1>Users</h1>
-  <p class="sub">See how many trips each tourist has planned, block or unblock accounts.</p>
+  <h1 data-i18n="adminusers_heading">Users</h1>
+  <p class="sub" data-i18n="adminusers_sub">See how many trips each tourist has planned, block or unblock accounts.</p>
 
   <% for (Object[] u : users) {
       int rowUserId = (int) u[0];
@@ -117,21 +117,21 @@
         <div class="name"><%= u[1] %></div>
         <div class="meta"><%= u[2] %></div>
         <div style="margin-top:8px;">
-          <% if (rowIsAdmin) { %><span class="trip-tag">Admin</span><% } %>
-          <% if (rowIsVendor) { %><span class="trip-tag">Vendor</span><% } %>
-          <% if (rowIsBlocked) { %><span class="trip-tag blocked">Blocked</span><% } %>
-          <span class="trip-tag"><%= rowTripCount %> trip<%= rowTripCount == 1 ? "" : "s" %> planned</span>
+          <% if (rowIsAdmin) { %><span class="trip-tag" data-i18n="adminusers_admin_badge">Admin</span><% } %>
+          <% if (rowIsVendor) { %><span class="trip-tag" data-i18n="adminusers_vendor_badge">Vendor</span><% } %>
+          <% if (rowIsBlocked) { %><span class="trip-tag blocked" data-i18n="adminusers_blocked_badge">Blocked</span><% } %>
+          <span class="trip-tag"><%= rowTripCount %> <span data-i18n="admindash_trips_word">trips</span> <span data-i18n="adminusers_planned">planned</span></span>
         </div>
       </div>
       <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
         <% if (rowTripCount > 0) { %>
-        <a href="admin-user-trips.jsp?userId=<%= rowUserId %>" style="border:1px solid var(--line-strong); padding:9px 16px; border-radius:8px; font-size:0.82rem; font-weight:600;">View trips</a>
+        <a href="admin-user-trips.jsp?userId=<%= rowUserId %>" style="border:1px solid var(--line-strong); padding:9px 16px; border-radius:8px; font-size:0.82rem; font-weight:600;" data-i18n="adminusers_viewtrips">View trips</a>
         <% } %>
         <% if (!rowIsAdmin) { %>
         <form action="AdminToggleUserBlockServlet" method="POST" style="margin:0;">
           <input type="hidden" name="userId" value="<%= rowUserId %>">
           <input type="hidden" name="action" value="<%= rowIsBlocked ? "UNBLOCK" : "BLOCK" %>">
-          <button type="submit" class="<%= rowIsBlocked ? "unblock" : "block" %>"><%= rowIsBlocked ? "Unblock" : "Block" %></button>
+          <button type="submit" class="<%= rowIsBlocked ? "unblock" : "block" %>" data-i18n="<%= rowIsBlocked ? "adminusers_unblock" : "adminusers_block" %>"><%= rowIsBlocked ? "Unblock" : "Block" %></button>
         </form>
         <% } %>
       </div>
@@ -139,5 +139,6 @@
   <% } %>
 </main>
 
+<script src="js/i18n.js?v=5"></script>
 </body>
 </html>

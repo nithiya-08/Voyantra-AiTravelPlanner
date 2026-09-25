@@ -141,25 +141,25 @@
     <span class="brand-word">Voy<span class="accent">antra</span></span>
   </a>
   <div class="header-right">
-    <span class="greeting">Hi, <strong><%= userName %></strong></span>
-    <a href="dashboard.jsp" class="btn btn-ghost">My trips</a>
-    <a href="LogoutServlet" class="btn btn-ghost">Log out</a>
+    <span class="greeting"><span data-i18n="nav_hi">Hi,</span> <strong><%= userName %></strong></span>
+    <a href="dashboard.jsp" class="btn btn-ghost" data-i18n="nav_mytrips">My trips</a>
+    <a href="LogoutServlet" class="btn btn-ghost" data-i18n="nav_logout">Log out</a>
   </div>
 </header>
 
 <main>
   <div class="page-head">
     <div>
-      <h1>My vendor listings</h1>
-      <p>Manage the businesses you've listed on Voyantra.</p>
+      <h1 data-i18n="listings_heading">My vendor listings</h1>
+      <p data-i18n="listings_sub">Manage the businesses you've listed on Voyantra.</p>
     </div>
-    <a href="vendor-form.jsp" class="btn btn-primary">+ Add listing</a>
+    <a href="vendor-form.jsp" class="btn btn-primary" data-i18n="listings_add_btn">+ Add listing</a>
   </div>
 
   <% if (listings.isEmpty()) { %>
       <div class="empty-state">
-          <p>You haven't listed a business yet.</p>
-          <a href="vendor-form.jsp" class="btn btn-primary">List your business &rarr;</a>
+          <p data-i18n="listings_empty">You haven't listed a business yet.</p>
+          <a href="vendor-form.jsp" class="btn btn-primary" data-i18n="listings_empty_cta">List your business &rarr;</a>
       </div>
   <% } else { %>
       <div class="trip-grid">
@@ -185,27 +185,30 @@
                   <span class="trip-tag <%= statusClass %>"><%= status %></span>
               </div>
               <div class="trip-interests">
-                  <%= inquiryCount %> inquir<%= inquiryCount == 1 ? "y" : "ies" %>
+                  <%= inquiryCount %> <span data-i18n="listings_inquiries_word">inquiries</span>
                   &middot;
-                  <% if (avgRatingObj != null) { %>&#9733; <%= String.format("%.1f", (Double) avgRatingObj) %> (<%= reviewCount %> reviews)<% } else { %>no reviews yet<% } %>
+                  <% if (avgRatingObj != null) { %>&#9733; <%= String.format("%.1f", (Double) avgRatingObj) %> (<%= reviewCount %> <span data-i18n="reviews_suffix">reviews</span>)<% } else { %><span data-i18n="reviews_none_lower">no reviews yet</span><% } %>
               </div>
               <% if (demandCount > 0) { %>
               <div style="font-size:0.78rem; color:var(--teal); background:rgba(79,195,176,0.1); border-radius:8px; padding:8px 10px; margin-bottom:14px;">
-                  &#128200; <%= demandCount %> tourist inquir<%= demandCount == 1 ? "y" : "ies" %> for <%= category %> in <%= city %> in the last 30 days, across <%= competitorCount %> vendor<%= competitorCount == 1 ? "" : "s" %>
+                  &#128200; <%= demandCount %> <span data-i18n="listings_demand_1">tourist inquiries for</span>
+                  <%= category %> <span data-i18n="listings_demand_2">in</span> <%= city %>
+                  <span data-i18n="listings_demand_3">in the last 30 days, across</span>
+                  <%= competitorCount %> <span data-i18n="listings_demand_4">vendors</span>
               </div>
               <% } %>
               <% if ("REJECTED".equals(status) && rejectionReason != null && !rejectionReason.trim().isEmpty()) { %>
-              <div class="reject-reason">Reason: <%= rejectionReason %></div>
+              <div class="reject-reason"><span data-i18n="listings_reason_label">Reason:</span> <%= rejectionReason %></div>
               <% } %>
               <div class="trip-actions">
-                  <a href="vendor-details.jsp?vendorId=<%= vendorId %>">View</a>
-                  <a href="vendor-form.jsp?vendorId=<%= vendorId %>">Edit</a>
-                  <a href="vendor-inquiries.jsp?vendorId=<%= vendorId %>">Inquiries</a>
+                  <a href="vendor-details.jsp?vendorId=<%= vendorId %>" data-i18n="savedvendors_view">View</a>
+                  <a href="vendor-form.jsp?vendorId=<%= vendorId %>" data-i18n="listings_edit">Edit</a>
+                  <a href="vendor-inquiries.jsp?vendorId=<%= vendorId %>" data-i18n="listings_inquiries_link">Inquiries</a>
               </div>
               <div class="trip-actions" style="margin-top:10px;">
                   <form action="VendorDeleteServlet" method="POST" style="flex:1; margin:0;">
                       <input type="hidden" name="vendorId" value="<%= vendorId %>">
-                      <button type="submit" class="delete-btn" style="width:100%;"
+                      <button type="submit" class="delete-btn" style="width:100%;" data-i18n="listings_delete"
                               onclick="return confirm('Delete this listing?');">Delete</button>
                   </form>
               </div>
@@ -215,5 +218,7 @@
   <% } %>
 </main>
 
+<script src="js/i18n.js?v=5"></script>
+<script src="js/chatbot.js?v=3"></script>
 </body>
 </html>

@@ -104,19 +104,19 @@
     <span class="brand-word">Voy<span class="accent">antra</span></span>
   </a>
   <div class="header-right">
-    <span class="greeting">Hi, <strong><%= userName %></strong></span>
-    <a href="vendors.jsp" class="btn btn-ghost">Local vendors</a>
-    <a href="dashboard.jsp" class="btn btn-ghost">My trips</a>
-    <a href="LogoutServlet" class="btn btn-ghost">Log out</a>
+    <span class="greeting"><span data-i18n="nav_hi">Hi,</span> <strong><%= userName %></strong></span>
+    <a href="vendors.jsp" class="btn btn-ghost" data-i18n="vendors_heading">Local vendors</a>
+    <a href="dashboard.jsp" class="btn btn-ghost" data-i18n="nav_mytrips">My trips</a>
+    <a href="LogoutServlet" class="btn btn-ghost" data-i18n="nav_logout">Log out</a>
   </div>
 </header>
 
 <main>
-  <h1>Saved vendors</h1>
-  <p class="sub">Businesses you've bookmarked for later.</p>
+  <h1 data-i18n="savedvendors_heading">Saved vendors</h1>
+  <p class="sub" data-i18n="savedvendors_sub">Businesses you've bookmarked for later.</p>
 
   <% if (vendors.isEmpty()) { %>
-    <div class="empty-state">You haven't saved any vendors yet. <a href="vendors.jsp" style="color:var(--gold);">Browse local vendors &rarr;</a></div>
+    <div class="empty-state"><span data-i18n="savedvendors_empty_pre">You haven't saved any vendors yet.</span> <a href="vendors.jsp" style="color:var(--gold);" data-i18n="savedvendors_empty_link">Browse local vendors &rarr;</a></div>
   <% } else { %>
     <div class="vendor-grid">
     <% for (Object[] v : vendors) {
@@ -144,17 +144,17 @@
                 </div>
                 <div class="rating">
                     <% if (avgRatingObj != null) { %>
-                      <strong>&#9733; <%= String.format("%.1f", (Double) avgRatingObj) %></strong> (<%= reviewCount %> reviews)
+                      <strong>&#9733; <%= String.format("%.1f", (Double) avgRatingObj) %></strong> (<%= reviewCount %> <span data-i18n="reviews_suffix">reviews</span>)
                     <% } else { %>
-                      No reviews yet
+                      <span data-i18n="reviews_none">No reviews yet</span>
                     <% } %>
                 </div>
                 <div class="card-actions">
-                    <a href="vendor-details.jsp?vendorId=<%= vendorId %>">View</a>
+                    <a href="vendor-details.jsp?vendorId=<%= vendorId %>" data-i18n="savedvendors_view">View</a>
                     <form action="ToggleVendorFavoriteServlet" method="POST" style="flex:1; margin:0;">
                         <input type="hidden" name="vendorId" value="<%= vendorId %>">
                         <input type="hidden" name="returnTo" value="saved">
-                        <button type="submit" class="remove-btn" style="width:100%;">Remove</button>
+                        <button type="submit" class="remove-btn" style="width:100%;" data-i18n="savedvendors_remove">Remove</button>
                     </form>
                 </div>
             </div>
@@ -164,5 +164,7 @@
   <% } %>
 </main>
 
+<script src="js/i18n.js?v=5"></script>
+<script src="js/chatbot.js?v=3"></script>
 </body>
 </html>

@@ -110,15 +110,15 @@
     </svg>
     <span class="brand-word">Voy<span class="accent">antra</span></span>
   </a>
-  <a href="my-vendor-listings.jsp" class="back-link">&larr; My listings</a>
+  <a href="my-vendor-listings.jsp" class="back-link" data-i18n="vendorform_back_listings">&larr; My listings</a>
 </header>
 
 <main>
-  <h1>Inquiries</h1>
-  <p class="sub">Travellers who reached out about "<%= businessName %>".</p>
+  <h1 data-i18n="listings_inquiries_link">Inquiries</h1>
+  <p class="sub"><span data-i18n="vendorinq_sub_pre">Travellers who reached out about</span> "<%= businessName %>".</p>
 
   <% if (inquiries.isEmpty()) { %>
-    <div class="empty-state">No inquiries yet.</div>
+    <div class="empty-state" data-i18n="vendorinq_empty">No inquiries yet.</div>
   <% } else { for (Object[] inq : inquiries) {
       int inquiryId = (int) inq[0];
       String inqStatus = (String) inq[7];
@@ -130,7 +130,7 @@
       </div>
       <div class="msg"><%= inq[3] %></div>
       <% if (inq[5] != null && !((String) inq[5]).trim().isEmpty()) { %>
-        <div class="meta">Travel dates: <%= inq[5] %></div>
+        <div class="meta"><span data-i18n="myinquiries_dates_label">Travel dates:</span> <%= inq[5] %></div>
       <% } %>
       <div class="contact">
         <%= inq[2] %><% if (inq[4] != null && !((String) inq[4]).trim().isEmpty()) { %> &middot; <%= inq[4] %><% } %>
@@ -141,8 +141,8 @@
         <form action="MarkInquiryRespondedServlet" method="POST" style="margin:0;">
           <input type="hidden" name="inquiryId" value="<%= inquiryId %>">
           <input type="hidden" name="vendorId" value="<%= vendorId %>">
-          <button type="submit" name="action" value="ACCEPT" style="background:none; border:1px solid var(--teal); border-radius:8px; padding:6px 12px; color:var(--teal); font-size:0.78rem; cursor:pointer;">Accept</button>
-          <button type="submit" name="action" value="DECLINE" style="background:none; border:1px solid var(--coral); border-radius:8px; padding:6px 12px; color:var(--coral); font-size:0.78rem; cursor:pointer;">Decline</button>
+          <button type="submit" name="action" value="ACCEPT" style="background:none; border:1px solid var(--teal); border-radius:8px; padding:6px 12px; color:var(--teal); font-size:0.78rem; cursor:pointer;" data-i18n="vendorinq_accept">Accept</button>
+          <button type="submit" name="action" value="DECLINE" style="background:none; border:1px solid var(--coral); border-radius:8px; padding:6px 12px; color:var(--coral); font-size:0.78rem; cursor:pointer;" data-i18n="vendorinq_decline">Decline</button>
         </form>
         <% } %>
       </div>
@@ -150,5 +150,7 @@
   <% } } %>
 </main>
 
+<script src="js/i18n.js?v=5"></script>
+<script src="js/chatbot.js?v=3"></script>
 </body>
 </html>

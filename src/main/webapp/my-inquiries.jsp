@@ -91,19 +91,19 @@
     <span class="brand-word">Voy<span class="accent">antra</span></span>
   </a>
   <div class="header-right">
-    <span class="greeting">Hi, <strong><%= userName %></strong></span>
-    <a href="vendors.jsp" class="btn btn-ghost">Local vendors</a>
-    <a href="dashboard.jsp" class="btn btn-ghost">My trips</a>
-    <a href="LogoutServlet" class="btn btn-ghost">Log out</a>
+    <span class="greeting"><span data-i18n="nav_hi">Hi,</span> <strong><%= userName %></strong></span>
+    <a href="vendors.jsp" class="btn btn-ghost" data-i18n="vendors_heading">Local vendors</a>
+    <a href="dashboard.jsp" class="btn btn-ghost" data-i18n="nav_mytrips">My trips</a>
+    <a href="LogoutServlet" class="btn btn-ghost" data-i18n="nav_logout">Log out</a>
   </div>
 </header>
 
 <main>
-  <h1>My inquiries</h1>
-  <p class="sub">Requests you've sent to local vendors.</p>
+  <h1 data-i18n="myinquiries_heading">My inquiries</h1>
+  <p class="sub" data-i18n="myinquiries_sub">Requests you've sent to local vendors.</p>
 
   <% if (inquiries.isEmpty()) { %>
-    <div class="empty-state">You haven't contacted any vendors yet. <a href="vendors.jsp" style="color:var(--gold);">Browse local vendors &rarr;</a></div>
+    <div class="empty-state"><span data-i18n="myinquiries_empty_pre">You haven't contacted any vendors yet.</span> <a href="vendors.jsp" style="color:var(--gold);" data-i18n="savedvendors_empty_link">Browse local vendors &rarr;</a></div>
   <% } else { for (Object[] inq : inquiries) {
       int vendorId = (int) inq[0];
       String status = (String) inq[5];
@@ -116,12 +116,14 @@
       </div>
       <div class="msg"><%= inq[2] %></div>
       <% if (inq[3] != null && !((String) inq[3]).trim().isEmpty()) { %>
-        <div class="meta">Travel dates: <%= inq[3] %></div>
+        <div class="meta"><span data-i18n="myinquiries_dates_label">Travel dates:</span> <%= inq[3] %></div>
       <% } %>
       <div class="meta" style="margin-top:6px;"><%= inq[4] %></div>
     </div>
   <% } } %>
 </main>
 
+<script src="js/i18n.js?v=5"></script>
+<script src="js/chatbot.js?v=3"></script>
 </body>
 </html>

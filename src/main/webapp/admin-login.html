@@ -95,33 +95,33 @@
   <div class="lock-icon">
     <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#E2704F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
   </div>
-  <div class="kicker">Restricted access</div>
-  <h1>Admin login</h1>
-  <p class="sub">For Voyantra administrators only. Regular accounts will be refused here.</p>
+  <div class="kicker" data-i18n="adminlogin_kicker">Restricted access</div>
+  <h1 data-i18n="adminlogin_title">Admin login</h1>
+  <p class="sub" data-i18n="adminlogin_sub">For Voyantra administrators only. Regular accounts will be refused here.</p>
 
-  <div class="success-banner" id="successBanner">✓ Logged in — redirecting...</div>
+  <div class="success-banner" id="successBanner" data-i18n="auth_login_success">✓ Logged in — redirecting...</div>
   <div class="error-banner" id="errorBanner"></div>
 
   <form id="loginForm" action="AdminLoginServlet" method="POST" novalidate>
     <div class="field" id="emailField">
-      <label for="email">Admin email</label>
+      <label for="email" data-i18n="adminlogin_email_label">Admin email</label>
       <input type="email" id="email" name="email" placeholder="admin@example.com" autocomplete="email">
-      <div class="field-err">⚠ Enter a valid email address</div>
+      <div class="field-err" data-i18n="auth_email_err">⚠ Enter a valid email address</div>
     </div>
     <div class="field" id="passField">
-      <label for="password">Password</label>
+      <label for="password" data-i18n="auth_password_label">Password</label>
       <div class="input-shell">
         <input type="password" id="password" name="password" class="has-toggle" placeholder="Enter your password" autocomplete="current-password">
         <button type="button" class="toggle-eye" id="toggleEye" aria-label="Show password">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" id="eyeIcon"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
         </button>
       </div>
-      <div class="field-err">⚠ Password is required</div>
+      <div class="field-err" data-i18n="auth_password_err">⚠ Password is required</div>
     </div>
-    <button type="submit" class="submit"><span class="spinner" id="loginSpinner"></span><span id="loginBtnText">Log in</span></button>
+    <button type="submit" class="submit"><span class="spinner" id="loginSpinner"></span><span id="loginBtnText" data-i18n="auth_login_btn">Log in</span></button>
   </form>
 
-  <div class="switch"><a href="login.html">&larr; Not an admin? Go to regular login</a></div>
+  <div class="switch"><a href="login.html" data-i18n="adminlogin_switch">&larr; Not an admin? Go to regular login</a></div>
 </div>
 
 <script>
@@ -180,5 +180,6 @@
       });
   });
 </script>
+<script src="js/i18n.js?v=5"></script>
 </body>
 </html>

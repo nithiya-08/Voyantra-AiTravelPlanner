@@ -19,6 +19,7 @@ import org.json.JSONObject;
 
 import com.voyantra.ai.GeminiItineraryClient;
 import com.voyantra.db.DBConnection;
+import com.voyantra.util.LangUtil;
 
 @WebServlet("/GenerateItineraryServlet")
 public class GenerateItineraryServlet extends HttpServlet {
@@ -107,8 +108,9 @@ public class GenerateItineraryServlet extends HttpServlet {
             }
 
             GeminiItineraryClient aiClient = new GeminiItineraryClient();
+            String langName = LangUtil.getLangName(request);
             JSONArray days = aiClient.generateItinerary(destination, budget, numDays, travelStyle, interests,
-                hotelVendorName, foodVendorName);
+                hotelVendorName, foodVendorName, langName);
 
             String deleteSql = "DELETE FROM itineraries WHERE trip_id = ?";
             PreparedStatement deleteStmt = conn.prepareStatement(deleteSql);

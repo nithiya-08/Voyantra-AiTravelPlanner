@@ -107,37 +107,37 @@
     </svg>
     <span class="brand-word">Voy<span class="accent">antra</span></span>
   </a>
-  <a href="index.jsp" class="back-link">← Back to home</a>
-  <div class="kicker">Vendor portal</div>
-  <h1>Welcome back</h1>
-    <p class="sub">Log in to manage your listing and inquiries.</p>
+  <a href="index.jsp" class="back-link" data-i18n="back_home">← Back to home</a>
+  <div class="kicker" data-i18n="vendorlogin_kicker">Vendor portal</div>
+  <h1 data-i18n="auth_login_title">Welcome back</h1>
+    <p class="sub" data-i18n="vendorlogin_sub">Log in to manage your listing and inquiries.</p>
 
-    <div class="success-banner" id="successBanner">✓ Logged in — redirecting...</div>
+    <div class="success-banner" id="successBanner" data-i18n="auth_login_success">✓ Logged in — redirecting...</div>
     <div class="error-banner" id="errorBanner"></div>
 
     <form id="loginForm" action="LoginServlet" method="POST" novalidate>
       <input type="hidden" name="context" value="vendor">
       <div class="field" id="emailField">
-        <label for="email">Email</label>
+        <label for="email" data-i18n="auth_email_label">Email</label>
         <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email">
-        <div class="field-err">⚠ Enter a valid email address</div>
+        <div class="field-err" data-i18n="auth_email_err">⚠ Enter a valid email address</div>
       </div>
       <div class="field" id="passField">
-        <label for="password">Password</label>
+        <label for="password" data-i18n="auth_password_label">Password</label>
         <div class="input-shell">
           <input type="password" id="password" name="password" class="has-toggle" placeholder="Enter your password" autocomplete="current-password">
           <button type="button" class="toggle-eye" id="toggleEye" aria-label="Show password">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" id="eyeIcon"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
           </button>
         </div>
-        <div class="field-err">⚠ Password is required</div>
+        <div class="field-err" data-i18n="auth_password_err">⚠ Password is required</div>
       </div>
-      <button type="submit" class="submit"><span class="spinner" id="loginSpinner"></span><span id="loginBtnText">Log in</span></button>
+      <button type="submit" class="submit"><span class="spinner" id="loginSpinner"></span><span id="loginBtnText" data-i18n="auth_login_btn">Log in</span></button>
     </form>
 
   <div class="switch switch-row">
-    <div>New here? <a href="register.html">Register</a>, then list your business from your dashboard.</div>
-    <div><a href="login.html">Tourist login</a> &middot; <a href="admin-login.html">Admin login</a></div>
+    <div><span data-i18n="vendorlogin_switch_pre">New here?</span> <a href="register.html" data-i18n="vendorlogin_switch_link">Register</a> <span data-i18n="vendorlogin_switch_post">, then list your business from your dashboard.</span></div>
+    <div><a href="login.html" data-i18n="nav_tourist_login">Tourist login</a> &middot; <a href="admin-login.html" data-i18n="nav_admin_login_link">Admin login</a></div>
   </div>
 </div>
 
@@ -197,5 +197,6 @@
       });
   });
 </script>
+<script src="js/i18n.js?v=5"></script>
 </body>
 </html>

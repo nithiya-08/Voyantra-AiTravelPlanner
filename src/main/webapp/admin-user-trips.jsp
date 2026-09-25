@@ -113,15 +113,15 @@
     </svg>
     <span class="brand-word">Voy<span class="accent">antra</span></span>
   </a>
-  <a href="admin-users.jsp" class="back-link">&larr; All users</a>
+  <a href="admin-users.jsp" class="back-link" data-i18n="adminusertrips_back">&larr; All users</a>
 </header>
 
 <main>
-  <h1><%= targetName %>'s trips</h1>
-  <p class="sub"><%= targetEmail %> &middot; <%= trips.size() %> trip<%= trips.size() == 1 ? "" : "s" %> planned</p>
+  <h1><%= targetName %><span data-i18n="adminusertrips_possessive">'s trips</span></h1>
+  <p class="sub"><%= targetEmail %> &middot; <%= trips.size() %> <span data-i18n="admindash_trips_word">trips</span> <span data-i18n="adminusers_planned">planned</span></p>
 
   <% if (trips.isEmpty()) { %>
-    <p class="empty-state">No trips planned yet.</p>
+    <p class="empty-state" data-i18n="adminusertrips_empty">No trips planned yet.</p>
   <% } else { for (Object[] t : trips) {
       int tripId = (int) t[0];
       double tripBudget = (double) t[2];
@@ -132,17 +132,18 @@
     <div class="trip-row">
       <div class="top">
         <span class="name"><%= t[1] %></span>
-        <span class="meta">planned <%= tripCreated %></span>
+        <span class="meta"><span data-i18n="adminusertrips_plannedon">planned</span> <%= tripCreated %></span>
       </div>
       <div class="meta">
-        <%= tripDays %> day<%= tripDays == 1 ? "" : "s" %> &middot; Rs. <%= Math.round(tripBudget) %> budget
+        <%= tripDays %> <span data-i18n="publictrip_days">days</span> &middot; Rs. <%= Math.round(tripBudget) %> <span data-i18n="adminusertrips_budget">budget</span>
         <% if (t[4] != null) { %> &middot; <%= t[4] %><% } %>
-        <% if (tripStart != null) { %> &middot; starts <%= tripStart %><% } %>
+        <% if (tripStart != null) { %> &middot; <span data-i18n="adminusertrips_starts">starts</span> <%= tripStart %><% } %>
       </div>
-      <a href="trip-details.jsp?tripId=<%= tripId %>" class="view-link">View full itinerary &rarr;</a>
+      <a href="trip-details.jsp?tripId=<%= tripId %>" class="view-link" data-i18n="adminusertrips_viewfull">View full itinerary &rarr;</a>
     </div>
   <% } } %>
 </main>
 
+<script src="js/i18n.js?v=5"></script>
 </body>
 </html>
